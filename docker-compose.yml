@@ -1,0 +1,84 @@
+services:
+  db:
+    container_name: game-db
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: authdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  gateway:
+    container_name: game-gateway
+    build: services/gateway
+    env_file:
+      - services/gateway/.env
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    command: npm run dev
+
+  auth:
+    container_name: game-auth
+    build: services/auth
+    env_file:
+      - services/auth/.env
+    ports:
+      - "3001:3000"
+    depends_on:
+      - db
+    command: npm run dev
+
+  profile:
+    container_name: game-profile
+    build: services/profile
+    env_file:
+      - services/profile/.env
+    ports:
+      - "3002:3000"
+    depends_on:
+      - db
+    command: npm run dev
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - '5672:5672'      # основной порт для AMQP
+      - '15672:15672'    # порт для веб-менеджмента
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+
+#  app_test:
+#    build: services/app_test
+#    command: npm run dev
+#
+#  gateway_test:
+#    build: services/gateway_test
+#    ports:
+#      - "4000:3000"
+#    command: npm run dev
+
+#  app_grpc:
+#    build: services/app_grpc
+#    ports:
+#      - "4001:3000"
+#    command: node dist/index.js
+
+#  gateway_grpc:
+#    build: services/gateway_grpc
+#    ports:
+#      - "4000:3000"
+#    command: node dist/index.js
+
+volumes:
+  pgdata:
+  rabbitmq-data:
