@@ -1,5 +1,2 @@
-services/gateway
-services/auth
-services/profile
 .idea
 node_modules
