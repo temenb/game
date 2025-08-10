@@ -17,7 +17,7 @@ message RegisterRequest {
 message AuthResponse {
   string access_token = 1;
   string refresh_token = 2;
-  int64 user_id = 3;
+  string user_id = 3;
 }
 
 message LoginRequest {
@@ -35,7 +35,7 @@ message RefreshTokensResponse {
 }
 
 message LogoutRequest {
-  int64 user_id = 1;
+  string user_id = 1;
 }
 
 message LogoutResponse {
