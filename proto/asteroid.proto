@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+package asteroid;
+
+service Asteroid {
+
+  rpc ListAsteroids(ListAsteroidsRequest) returns (ListAsteroidsResponse);
+  rpc GetAsteroid(GetAsteroidRequest) returns (GetAsteroidResponse);
+  rpc ListGalaxies(ListGalaxiesRequest) returns (ListGalaxiesResponse);
+}
+
+message ListAsteroidsRequest {
+  string user_id = 1;
+  string galaxy_id = 2;
+}
+
+message ListAsteroidsResponse {
+  repeated AsteroidObject asteroids = 1;
+}
+
+message AsteroidObject {
+  string id = 1;
+  AsteroidType type = 2;
+  int32 x = 3;
+  int32 y = 4;
+  int32 hp = 5;
+}
+
+enum AsteroidType {
+  UNKNOWN = 0;
+  BASE = 1;
+  ASTEROID = 2;
+  PORTAL = 3;
+}
+
+message GetAsteroidRequest {
+  string asteroid_id = 1;
+}
+
+message GetAsteroidResponse {
+  AsteroidObject asteroid = 1;
+}
+
+message ListGalaxiesResponse {
+  repeated Galaxy galaxies = 1;
+}
+
+message ListGalaxiesRequest {
+  string user_id = 1;
+}
+
+message Galaxy {
+  string id = 1;
+}

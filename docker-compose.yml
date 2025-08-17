@@ -6,7 +6,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: authdb
+      POSTGRES_DB: auth
     ports:
       - "5432:5432"
     volumes:
@@ -31,8 +31,6 @@ services:
     build: services/auth
     env_file:
       - services/auth/.env
-    ports:
-      - "3001:3000"
     volumes:
       - ./services/auth/:/usr/src/app
       - ./services/auth/node_modules/:/usr/src/app/node_modules
@@ -45,11 +43,33 @@ services:
     build: services/profile
     env_file:
       - services/profile/.env
-    ports:
-      - "3002:3000"
     volumes:
       - ./services/profile/:/usr/src/app
       - ./services/profile/node_modules/:/usr/src/app/node_modules
+    depends_on:
+      - db
+    command: npm run dev
+
+  ship:
+    container_name: game-ship
+    build: services/ship
+    env_file:
+      - services/ship/.env
+    volumes:
+      - ./services/ship/:/usr/src/app
+      - ./services/ship/node_modules/:/usr/src/app/node_modules
+    depends_on:
+      - db
+    command: npm run dev
+
+  asteroid:
+    container_name: game-asteroid
+    build: services/asteroid
+    env_file:
+      - services/asteroid/.env
+    volumes:
+      - ./services/asteroid/:/usr/src/app
+      - ./services/asteroid/node_modules/:/usr/src/app/node_modules
     depends_on:
       - db
     command: npm run dev
@@ -66,27 +86,26 @@ services:
     volumes:
       - rabbitmq-data:/var/lib/rabbitmq
 
-#  app_test:
-#    build: services/app_test
-#    command: npm run dev
-#
-#  gateway_test:
-#    build: services/gateway_test
-#    ports:
-#      - "4000:3000"
-#    command: npm run dev
-
-#  app_grpc:
-#    build: services/app_grpc
-#    ports:
-#      - "4001:3000"
-#    command: node dist/index.js
-
-#  gateway_grpc:
-#    build: services/gateway_grpc
-#    ports:
-#      - "4000:3000"
-#    command: node dist/index.js
+  mailpit:
+    image: axllent/mailpit
+    container_name: mailpit
+    ports:
+      - 8025:8025
+      - 1025:1025
+    environment:
+      MP_WEBROOT : "/mailpit/"
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+      MP_SMTP_AUTH: "login:pass"
+      MP_MAX_MESSAGES: 5000
+    volumes:
+      - /data
+    restart: always
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
 volumes:
   pgdata:
