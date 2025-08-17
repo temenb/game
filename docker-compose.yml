@@ -36,6 +36,7 @@ services:
       - ./services/auth/node_modules/:/usr/src/app/node_modules
     depends_on:
       - db
+      - rabbitmq
     command: npm run dev
 
   profile:
@@ -48,6 +49,7 @@ services:
       - ./services/profile/node_modules/:/usr/src/app/node_modules
     depends_on:
       - db
+      - rabbitmq
     command: npm run dev
 
   ship:
@@ -85,6 +87,9 @@ services:
       RABBITMQ_DEFAULT_PASS: password
     volumes:
       - rabbitmq-data:/var/lib/rabbitmq
+    command: >
+      bash -c "rabbitmq-plugins enable rabbitmq_delayed_message_exchange && rabbitmq-server"
+
 
   mailpit:
     image: axllent/mailpit
@@ -94,7 +99,7 @@ services:
       - 1025:1025
     environment:
       MP_WEBROOT : "/mailpit/"
-      MP_SMTP_AUTH_ACCEPT_ANY: 1
+#      MP_SMTP_AUTH_ACCEPT_ANY: 1
       MP_SMTP_AUTH_ALLOW_INSECURE: 1
       MP_SMTP_AUTH: "login:pass"
       MP_MAX_MESSAGES: 5000
