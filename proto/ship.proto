@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package ship;
 
-service ShipService {
+service Ship {
   rpc ListShips(ListShipsRequest) returns (ListShipsResponse);
   rpc AttackAsteroid(AttackAsteroidRequest) returns (AttackAsteroidResponse);
 }
@@ -12,10 +12,10 @@ message ListShipsRequest {
 }
 
 message ListShipsResponse {
-  repeated Ship ships = 1;
+  repeated ShipObject ships = 1;
 }
 
-message Ship {
+message ShipObject {
   string id = 1;
   int32 x = 2;
   int32 y = 3;
