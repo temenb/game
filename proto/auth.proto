@@ -8,9 +8,38 @@ service Auth {
   rpc Register (RegisterRequest) returns (AuthResponse);
   rpc Login (LoginRequest) returns (AuthResponse);
   rpc Logout (LogoutRequest) returns (LogoutResponse);
-  rpc RefreshTokens (RefreshTokensRequest) returns (RefreshTokensResponse);
+  rpc RefreshTokens (RefreshTokensRequest) returns (AuthResponse);
   rpc ForgotPassword(ForgotPasswordRequest) returns (google.protobuf.Empty);
   rpc ResetPassword(ResetPasswordRequest) returns (AuthResponse);
+
+  rpc Health(Empty) returns (HealthReport);
+  rpc Status(Empty) returns (StatusInfo);
+  rpc Livez(Empty) returns (LiveStatus);
+  rpc Readyz(Empty) returns (ReadyStatus);
+}
+
+message Empty {}
+
+message HealthReport {
+  map<string, string> components = 1; // "rabbitmq": "ok", "auth": "fail"
+  bool healthy = 2;
+}
+
+message StatusInfo {
+  string name = 1;
+  string version = 2;
+  string build = 3;
+  double uptime = 4;
+  string env = 5;
+  string timestamp = 6;
+}
+
+message LiveStatus {
+  bool live = 1;
+}
+
+message ReadyStatus {
+  bool ready = 1;
 }
 
 message RegisterRequest {
@@ -31,11 +60,6 @@ message LoginRequest {
 
 message RefreshTokensRequest {
   string token = 1;
-}
-
-message RefreshTokensResponse {
-  string access_token = 1;
-  string refresh_token = 2;
 }
 
 message LogoutRequest {

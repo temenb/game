@@ -7,6 +7,35 @@ service Asteroid {
   rpc ListAsteroids(ListAsteroidsRequest) returns (ListAsteroidsResponse);
   rpc GetAsteroid(GetAsteroidRequest) returns (GetAsteroidResponse);
   rpc ListGalaxies(ListGalaxiesRequest) returns (ListGalaxiesResponse);
+
+  rpc Health(Empty) returns (HealthReport);
+  rpc Status(Empty) returns (StatusInfo);
+  rpc Livez(Empty) returns (LiveStatus);
+  rpc Readyz(Empty) returns (ReadyStatus);
+}
+
+message Empty {}
+
+message HealthReport {
+  map<string, string> components = 1; // "rabbitmq": "ok", "auth": "fail"
+  bool healthy = 2;
+}
+
+message StatusInfo {
+  string name = 1;
+  string version = 2;
+  string build = 3;
+  double uptime = 4;
+  string env = 5;
+  string timestamp = 6;
+}
+
+message LiveStatus {
+  bool live = 1;
+}
+
+message ReadyStatus {
+  bool ready = 1;
 }
 
 message ListAsteroidsRequest {
