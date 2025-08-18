@@ -2,14 +2,12 @@ syntax = "proto3";
 
 package auth;
 
-import "google/protobuf/empty.proto";
-
 service Auth {
   rpc Register (RegisterRequest) returns (AuthResponse);
   rpc Login (LoginRequest) returns (AuthResponse);
   rpc Logout (LogoutRequest) returns (LogoutResponse);
   rpc RefreshTokens (RefreshTokensRequest) returns (AuthResponse);
-  rpc ForgotPassword(ForgotPasswordRequest) returns (google.protobuf.Empty);
+  rpc ForgotPassword(ForgotPasswordRequest) returns (Empty);
   rpc ResetPassword(ResetPasswordRequest) returns (AuthResponse);
 
   rpc Health(Empty) returns (HealthReport);
@@ -28,7 +26,6 @@ message HealthReport {
 message StatusInfo {
   string name = 1;
   string version = 2;
-  string build = 3;
   double uptime = 4;
   string env = 5;
   string timestamp = 6;

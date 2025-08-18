@@ -24,7 +24,6 @@ message HealthReport {
 message StatusInfo {
   string name = 1;
   string version = 2;
-  string build = 3;
   double uptime = 4;
   string env = 5;
   string timestamp = 6;
