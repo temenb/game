@@ -2,6 +2,10 @@
   "name": "game",
   "version": "1.0.0",
   "main": "dist/server.js",
+  "packageManager": "npm@11.5.2",
+  "workspaces": [
+    "services/*"
+  ],
   "scripts": {
     "proto:generate": "npm run proto:generate:auth && npm run proto:generate:profile && npm run proto:generate:gateway && npm run proto:generate:ship && npm run proto:generate:asteroid",
     "proto:generate:auth": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=services/auth/src/generated --ts_proto_opt=outputServices=grpc-js,useExactTypes=false,esModuleInterop=true --proto_path=./proto ./proto/*.proto",
@@ -11,6 +15,7 @@
     "proto:generate:asteroid": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=services/asteroid/src/generated --ts_proto_opt=outputServices=grpc-js,useExactTypes=false,esModuleInterop=true --proto_path=./proto ./proto/*.proto"
   },
   "devDependencies": {
-    "ts-proto": "^2.7.7"
+    "ts-proto": "^2.7.7",
+    "turbo": "^2.5.6"
   }
 }

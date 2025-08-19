@@ -20,10 +20,14 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./services/gateway/:/usr/src/app
-      - ./services/gateway/node_modules/:/usr/src/app/node_modules
+      - ./services/gateway/:/usr/src/app/
+      - /usr/src/app/node_modules
     depends_on:
       - db
+      - auth
+      - profile
+      - ship
+      - asteroid
     command: npm run dev
 
   auth:
@@ -32,11 +36,13 @@ services:
     env_file:
       - services/auth/.env
     volumes:
-      - ./services/auth/:/usr/src/app
-      - ./services/auth/node_modules/:/usr/src/app/node_modules
+      - ./services/auth/:/usr/src/app/
+      - /usr/src/app/node_modules
     depends_on:
-      - db
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
+      db:
+        condition: service_started
     command: npm run dev
 
   profile:
@@ -45,11 +51,13 @@ services:
     env_file:
       - services/profile/.env
     volumes:
-      - ./services/profile/:/usr/src/app
-      - ./services/profile/node_modules/:/usr/src/app/node_modules
+      - ./services/profile/:/usr/src/app/
+      - /usr/src/app/node_modules
     depends_on:
-      - db
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
+      db:
+        condition: service_started
     command: npm run dev
 
   ship:
@@ -58,10 +66,13 @@ services:
     env_file:
       - services/ship/.env
     volumes:
-      - ./services/ship/:/usr/src/app
-      - ./services/ship/node_modules/:/usr/src/app/node_modules
+      - ./services/ship/:/usr/src/app/
+      - /usr/src/app/node_modules
     depends_on:
-      - db
+      rabbitmq:
+        condition: service_healthy
+      db:
+        condition: service_started
     command: npm run dev
 
   asteroid:
@@ -70,10 +81,13 @@ services:
     env_file:
       - services/asteroid/.env
     volumes:
-      - ./services/asteroid/:/usr/src/app
-      - ./services/asteroid/node_modules/:/usr/src/app/node_modules
+      - ./services/asteroid/:/usr/src/app/
+      - /usr/src/app/node_modules
     depends_on:
-      - db
+      rabbitmq:
+        condition: service_healthy
+      db:
+        condition: service_started
     command: npm run dev
 
   rabbitmq:
@@ -87,6 +101,11 @@ services:
       RABBITMQ_DEFAULT_PASS: password
     volumes:
       - rabbitmq-data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
 
   mailpit:
