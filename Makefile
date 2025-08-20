@@ -28,31 +28,59 @@ proto-generate:
 	npm run proto:generate
 
 
-test:
-	@echo "🧪 Запуск тестов"
-	$(NODE_BIN)/jest
-
-# 🛠️ Установка зависимостей
-test:
-	@echo "🧪 Запуск тестов"
-	npx turbo run test
+#test:
+#	@echo "🧪 Запуск тестов"
+#	$(NODE_BIN)/jest
+#
+## 🛠️ Установка зависимостей
+#test:
+#	@echo "🧪 Запуск тестов"
+#	npx turbo run test
 
 
 git-commit:
-	cd services/auth
-	pwd
-	git add .
-	git commit -am "stable"
-	cd services/profile
-	pwd
-	git add .
-	git commit -am "stable"
-	cd services/ship
-	git add .
-	git commit -am "stable"
-	cd services/gateway
-	git add .
-	git commit -am "stable"
-	cd services/asteroid
-	git add .
-	git commit -am "stable"
+	cd services/auth && \
+    git diff --quiet && echo "No changes in auth" || ( \
+        git add . && \
+        git commit -am "stable" \
+    ) && \
+	cd ../profile && \
+    git diff --quiet && echo "No changes in profile" || ( \
+        git add . && \
+        git commit -am "stable" \
+    ) && \
+	cd ../asteroid && \
+    git diff --quiet && echo "No changes in asteroid" || ( \
+        git add . && \
+        git commit -am "stable" \
+    ) && \
+	cd ../ship && \
+    git diff --quiet && echo "No changes in ship" || ( \
+        git add . && \
+        git commit -am "stable" \
+    ) && \
+	cd ../gateway && \
+	git diff --quiet && echo "No changes in gateway" || ( \
+		git add . && \
+		git commit -am "stable" \
+	) && \
+	cd ../.. && \
+	git diff --quiet && echo "No changes root" || ( \
+		  git add . && \
+		  git commit -am "stable" \
+	)
+#	cd services/auth && \
+#	git add . && \
+#	git commit -am "stable"
+#	cd services/profile && \
+#	git add . && \
+#	git commit -am "stable"
+#	cd services/ship && \
+#	git add . && \
+#	git commit -am "stable"
+#	cd services/gateway && \
+#	git add . && \
+#	git commit -am "stable"
+#	cd services/asteroid && \
+#	git add . && \
+#	git commit -am "stable"
