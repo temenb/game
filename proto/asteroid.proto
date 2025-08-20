@@ -38,7 +38,7 @@ message ReadyStatus {
 }
 
 message ListAsteroidsRequest {
-  string user_id = 1;
+  string owner_id = 1;
   string galaxy_id = 2;
 }
 
@@ -74,7 +74,7 @@ message ListGalaxiesResponse {
 }
 
 message ListGalaxiesRequest {
-  string user_id = 1;
+  string owner_id = 1;
 }
 
 message Galaxy {

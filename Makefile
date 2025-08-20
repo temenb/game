@@ -36,3 +36,21 @@ test:
 test:
 	@echo "🧪 Запуск тестов"
 	npx turbo run test
+
+
+git-commit:
+	cd services/auth
+	git add .
+	git commit -am "stable"
+	cd ../profile
+	git add .
+	git commit -am "stable"
+	cd ../ship
+	git add .
+	git commit -am "stable"
+	cd ../gateway
+	git add .
+	git commit -am "stable"
+	cd ../asteroid
+	git add .
+	git commit -am "stable"

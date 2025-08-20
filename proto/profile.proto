@@ -36,16 +36,16 @@ message ReadyStatus {
 }
 
 message UpsertRequest {
-  string user_id = 1;
+  string owner_id = 1;
 }
 
 message ViewRequest {
-  string user_id = 1;
+  string owner_id = 1;
 }
 
 message ProfileResponse {
   string profile_id = 1;
-  string user_id = 2;
+  string owner_id = 2;
   string nickname = 3;
   int64 level = 4;
   int64 rating = 5;

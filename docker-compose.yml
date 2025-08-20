@@ -22,12 +22,6 @@ services:
     volumes:
       - ./services/gateway/:/usr/src/app/
       - /usr/src/app/node_modules
-    depends_on:
-      - db
-      - auth
-      - profile
-      - ship
-      - asteroid
     command: npm run dev
 
   auth:
