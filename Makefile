@@ -38,7 +38,7 @@ proto-generate:
 #	npx turbo run test
 
 
-COMMENT="works"
+COMMENT="'asdf sdfg'"
 
 git-commit:
 	cd services/auth && \
