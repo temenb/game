@@ -69,7 +69,7 @@ git-commit:
 	cd ../.. && \
 	git diff --quiet && echo "No changes root" || ( \
 		  git add . && \
-		  git commit -am "$(COMMENT)" \
+		  git commit -am " $(COMMENT) " \
 	)
 #	cd services/auth && \
 #	git add . && \
