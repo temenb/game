@@ -42,15 +42,15 @@ git-commit:
 	cd services/auth
 	git add .
 	git commit -am "stable"
-	cd ../profile
+	cd services/profile
 	git add .
 	git commit -am "stable"
-	cd ../ship
+	cd services/ship
 	git add .
 	git commit -am "stable"
-	cd ../gateway
+	cd services/gateway
 	git add .
 	git commit -am "stable"
-	cd ../asteroid
+	cd services/asteroid
 	git add .
 	git commit -am "stable"
