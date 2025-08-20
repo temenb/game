@@ -38,51 +38,30 @@ proto-generate:
 #	npx turbo run test
 
 
-COMMENT="asdf sdfg"
+DRY_RUN ?= true
+COMMIT_MSG ?= stable
 
-git-commit:
-	cd services/auth && \
-    git diff --quiet && echo "No changes in auth" || ( \
-        git add . && \
-        git commit -am $(COMMENT) \
-    ) && \
-	cd ../profile && \
-    git diff --quiet && echo "No changes in profile" || ( \
-        git add . && \
-        git commit -am $(COMMENT) \
-    ) && \
-	cd ../asteroid && \
-    git diff --quiet && echo "No changes in asteroid" || ( \
-        git add . && \
-        git commit -am $(COMMENT) \
-    ) && \
-	cd ../ship && \
-    git diff --quiet && echo "No changes in ship" || ( \
-        git add . && \
-        git commit -am $(COMMENT) \
-    ) && \
-	cd ../gateway && \
-	git diff --quiet && echo "No changes in gateway" || ( \
-		git add . && \
-		git commit -am $(COMMENT) \
-	) && \
-	cd ../.. && \
-	git diff --quiet && echo "No changes root" || ( \
-		  git add . && \
-		  git commit -am $(COMMENT) \
-	)
-#	cd services/auth && \
-#	git add . && \
-#	git commit -am "stable"
-#	cd services/profile && \
-#	git add . && \
-#	git commit -am "stable"
-#	cd services/ship && \
-#	git add . && \
-#	git commit -am "stable"
-#	cd services/gateway && \
-#	git add . && \
-#	git commit -am "stable"
-#	cd services/asteroid && \
-#	git add . && \
-#	git commit -am "stable"
+SERVICES := auth profile ship gateway asteroid
+SERVICE_DIR := services
+
+commit-all:
+	@for dir in $(SERVICES); do \
+		echo "\033[1;33m[*] Checking $$dir...\033[0m"; \
+		if [ ! -d $(SERVICE_DIR)/$$dir/.git ]; then \
+			echo "\033[0;31m[!] Skipping $$dir — not a git repo\033[0m"; \
+			continue; \
+		fi; \
+		cd $(SERVICE_DIR)/$$dir && \
+		if git diff --quiet; then \
+			echo "\033[1;33m[-] No changes in $$dir\033[0m"; \
+		else \
+			if [ "$(DRY_RUN)" = "true" ]; then \
+				echo "\033[0;32m[DRY-RUN] Would commit changes in $$dir\033[0m"; \
+			else \
+				git add . && \
+				git commit -am "$(COMMIT_MSG)" && \
+				echo "\033[0;32m[✓] Committed changes in $$dir\033[0m"; \
+			fi; \
+		fi; \
+		cd - > /dev/null; \
+    done
