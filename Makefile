@@ -1,27 +1,23 @@
 
 NODE_BIN=./node_modules/.bin
 
-prisma-generate:
-	@echo '🚀 Generating Prisma clients...'
-	docker compose exec auth npx prisma generate
-	docker compose exec profile npx prisma generate
-	docker compose exec ship npx prisma generate
-	docker compose exec asteroid npx prisma generate
-
 prisma-migrate:
 	@echo '🚀 Apply migrations...'
-	docker compose exec auth npm run prisma:migrate
-	docker compose exec profile npm run prisma:migrate
-	docker compose exec ship npm run prisma:migrate
-	docker compose exec asteroid npm run prisma:migrate
+	@for service in $(SERVICES); do \
+		docker compose exec $$service npx --yes prisma migrate dev; \
+    done
 
+prisma-generate:
+	@echo '🚀 Generating Prisma clients...'
+	@for service in $(SERVICES); do \
+		docker compose exec $$service npx prisma generate; \
+    done
 
 seed:
 	@echo "🌱 Запуск сидов"
-	docker compose exec auth npx ts-node src/seed/seed.ts
-	docker compose exec profile npx ts-node src/seed/seed.ts
-	docker compose exec ship npx ts-node src/seed/seed.ts
-	docker compose exec asteroid npx ts-node src/seed/seed.ts
+	@for service in $(SERVICES); do \
+		docker compose exec $$service npx ts-node src/seed/seed.ts; \
+    done
 
 proto-generate:
 	@echo '🚀 Proto generate...'
@@ -38,8 +34,9 @@ proto-generate:
 #	npx turbo run test
 
 
-DRY_RUN ?= true
-COMMIT_MSG ?= stable
+DRY_RUN ?= false
+#DRY_RUN ?= true
+COMMIT_MSG ?= auth sent message to rabbit
 
 SERVICES := auth profile ship gateway asteroid
 SERVICE_DIR := services
