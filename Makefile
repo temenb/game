@@ -38,36 +38,38 @@ proto-generate:
 #	npx turbo run test
 
 
+COMMENT="works"
+
 git-commit:
 	cd services/auth && \
     git diff --quiet && echo "No changes in auth" || ( \
         git add . && \
-        git commit -am "stable" \
+        git commit -am "$(COMMENT)" \
     ) && \
 	cd ../profile && \
     git diff --quiet && echo "No changes in profile" || ( \
         git add . && \
-        git commit -am "stable" \
+        git commit -am "$(COMMENT)" \
     ) && \
 	cd ../asteroid && \
     git diff --quiet && echo "No changes in asteroid" || ( \
         git add . && \
-        git commit -am "stable" \
+        git commit -am "$(COMMENT)" \
     ) && \
 	cd ../ship && \
     git diff --quiet && echo "No changes in ship" || ( \
         git add . && \
-        git commit -am "stable" \
+        git commit -am "$(COMMENT)" \
     ) && \
 	cd ../gateway && \
 	git diff --quiet && echo "No changes in gateway" || ( \
 		git add . && \
-		git commit -am "stable" \
+		git commit -am "$(COMMENT)" \
 	) && \
 	cd ../.. && \
 	git diff --quiet && echo "No changes root" || ( \
 		  git add . && \
-		  git commit -am "stable" \
+		  git commit -am "$(COMMENT)" \
 	)
 #	cd services/auth && \
 #	git add . && \
