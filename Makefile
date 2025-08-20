@@ -40,9 +40,11 @@ test:
 
 git-commit:
 	cd services/auth
+	pwd
 	git add .
 	git commit -am "stable"
 	cd services/profile
+	pwd
 	git add .
 	git commit -am "stable"
 	cd services/ship
