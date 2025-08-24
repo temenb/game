@@ -1,0 +1,12 @@
+packages:
+  - 'services/*'
+  - 'shared/*'
+
+
+onlyBuiltDependencies:
+  - '@prisma/client'
+  - '@prisma/engines'
+  - bcrypt
+  - prisma
+  - protobufjs
+  - unrs-resolver

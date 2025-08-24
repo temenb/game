@@ -1,11 +1,8 @@
 syntax = "proto3";
 
-package profile;
+package engine;
 
-service Profile {
-  rpc Upsert (UpsertRequest) returns (ProfileResponse);
-  rpc View (ViewRequest) returns (ProfileResponse);
-
+service Engine {
   rpc Health(Empty) returns (HealthReport);
   rpc Status(Empty) returns (StatusInfo);
   rpc Livez(Empty) returns (LiveStatus);
@@ -33,21 +30,4 @@ message LiveStatus {
 
 message ReadyStatus {
   bool ready = 1;
-}
-
-message UpsertRequest {
-  string owner_id = 1;
-}
-
-message ViewRequest {
-  string owner_id = 1;
-}
-
-message ProfileResponse {
-  string profile_id = 1;
-  string owner_id = 2;
-  string nickname = 3;
-  int64 level = 4;
-  int64 rating = 5;
-  int64 experience = 6;
 }

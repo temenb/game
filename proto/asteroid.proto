@@ -17,7 +17,7 @@ service Asteroid {
 message Empty {}
 
 message HealthReport {
-  map<string, string> components = 1; // "rabbitmq": "ok", "auth": "fail"
+  map<string, string> components = 1;
   bool healthy = 2;
 }
 
