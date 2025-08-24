@@ -227,6 +227,9 @@ importers:
       '@grpc/grpc-js':
         specifier: ^1.13.4
         version: 1.13.4
+      '@shared/logger':
+        specifier: workspace:*
+        version: link:../../shared/logger
       amqplib:
         specifier: ^0.10.8
         version: 0.10.8
@@ -464,6 +467,8 @@ importers:
       typescript:
         specifier: ^5.9.2
         version: 5.9.2
+
+  shared/logger: {}
 
 packages:
 

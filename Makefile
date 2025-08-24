@@ -48,7 +48,7 @@ commit-all:
 			continue; \
 		fi; \
 		cd $(SERVICE_DIR)/$$dir && \
-		git add .
+		git add . && \
 		if git diff HEAD --quiet; then \
 			echo "\033[1;33m[-] No changes in $$dir\033[0m"; \
 		else \
