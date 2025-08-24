@@ -21,11 +21,10 @@ services:
       - services/gateway/.env
     ports:
       - "3000:3000"
-    volumes:
-      - ./services/gateway/:/usr/src/app/
-      - /usr/src/app/node_modules
-    command: pnpm run dev
-#    command: tail -f /etc/hosts
+#    volumes:
+#      - ./services/gateway/:/usr/src/app/
+#      - /usr/src/app/node_modules
+    command: pnpm --filter gateway run dev
 
 
   engine:

@@ -35,7 +35,7 @@ seed:
 
 DRY_RUN ?= false
 #DRY_RUN ?= true
-COMMIT_MSG ?= refactoring in progress. monorepo is installed. kafka is not working proppely. shared folders are in progress
+COMMIT_MSG ?= refactoring in progress. kafka is not working proppely. shared folders are in progress, dockerfile is done
 
 SERVICES := auth profile ship gateway asteroid engine mail
 SERVICE_DIR := services
