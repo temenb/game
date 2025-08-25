@@ -34,8 +34,8 @@ seed:
 
 
 DRY_RUN ?= false
-#DRY_RUN ?= true
-COMMIT_MSG ?= refactoring in progress. kafka is not working proppely. shared folders are in progress, dockerfile is done
+DRY_RUN ?= true
+COMMIT_MSG ?= refactoring in progress. kafka is not working proppely. shared folders are in progress, pnpm and turbo are done
 
 SERVICES := auth profile ship gateway asteroid engine mail
 SERVICE_DIR := services
