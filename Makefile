@@ -1,24 +1,25 @@
 
 NODE_BIN=./node_modules/.bin
 
-PRISMA_SERVICES := auth profile ship asteroid
+PRISMA_SERVICES := auth profile ship asteroid engine
 
 prisma-migrate:
 	@echo '🚀 Apply migrations...'
 	@for service in $(PRISMA_SERVICES); do \
-		docker compose exec $$service npx --yes prisma migrate dev; \
-    done
+		echo "▶️ Running migrations for $$service..."; \
+		docker compose exec -T -w /usr/src/app/services/$$service $$service npx prisma migrate dev --schema=prisma/schema.prisma; \
+	done
 
 prisma-generate:
 	@echo '🚀 Generating Prisma clients...'
 	@for service in $(PRISMA_SERVICES); do \
-		docker compose exec $$service npx prisma generate; \
+		docker compose exec -T -w /usr/src/app/services/$$service $$service npx prisma generate; \
     done
 
 seed:
 	@echo "🌱 Запуск сидов"
 	@for service in $(SERVICES); do \
-		docker compose exec $$service npx ts-node src/seed/seed.ts; \
+		docker compose exec -T -w /usr/src/app/services/$$service $$service npx ts-node src/seed/seed.ts; \
     done
 
 
@@ -34,8 +35,8 @@ seed:
 
 
 DRY_RUN ?= false
-DRY_RUN ?= true
-COMMIT_MSG ?= refactoring in progress. kafka is not working proppely. shared folders are in progress, pnpm and turbo are done
+#DRY_RUN ?= true
+COMMIT_MSG ?= refactoring in progress. kafka is not working proppely. shared folders are in progress, all services are up
 
 SERVICES := auth profile ship gateway asteroid engine mail
 SERVICE_DIR := services

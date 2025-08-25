@@ -82,7 +82,7 @@ services:
     command: pnpm dlx turbo run dev --parallel
 
   engine:
-    container_name: engine-gateway
+    container_name: engine-engine
     build:
       context: .
       dockerfile: services/engine/Dockerfile
@@ -103,15 +103,14 @@ services:
       - services/ship/.env
     volumes:
       - ./shared:/usr/src/app/shared
-      - ./services/gateway/src:/usr/src/app/services/ship/src/
-      - ./services/gateway/package.json:/usr/src/app/services/ship/package.json
+      - ./services/ship/src:/usr/src/app/services/ship/src/
+      - ./services/ship/package.json:/usr/src/app/services/ship/package.json
     command: pnpm dlx turbo run dev --parallel
-
-#      kafka:
-#        condition: service_healthy
-#      db:
-#        condition: service_started
-#    command: pnpm dlx turbo run dev --parallel
+    depends_on:
+      kafka:
+        condition: service_healthy
+      db:
+        condition: service_started
 
 #  mail:
 #    container_name: game-mail
@@ -124,6 +123,9 @@ services:
 #      - ./services/mail/:/usr/src/app/
 #      - /usr/src/app/node_modules
 #    command: pnpm dlx turbo run dev --parallel
+#    depends_on:
+#      db:
+#        condition: service_started
 
   kafka:
     container_name: game-kafka
