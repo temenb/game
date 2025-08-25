@@ -13,6 +13,7 @@ prisma-migrate:
 prisma-generate:
 	@echo '🚀 Generating Prisma clients...'
 	@for service in $(PRISMA_SERVICES); do \
+		echo '🚀 Generating' $$service 'Prisma client...' && \
 		docker compose exec -T -w /usr/src/app/services/$$service $$service npx prisma generate; \
     done
 
@@ -35,8 +36,8 @@ seed:
 
 
 DRY_RUN ?= false
-#DRY_RUN ?= true
-COMMIT_MSG ?= refactoring in progress. kafka is not working proppely. shared folders are in progress, all services are up
+DRY_RUN ?= true
+COMMIT_MSG ?= refactoring is done. Kafka is next
 
 SERVICES := auth profile ship gateway asteroid engine mail
 SERVICE_DIR := services

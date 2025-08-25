@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package mail;
 
-service Engine {
+service Mail {
   rpc Health(Empty) returns (HealthReport);
   rpc Status(Empty) returns (StatusInfo);
   rpc Livez(Empty) returns (LiveStatus);

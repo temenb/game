@@ -82,7 +82,7 @@ services:
     command: pnpm dlx turbo run dev --parallel
 
   engine:
-    container_name: engine-engine
+    container_name: game-engine
     build:
       context: .
       dockerfile: services/engine/Dockerfile
