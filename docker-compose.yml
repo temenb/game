@@ -6,11 +6,17 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: auth
+      POSTGRES_DB: postgres
     ports:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
 
   gateway:
     container_name: game-gateway
@@ -42,7 +48,7 @@ services:
       kafka:
         condition: service_healthy
       db:
-        condition: service_started
+        condition: service_healthy
     command: pnpm dlx turbo run dev --parallel
 
   profile:
@@ -60,7 +66,7 @@ services:
       kafka:
         condition: service_healthy
       db:
-        condition: service_started
+        condition: service_healthy
     command: pnpm dlx turbo run dev --parallel
 
   asteroid:
@@ -78,7 +84,7 @@ services:
       kafka:
         condition: service_healthy
       db:
-        condition: service_started
+        condition: service_healthy
     command: pnpm dlx turbo run dev --parallel
 
   engine:
@@ -110,7 +116,7 @@ services:
       kafka:
         condition: service_healthy
       db:
-        condition: service_started
+        condition: service_healthy
 
 #  mail:
 #    container_name: game-mail
@@ -125,7 +131,7 @@ services:
 #    command: pnpm dlx turbo run dev --parallel
 #    depends_on:
 #      db:
-#        condition: service_started
+#        condition: service_healthy
 
   kafka:
     container_name: game-kafka
@@ -151,26 +157,26 @@ services:
       timeout: 5s
       retries: 5
 
-  mailpit:
-    image: axllent/mailpit
-    container_name: game-mailpit
-    ports:
-      - 8025:8025
-      - 1025:1025
-    environment:
-      MP_WEBROOT : "/mailpit/"
-#      MP_SMTP_AUTH_ACCEPT_ANY: 1
-      MP_SMTP_AUTH_ALLOW_INSECURE: 1
-      MP_SMTP_AUTH: "login:pass"
-      MP_MAX_MESSAGES: 5000
-    volumes:
-      - /data
-    restart: always
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
+#  mailpit:
+#    image: axllent/mailpit
+#    container_name: game-mailpit
+#    ports:
+#      - 8025:8025
+#      - 1025:1025
+#    environment:
+#      MP_WEBROOT : "/mailpit/"
+##      MP_SMTP_AUTH_ACCEPT_ANY: 1
+#      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+#      MP_SMTP_AUTH: "login:pass"
+#      MP_MAX_MESSAGES: 5000
+#    volumes:
+#      - /data
+#    restart: always
+#    healthcheck:
+#      test: ["CMD", "redis-cli", "ping"]
+#      interval: 30s
+#      timeout: 10s
+#      retries: 5
 
 volumes:
   pgdata:

@@ -26,6 +26,9 @@ importers:
       '@prisma/client':
         specifier: ^6.13.0
         version: 6.13.0(prisma@6.14.0)(typescript@5.9.2)
+      '@shared/logger':
+        specifier: workspace:*
+        version: link:../../shared/logger
       bcrypt:
         specifier: ^6.0.0
         version: 6.0.0
@@ -78,6 +81,9 @@ importers:
       nodemon:
         specifier: ^3.1.10
         version: 3.1.10
+      prisma:
+        specifier: ^6.14.0
+        version: 6.14.0(typescript@5.9.2)
       rimraf:
         specifier: ^4.4.1
         version: 4.4.1
@@ -537,6 +543,9 @@ importers:
       nodemon:
         specifier: ^3.1.10
         version: 3.1.10
+      prisma:
+        specifier: ^6.14.0
+        version: 6.14.0(typescript@5.9.2)
       rimraf:
         specifier: ^5.0.10
         version: 5.0.10
@@ -622,6 +631,9 @@ importers:
       nodemon:
         specifier: ^3.1.10
         version: 3.1.10
+      prisma:
+        specifier: ^6.14.0
+        version: 6.14.0(typescript@5.9.2)
       rimraf:
         specifier: ^4.4.1
         version: 4.4.1
@@ -637,6 +649,16 @@ importers:
       ts-node-dev:
         specifier: ^2.0.0
         version: 2.0.0(@types/node@20.19.11)(typescript@5.9.2)
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.2
+
+  shared/kafka:
+    dependencies:
+      kafkajs:
+        specifier: ^2.2.4
+        version: 2.2.4
+    devDependencies:
       typescript:
         specifier: ^5.9.2
         version: 5.9.2

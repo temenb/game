@@ -2,11 +2,12 @@
 NODE_BIN=./node_modules/.bin
 
 PRISMA_SERVICES := auth profile ship asteroid engine
+PRISMA_SERVICES := engine
 
 prisma-migrate:
 	@echo '🚀 Apply migrations...'
 	@for service in $(PRISMA_SERVICES); do \
-		echo "▶️ Running migrations for $$service..."; \
+		echo "▶️  Running migrations for $$service..."; \
 		docker compose exec -T -w /usr/src/app/services/$$service $$service npx prisma migrate dev --schema=prisma/schema.prisma; \
 	done
 

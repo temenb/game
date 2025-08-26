@@ -1,0 +1,17 @@
+{
+  "name": "@shared/kafka",
+  "version": "1.0.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "private": true,
+  "devDependencies": {
+    "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "kafkajs": "^2.2.4"
+  }
+}
