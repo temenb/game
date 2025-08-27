@@ -10,5 +10,5 @@ export type ProducerConfig = {
 export type ConsumerConfig = {
   topic: string;
   groupId: string;
-  handler: (message: any) => Promise<void>;
+  handler: (messages: any) => Promise<void>;
 };

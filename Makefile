@@ -2,7 +2,6 @@
 NODE_BIN=./node_modules/.bin
 
 PRISMA_SERVICES := auth profile ship asteroid engine
-PRISMA_SERVICES := engine
 
 prisma-migrate:
 	@echo '🚀 Apply migrations...'
@@ -38,7 +37,7 @@ seed:
 
 DRY_RUN ?= false
 DRY_RUN ?= true
-COMMIT_MSG ?= refactoring is done. Kafka is next
+COMMIT_MSG ?= health is green
 
 SERVICES := auth profile ship gateway asteroid engine mail
 SERVICE_DIR := services
