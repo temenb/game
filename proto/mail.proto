@@ -1,13 +1,13 @@
 syntax = "proto3";
 
-import "google/protobuf/empty.proto";
 import "common/health.proto";
+import "common/empty.proto";
 
 package mail;
 
 service Mail {
-  rpc Health(google.protobuf.Empty) returns (common.health.HealthReport);
-  rpc Status(google.protobuf.Empty) returns (common.health.StatusInfo);
-  rpc Livez(google.protobuf.Empty) returns (common.health.LiveStatus);
-  rpc Readyz(google.protobuf.Empty) returns (common.health.ReadyStatus);
+  rpc Health(common.empty.Empty) returns (common.health.HealthReport);
+  rpc Status(common.empty.Empty) returns (common.health.StatusInfo);
+  rpc Livez(common.empty.Empty) returns (common.health.LiveStatus);
+  rpc Readyz(common.empty.Empty) returns (common.health.ReadyStatus);
 }

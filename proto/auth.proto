@@ -1,22 +1,22 @@
 syntax = "proto3";
 
-import "google/protobuf/empty.proto";
 import "common/health.proto";
+import "common/empty.proto";
 
 package auth;
 
 service Auth {
-  rpc Health(google.protobuf.Empty) returns (common.health.HealthReport);
-  rpc Status(google.protobuf.Empty) returns (common.health.StatusInfo);
-  rpc Livez(google.protobuf.Empty) returns (common.health.LiveStatus);
-  rpc Readyz(google.protobuf.Empty) returns (common.health.ReadyStatus);
+  rpc Health(common.empty.Empty) returns (common.health.HealthReport);
+  rpc Status(common.empty.Empty) returns (common.health.StatusInfo);
+  rpc Livez(common.empty.Empty) returns (common.health.LiveStatus);
+  rpc Readyz(common.empty.Empty) returns (common.health.ReadyStatus);
 
   rpc Register (RegisterRequest) returns (AuthResponse);
-  rpc AnonymousSignIn (google.protobuf.Empty) returns (AuthResponse);
+  rpc AnonymousSignIn (common.empty.Empty) returns (AuthResponse);
   rpc Login (LoginRequest) returns (AuthResponse);
   rpc Logout (LogoutRequest) returns (LogoutResponse);
   rpc RefreshTokens (RefreshTokensRequest) returns (AuthResponse);
-  rpc ForgotPassword(ForgotPasswordRequest) returns (google.protobuf.Empty);
+  rpc ForgotPassword(ForgotPasswordRequest) returns (common.empty.Empty);
   rpc ResetPassword(ResetPasswordRequest) returns (AuthResponse);
   rpc getToken (getTokenRequest) returns (AuthResponse);
 }
