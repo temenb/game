@@ -1,13 +1,16 @@
 syntax = "proto3";
 
 import "google/protobuf/empty.proto";
+import "auth.proto";
 import "common/health.proto";
 
-package mail;
+package gateway;
 
-service Mail {
+service Gateway {
   rpc Health(google.protobuf.Empty) returns (common.health.HealthReport);
   rpc Status(google.protobuf.Empty) returns (common.health.StatusInfo);
   rpc Livez(google.protobuf.Empty) returns (common.health.LiveStatus);
   rpc Readyz(google.protobuf.Empty) returns (common.health.ReadyStatus);
+
+  rpc getToken (auth.getTokenRequest) returns (auth.AuthResponse);
 }

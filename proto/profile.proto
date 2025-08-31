@@ -1,38 +1,18 @@
 syntax = "proto3";
 
+import "google/protobuf/empty.proto";
+import "common/health.proto";
+
 package profile;
 
 service Profile {
+  rpc Health(google.protobuf.Empty) returns (common.health.HealthReport);
+  rpc Status(google.protobuf.Empty) returns (common.health.StatusInfo);
+  rpc Livez(google.protobuf.Empty) returns (common.health.LiveStatus);
+  rpc Readyz(google.protobuf.Empty) returns (common.health.ReadyStatus);
+
   rpc Upsert (UpsertRequest) returns (ProfileResponse);
   rpc View (ViewRequest) returns (ProfileResponse);
-
-  rpc Health(Empty) returns (HealthReport);
-  rpc Status(Empty) returns (StatusInfo);
-  rpc Livez(Empty) returns (LiveStatus);
-  rpc Readyz(Empty) returns (ReadyStatus);
-}
-
-message Empty {}
-
-message HealthReport {
-  map<string, string> components = 1;
-  bool healthy = 2;
-}
-
-message StatusInfo {
-  string name = 1;
-  string version = 2;
-  double uptime = 4;
-  string env = 5;
-  string timestamp = 6;
-}
-
-message LiveStatus {
-  bool live = 1;
-}
-
-message ReadyStatus {
-  bool ready = 1;
 }
 
 message UpsertRequest {

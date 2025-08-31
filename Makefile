@@ -1,7 +1,7 @@
 
 NODE_BIN=./node_modules/.bin
 
-PRISMA_SERVICES := auth profile ship asteroid engine
+PRISMA_SERVICES := auth profile asteroid ship
 
 prisma-migrate:
 	@echo '🚀 Apply migrations...'
@@ -19,7 +19,7 @@ prisma-generate:
 
 seed:
 	@echo "🌱 Запуск сидов"
-	@for service in $(SERVICES); do \
+	@for service in $(PRISMA_SERVICES); do \
 		docker compose exec -T -w /usr/src/app/services/$$service $$service npx ts-node src/seed/seed.ts; \
     done
 
@@ -37,7 +37,7 @@ seed:
 
 DRY_RUN ?= false
 DRY_RUN ?= true
-COMMIT_MSG ?= health is green
+COMMIT_MSG ?= connecting to front
 
 SERVICES := auth profile ship gateway asteroid engine mail
 SERVICE_DIR := services
@@ -59,6 +59,7 @@ commit-all:
 			else \
 				git add . && \
 				git commit -am "$(COMMIT_MSG)" && \
+				echo "git commit -am \"$(COMMIT_MSG)\"" && \
 				echo "\033[0;32m[✓] Committed changes in $$dir\033[0m"; \
 			fi; \
 		fi; \
@@ -69,10 +70,8 @@ proto-generate:
 	@echo '🚀 Proto generate...'
 	@for dir in $(SERVICES); do \
 		echo "\033[1;33m[*] Checking $$dir...\033[0m"; \
-		if [ ! -d "$(SERVICE_DIR)/$$dir/src/generated" ]; then \
-			echo "\033[0;31m[!] Skipping $$dir — missing src/generated folder\033[0m"; \
-			exit 1; \
-		  fi; \
+		rm $(SERVICE_DIR)/$$dir/src/generated -Rf; \
+		mkdir -p $(SERVICE_DIR)/$$dir/src/generated; \
 	done
 
 	@for dir in $(SERVICES); do \

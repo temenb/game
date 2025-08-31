@@ -1,42 +1,24 @@
 syntax = "proto3";
 
+import "google/protobuf/empty.proto";
+import "common/health.proto";
+
 package auth;
 
 service Auth {
+  rpc Health(google.protobuf.Empty) returns (common.health.HealthReport);
+  rpc Status(google.protobuf.Empty) returns (common.health.StatusInfo);
+  rpc Livez(google.protobuf.Empty) returns (common.health.LiveStatus);
+  rpc Readyz(google.protobuf.Empty) returns (common.health.ReadyStatus);
+
   rpc Register (RegisterRequest) returns (AuthResponse);
+  rpc AnonymousSignIn (google.protobuf.Empty) returns (AuthResponse);
   rpc Login (LoginRequest) returns (AuthResponse);
   rpc Logout (LogoutRequest) returns (LogoutResponse);
   rpc RefreshTokens (RefreshTokensRequest) returns (AuthResponse);
-  rpc ForgotPassword(ForgotPasswordRequest) returns (Empty);
+  rpc ForgotPassword(ForgotPasswordRequest) returns (google.protobuf.Empty);
   rpc ResetPassword(ResetPasswordRequest) returns (AuthResponse);
-
-  rpc Health(Empty) returns (HealthReport);
-  rpc Status(Empty) returns (StatusInfo);
-  rpc Livez(Empty) returns (LiveStatus);
-  rpc Readyz(Empty) returns (ReadyStatus);
-}
-
-message Empty {}
-
-message HealthReport {
-  map<string, string> components = 1;
-  bool healthy = 2;
-}
-
-message StatusInfo {
-  string name = 1;
-  string version = 2;
-  double uptime = 4;
-  string env = 5;
-  string timestamp = 6;
-}
-
-message LiveStatus {
-  bool live = 1;
-}
-
-message ReadyStatus {
-  bool ready = 1;
+  rpc getToken (getTokenRequest) returns (AuthResponse);
 }
 
 message RegisterRequest {
@@ -76,3 +58,5 @@ message ResetPasswordRequest {
   string token = 1;
   string new_password = 2;
 }
+
+message getTokenRequest { }

@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package common.health;
+
+message HealthReport {
+  map<string, string> components = 1;
+  bool healthy = 2;
+}
+
+message StatusInfo {
+  string name = 1;
+  string version = 2;
+  double uptime = 4;
+  string env = 5;
+  string timestamp = 6;
+}
+
+message LiveStatus {
+  bool live = 1;
+}
+
+message ReadyStatus {
+  bool ready = 1;
+}
