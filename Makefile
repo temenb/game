@@ -39,11 +39,12 @@ DRY_RUN ?= false
 DRY_RUN ?= true
 COMMIT_MSG ?= connecting to front
 
-SERVICES := auth profile ship gateway asteroid engine mail
+NODE_SERVICES := auth profile ship gateway asteroid engine mail
+FLUTTER_SERVICES := front
 SERVICE_DIR := services
 
 commit-all:
-	@for dir in $(SERVICES); do \
+	@for dir in $(NODE_SERVICES) $(FLUTTER_SERVICES); do \
 		echo "\033[1;33m[*] Checking $$dir...\033[0m"; \
 		if [ ! -d $(SERVICE_DIR)/$$dir/.git ]; then \
 			echo "\033[0;31m[!] Skipping $$dir — not a git repo\033[0m"; \
@@ -66,24 +67,43 @@ commit-all:
 		cd - > /dev/null; \
     done
 
+
+PROTO_FILES := $(shell find ./proto -name '*.proto')
+
 proto-generate:
 	@echo '🚀 Proto generate...'
-	@for dir in $(SERVICES); do \
+
+	@for dir in $(NODE_SERVICES) $(FLUTTER_SERVICES); do \
 		echo "\033[1;33m[*] Checking $$dir...\033[0m"; \
-		rm $(SERVICE_DIR)/$$dir/src/generated -Rf; \
+		rm -rf $(SERVICE_DIR)/$$dir/src/generated; \
 		mkdir -p $(SERVICE_DIR)/$$dir/src/generated; \
 	done
 
-	@for dir in $(SERVICES); do \
+	@for dir in $(NODE_SERVICES); do \
 		echo "\033[1;34m[>] Generating proto for $$dir...\033[0m"; \
 		npx protoc \
 			--plugin=./node_modules/.bin/protoc-gen-ts_proto \
 			--ts_proto_out=$(SERVICE_DIR)/$$dir/src/generated \
 			--ts_proto_opt=outputServices=grpc-js,useExactTypes=false,esModuleInterop=true \
 			--proto_path=./proto \
-			./proto/*.proto; \
+			$(PROTO_FILES); \
 		echo "\033[1;32m[✓] $$dir done\033[0m"; \
 	done
+
+	@for dir in $(FLUTTER_SERVICES); do \
+		echo "\033[1;34m[>] Generating proto for $$dir...\033[0m"; \
+		rm -rf $(SERVICE_DIR)/$$dir/lib/generated; \
+		mkdir -p $(SERVICE_DIR)/$$dir/lib/generated; \
+		protoc \
+			--dart_out=grpc:$(SERVICE_DIR)/$$dir/lib/grpc/generated \
+			--proto_path=./proto \
+			$(PROTO_FILES); \
+		echo "\033[1;32m[✓] $$dir done\033[0m"; \
+	done
+
+
+
+
 
 kafka-list-topics:
 	docker compose exec kafka kafka-topics.sh --bootstrap-server localhost:9092 --list
