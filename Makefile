@@ -2,18 +2,23 @@
 NODE_BIN=./node_modules/.bin
 
 PRISMA_SERVICES := auth profile engine asteroid ship
+SERVICE_DIR := services
 
 prisma-migrate:
 	@echo '🚀 Apply migrations...'
 	@for service in $(PRISMA_SERVICES); do \
 		echo "▶️  Running migrations for $$service..."; \
-		docker compose exec -T -w /usr/src/app/services/$$service $$service npx prisma migrate dev --schema=prisma/schema.prisma; \
+		cd ./services/$$service \
+		pwd; \
+		npx prisma migrate dev --schema=prisma/schema.prisma; \
+		cd - > /dev/null; \
 	done
 
 prisma-generate:
 	@echo '🚀 Generating Prisma clients...'
 	@for service in $(PRISMA_SERVICES); do \
 		echo '🚀 Generating' $$service 'Prisma client...' && \
+		docker cp ./$(SERVICE_DIR)/$$service/prisma game-$$service:/usr/src/app/$(SERVICE_DIR)/$$service/prisma; \
 		docker compose exec -T -w /usr/src/app/services/$$service $$service npx prisma generate; \
     done
 
@@ -37,11 +42,10 @@ seed:
 
 DRY_RUN ?= false
 DRY_RUN ?= true
-COMMIT_MSG ?= gateway refactoring
+COMMIT_MSG ?= anonymous-sign-in done
 
 NODE_SERVICES := gateway auth profile engine ship asteroid mail
 FLUTTER_SERVICES := front
-SERVICE_DIR := services
 
 commit-all:
 	@for dir in $(NODE_SERVICES) $(FLUTTER_SERVICES); do \

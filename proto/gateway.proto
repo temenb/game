@@ -12,5 +12,5 @@ service Gateway {
   rpc Livez(common.empty.Empty) returns (common.health.LiveStatus);
   rpc Readyz(common.empty.Empty) returns (common.health.ReadyStatus);
 
-  rpc getToken(auth.GetTokenRequest) returns (auth.AuthResponse);
+  rpc AnonymousSignIn(auth.AnonymousSignInRequest) returns (auth.AuthResponse);
 }

@@ -12,13 +12,12 @@ service Auth {
   rpc Readyz(common.empty.Empty) returns (common.health.ReadyStatus);
 
   rpc Register (RegisterRequest) returns (AuthResponse);
-  rpc AnonymousSignIn (common.empty.Empty) returns (AuthResponse);
   rpc Login (LoginRequest) returns (AuthResponse);
   rpc Logout (LogoutRequest) returns (LogoutResponse);
   rpc RefreshTokens (RefreshTokensRequest) returns (AuthResponse);
   rpc ForgotPassword(ForgotPasswordRequest) returns (common.empty.Empty);
   rpc ResetPassword(ResetPasswordRequest) returns (AuthResponse);
-  rpc GetToken (GetTokenRequest) returns (AuthResponse);
+  rpc AnonymousSignIn (AnonymousSignInRequest) returns (AuthResponse);
 }
 
 message RegisterRequest {
@@ -59,6 +58,6 @@ message ResetPasswordRequest {
   string new_password = 2;
 }
 
-message GetTokenRequest {
+message AnonymousSignInRequest {
   string device_id = 1;
 }
