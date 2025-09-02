@@ -37,7 +37,7 @@ seed:
 
 DRY_RUN ?= false
 DRY_RUN ?= true
-COMMIT_MSG ?= services are healthy
+COMMIT_MSG ?= gateway refactoring
 
 NODE_SERVICES := gateway auth profile engine ship asteroid mail
 FLUTTER_SERVICES := front
