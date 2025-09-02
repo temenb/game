@@ -1,7 +1,7 @@
 services:
   postgres:
     container_name: game-postgres
-    image: postgres:16
+    image: postgres:17.6
     restart: always
     environment:
       POSTGRES_USER: postgres
@@ -20,7 +20,7 @@ services:
 
   mongo:
     container_name: game-mongo
-    image: mongo:7
+    image: mongo:8
     restart: always
     ports:
       - "27017:27017"
@@ -46,6 +46,7 @@ services:
       - services/gateway/.env
     ports:
       - "3000:3000"
+      - "5000:5000"
     volumes:
       - ./shared:/usr/src/app/shared
       - ./services/gateway/src:/usr/src/app/services/gateway/src/
@@ -154,7 +155,7 @@ services:
 
   kafka:
     container_name: game-kafka
-    image: bitnami/kafka:3.6
+    image: bitnami/kafka:4.0
     ports:
       - "9092:9092"
     environment:

@@ -37,9 +37,9 @@ seed:
 
 DRY_RUN ?= false
 DRY_RUN ?= true
-COMMIT_MSG ?= connecting to front
+COMMIT_MSG ?= http serv is up
 
-NODE_SERVICES := auth profile ship gateway asteroid engine mail
+NODE_SERVICES := gateway auth profile engine ship asteroid mail
 FLUTTER_SERVICES := front
 SERVICE_DIR := services
 
@@ -61,14 +61,14 @@ commit-all:
 				git add . && \
 				git commit -am "$(COMMIT_MSG)" && \
 				echo "git commit -am \"$(COMMIT_MSG)\"" && \
+				git push && \
 				echo "\033[0;32m[✓] Committed changes in $$dir\033[0m"; \
 			fi; \
 		fi; \
 		cd - > /dev/null; \
     done
 
-
-PROTO_FILES := $(shell find ./proto -name '*.proto')
+PROTO_FILES := $(shell find proto -name '*.proto')
 
 proto-generate:
 	@echo '🚀 Proto generate...'
@@ -79,16 +79,16 @@ proto-generate:
 		mkdir -p $(SERVICE_DIR)/$$dir/src/generated; \
 	done
 
-#	@for dir in $(NODE_SERVICES); do \
-#		echo "\033[1;34m[>] Generating proto for $$dir...\033[0m"; \
-#		npx protoc \
-#			--plugin=./node_modules/.bin/protoc-gen-ts_proto \
-#			--ts_proto_out=$(SERVICE_DIR)/$$dir/src/generated \
-#			--ts_proto_opt=outputServices=grpc-js,useExactTypes=false,esModuleInterop=true \
-#			--proto_path=./proto \
-#			$(PROTO_FILES); \
-#		echo "\033[1;32m[✓] $$dir done\033[0m"; \
-#	done
+	@for dir in $(NODE_SERVICES); do \
+		echo "\033[1;34m[>] Generating proto for $$dir...\033[0m"; \
+		npx protoc \
+			--plugin=./node_modules/.bin/protoc-gen-ts_proto \
+			--ts_proto_out=$(SERVICE_DIR)/$$dir/src/generated \
+			--ts_proto_opt=outputServices=grpc-js,useExactTypes=false,esModuleInterop=true \
+			--proto_path=./proto \
+			$(PROTO_FILES); \
+		echo "\033[1;32m[✓] $$dir done\033[0m"; \
+	done
 
 	@for dir in $(FLUTTER_SERVICES); do \
 		echo "\033[1;34m[>] Generating proto for $$dir...\033[0m"; \

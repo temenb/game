@@ -18,7 +18,7 @@ service Auth {
   rpc RefreshTokens (RefreshTokensRequest) returns (AuthResponse);
   rpc ForgotPassword(ForgotPasswordRequest) returns (common.empty.Empty);
   rpc ResetPassword(ResetPasswordRequest) returns (AuthResponse);
-  rpc getToken (getTokenRequest) returns (AuthResponse);
+  rpc GetToken (GetTokenRequest) returns (AuthResponse);
 }
 
 message RegisterRequest {
@@ -59,4 +59,6 @@ message ResetPasswordRequest {
   string new_password = 2;
 }
 
-message getTokenRequest { }
+message GetTokenRequest {
+  string device_id = 1;
+}
