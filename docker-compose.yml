@@ -71,24 +71,24 @@ services:
         condition: service_healthy
     command: pnpm dlx turbo run dev --parallel
 
-#  profile:
-#    container_name: game-profile
-#    build:
-#      context: .
-#      dockerfile: services/profile/Dockerfile
-#    env_file:
-#      - services/profile/.env
-#    volumes:
-#      - ./shared:/usr/src/app/shared
-#      - ./services/profile/src:/usr/src/app/services/profile/src/
-#      - ./services/profile/package.json:/usr/src/app/services/profile/package.json
-#    depends_on:
-#      kafka:
-#        condition: service_healthy
-#      postgres:
-#        condition: service_healthy
-#    command: pnpm dlx turbo run dev --parallel
-#
+  profile:
+    container_name: game-profile
+    build:
+      context: .
+      dockerfile: services/profile/Dockerfile
+    env_file:
+      - services/profile/.env
+    volumes:
+      - ./shared:/usr/src/app/shared
+      - ./services/profile/src:/usr/src/app/services/profile/src/
+      - ./services/profile/package.json:/usr/src/app/services/profile/package.json
+    depends_on:
+      kafka:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    command: pnpm dlx turbo run dev --parallel
+
 #  asteroid:
 #    container_name: game-asteroid
 #    build:

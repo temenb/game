@@ -1,7 +1,7 @@
 
 NODE_BIN=./node_modules/.bin
 
-PRISMA_SERVICES := auth profile asteroid ship
+PRISMA_SERVICES := auth profile engine asteroid ship
 
 prisma-migrate:
 	@echo '🚀 Apply migrations...'
@@ -37,7 +37,7 @@ seed:
 
 DRY_RUN ?= false
 DRY_RUN ?= true
-COMMIT_MSG ?= http serv is up
+COMMIT_MSG ?= services are healthy
 
 NODE_SERVICES := gateway auth profile engine ship asteroid mail
 FLUTTER_SERVICES := front
@@ -67,6 +67,11 @@ commit-all:
 		fi; \
 		cd - > /dev/null; \
     done
+	git add .
+	git commit -am "$(COMMIT_MSG)"
+	echo "git commit -am \"$(COMMIT_MSG)\""
+	git push
+	echo "\033[0;32m[✓] Committed changes in monorepo\033[0m";
 
 PROTO_FILES := $(shell find proto -name '*.proto')
 

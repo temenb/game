@@ -27,16 +27,16 @@ export class GrpcClientManager<TClient> {
     ].includes(err.code);
   }
 
-  public async call<TResult>(fn: GrpcCall<TClient, TResult>): Promise<TResult> {
-    return new Promise((resolve, reject) => {
+  public async call<TResult>(fn: GrpcCall<TClient, TResult>): Promise<TResult | null> {
+    return new Promise((resolve) => {
       fn(this.client, (err, res) => {
         if (this.isRecoverableError(err)) {
-          logger.info('🔁 gRPC error — retrying...');
+          logger.warn('🔁 gRPC error — retrying...');
           this.reconnect();
           return fn(this.client, (retryErr, retryRes) => {
             if (retryErr || !retryRes) {
               logger.error('gRPC retry failed:', retryErr);
-              return reject(new Error('gRPC retry failed'));
+              return resolve(null);
             }
             resolve(retryRes);
           });
@@ -44,7 +44,7 @@ export class GrpcClientManager<TClient> {
 
         if (err || !res) {
           logger.error('gRPC error:', err);
-          return reject(new Error('Internal gRPC error'));
+          return resolve(null);
         }
 
         resolve(res);
