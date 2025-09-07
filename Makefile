@@ -99,10 +99,16 @@ PROTO_FILES := $(shell find proto -name '*.proto')
 proto-generate:
 	@echo '🚀 Proto generate...'
 
-	@for dir in $(NODE_SERVICES) $(FLUTTER_SERVICES); do \
+	@for dir in $(NODE_SERVICES); do \
 		echo "\033[1;33m[*] Checking $$dir...\033[0m"; \
 		rm -rf $(SERVICE_DIR)/$$dir/src/generated; \
 		mkdir -p $(SERVICE_DIR)/$$dir/src/generated; \
+	done
+
+	@for dir in $(FLUTTER_SERVICES); do \
+		echo "\033[1;33m[*] Checking $$dir...\033[0m"; \
+		rm -rf $(SERVICE_DIR)/$$dir/lib/grpc/generated; \
+		mkdir -p $(SERVICE_DIR)/$$dir/lib/grpc/generated; \
 	done
 
 	@for dir in $(NODE_SERVICES); do \

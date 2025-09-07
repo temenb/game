@@ -17,7 +17,7 @@ service Auth {
   rpc RefreshTokens (RefreshTokensRequest) returns (AuthResponse);
   rpc ForgotPassword(ForgotPasswordRequest) returns (common.empty.Empty);
   rpc ResetPassword(ResetPasswordRequest) returns (AuthResponse);
-  rpc AnonymousSignIn (AnonymousSignInRequest) returns (AuthResponse);
+  rpc AnonymousSignIn(AnonymousSignInRequest) returns (AuthResponse);
 }
 
 message RegisterRequest {
