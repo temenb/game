@@ -80,8 +80,7 @@ commit-all:
 				fi; \
 			fi; \
 		fi; \
-		cd - > /dev/null; \
-    done
+	done
 
 	@echo "\033[1;33m[*] Checking monorepo...\033[0m"
 	if git diff --quiet; then \
