@@ -5,4 +5,4 @@ FLUTTER_SERVICES := front
 
 DRY_RUN ?= false
 DRY_RUN ?= true
-COMMIT_MSG ?= stable
+
