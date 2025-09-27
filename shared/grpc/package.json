@@ -1,9 +1,7 @@
 {
   "name": "@shared/grpc-client-manager",
   "version": "1.0.0",
-  "description": "Reusable gRPC client manager with automatic reconnection and error handling",
-  "main": "src/index.ts",
-  "types": "src/index.ts",
+  "description": "gRPC tools",
   "scripts": {
     "lint": "eslint . --ext .ts",
     "format": "prettier --write .",

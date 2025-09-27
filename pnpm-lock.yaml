@@ -341,7 +341,7 @@ importers:
         version: 1.13.4
       '@shared/grpc-client-manager':
         specifier: workspace:*
-        version: link:../../shared/gprc-client-manager
+        version: link:../../shared/grpc-client-manager
       '@shared/logger':
         specifier: workspace:*
         version: link:../../shared/logger
@@ -692,7 +692,7 @@ importers:
         specifier: ^5.9.2
         version: 5.9.2
 
-  shared/gprc-client-manager:
+  shared/grpc-client-manager:
     dependencies:
       '@grpc/grpc-js':
         specifier: ^1.13.4
