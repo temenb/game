@@ -3,6 +3,7 @@ syntax = "proto3";
 import "auth.proto";
 import "common/health.proto";
 import "common/empty.proto";
+import "profile.proto";
 
 package gateway;
 
@@ -13,4 +14,5 @@ service Gateway {
   rpc Readyz(common.empty.Empty) returns (common.health.ReadyStatus);
 
   rpc AnonymousSignIn(auth.AnonymousSignInRequest) returns (auth.AuthResponse);
+  rpc ViewProfile(profile.ViewRequest) returns (profile.ProfileResponse);
 }

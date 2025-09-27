@@ -89,24 +89,6 @@ services:
         condition: service_healthy
     command: pnpm dlx turbo run dev --parallel
 
-#  asteroid:
-#    container_name: game-asteroid
-#    build:
-#      context: .
-#      dockerfile: services/asteroid/Dockerfile
-#    env_file:
-#      - services/asteroid/.env
-#    volumes:
-#      - ./shared:/usr/src/app/shared
-#      - ./services/asteroid/src:/usr/src/app/services/asteroid/src/
-#      - ./services/asteroid/package.json:/usr/src/app/services/asteroid/package.json
-#    depends_on:
-#      kafka:
-#        condition: service_healthy
-#      postgres:
-#        condition: service_healthy
-#    command: pnpm dlx turbo run dev --parallel
-#
   engine:
     container_name: game-engine
     build:
@@ -119,6 +101,19 @@ services:
       - ./services/engine/src:/usr/src/app/services/engine/src/
       - ./services/engine/package.json:/usr/src/app/services/engine/package.json
     command: pnpm dlx turbo run dev --parallel
+
+#  server:
+#    container_name: game-server
+#    build:
+#      context: .
+#      dockerfile: services/server/Dockerfile
+#    env_file:
+#      - services/server/.env
+#    volumes:
+#      - ./shared:/usr/src/app/shared
+#      - ./services/server/src:/usr/src/app/services/server/src/
+#      - ./services/server/package.json:/usr/src/app/services/server/package.json
+#    command: pnpm dlx turbo run dev --parallel
 #
 #  ship:
 #    container_name: game-ship
@@ -137,16 +132,35 @@ services:
 #        condition: service_healthy
 #      postgres:
 #        condition: service_healthy
-
-#  mail:
-#    container_name: game-mail
+#
+#  asteroid:
+#    container_name: game-asteroid
 #    build:
 #      context: .
-#      dockerfile: services/mail/Dockerfile
+#      dockerfile: services/asteroid/Dockerfile
 #    env_file:
-#      - services/mail/.env
+#      - services/asteroid/.env
 #    volumes:
-#      - ./services/mail/:/usr/src/app/
+#      - ./shared:/usr/src/app/shared
+#      - ./services/asteroid/src:/usr/src/app/services/asteroid/src/
+#      - ./services/asteroid/package.json:/usr/src/app/services/asteroid/package.json
+#    depends_on:
+#      kafka:
+#        condition: service_healthy
+#      postgres:
+#        condition: service_healthy
+#    command: pnpm dlx turbo run dev --parallel
+#
+#
+#  mailer:
+#    container_name: game-mailer
+#    build:
+#      context: .
+#      dockerfile: services/mailer/Dockerfile
+#    env_file:
+#      - services/mailer/.env
+#    volumes:
+#      - ./services/mailer/:/usr/src/app/
 #      - /usr/src/app/node_modules
 #    command: pnpm dlx turbo run dev --parallel
 #    depends_on:

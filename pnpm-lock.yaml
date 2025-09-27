@@ -193,6 +193,9 @@ importers:
       ts-node-dev:
         specifier: ^2.0.0
         version: 2.0.0(@types/node@24.3.0)(typescript@5.9.2)
+      tsconfig-paths:
+        specifier: ^4.2.0
+        version: 4.2.0
       typescript:
         specifier: ^5.9.2
         version: 5.9.2
@@ -284,6 +287,9 @@ importers:
       ts-node-dev:
         specifier: ^2.0.0
         version: 2.0.0(@types/node@24.3.0)(typescript@5.9.2)
+      tsconfig-paths:
+        specifier: ^4.2.0
+        version: 4.2.0
       typescript:
         specifier: ^5.9.2
         version: 5.9.2
@@ -413,7 +419,7 @@ importers:
         specifier: ^5.9.2
         version: 5.9.2
 
-  services/mail:
+  services/mailer:
     dependencies:
       '@bufbuild/protobuf':
         specifier: ^2.6.3
@@ -585,6 +591,9 @@ importers:
       ts-node-dev:
         specifier: ^2.0.0
         version: 2.0.0(@types/node@24.3.0)(typescript@5.9.2)
+      tsconfig-paths:
+        specifier: ^4.2.0
+        version: 4.2.0
       typescript:
         specifier: ^5.9.2
         version: 5.9.2
@@ -1891,7 +1900,7 @@ packages:
   /@types/amqplib@0.10.7:
     resolution: {integrity: sha512-IVj3avf9AQd2nXCx0PGk/OYq7VmHiyNxWFSb5HhU9ATh+i+gHWvVcljFTcTWQ/dyHJCTrzCixde+r/asL2ErDA==}
     dependencies:
-      '@types/node': 20.19.11
+      '@types/node': 24.3.0
     dev: true
 
   /@types/babel__core@7.20.5:
@@ -1926,7 +1935,7 @@ packages:
   /@types/bcrypt@6.0.0:
     resolution: {integrity: sha512-/oJGukuH3D2+D+3H4JWLaAsJ/ji86dhRidzZ/Od7H/i8g+aCmvkeCc6Ni/f9uxGLSQVCRZkX2/lqEFG2BvWtlQ==}
     dependencies:
-      '@types/node': 20.19.11
+      '@types/node': 24.3.0
     dev: true
 
   /@types/body-parser@1.19.6:
@@ -1963,7 +1972,7 @@ packages:
   /@types/dotenv@6.1.1:
     resolution: {integrity: sha512-ftQl3DtBvqHl9L16tpqqzA4YzCSXZfi7g8cQceTz5rOlYtk/IZbFjAv3mLOQlNIgOaylCQWQoBdDQHPgEBJPHg==}
     dependencies:
-      '@types/node': 20.19.11
+      '@types/node': 24.3.0
     dev: true
 
   /@types/express-serve-static-core@5.0.7:
@@ -2027,7 +2036,7 @@ packages:
     resolution: {integrity: sha512-asx5hIG9Qmf/1oStypjanR7iKTv0gXQ1Ov/jfrX6kS/EO0OFni8orbmGCn0672NHR3kXHwpAwR+B368ZGN/2rA==}
     dependencies:
       '@types/ms': 2.1.0
-      '@types/node': 20.19.11
+      '@types/node': 24.3.0
     dev: true
 
   /@types/methods@1.1.4:
@@ -2041,7 +2050,7 @@ packages:
   /@types/morgan@1.9.10:
     resolution: {integrity: sha512-sS4A1zheMvsADRVfT0lYbJ4S9lmsey8Zo2F7cnbYjWHP67Q0AwMYuuzLlkIM2N8gAbb9cubhIVFwcIN2XyYCkA==}
     dependencies:
-      '@types/node': 20.19.11
+      '@types/node': 24.3.0
     dev: true
 
   /@types/ms@2.1.0:

@@ -3,9 +3,9 @@ syntax = "proto3";
 import "common/health.proto";
 import "common/empty.proto";
 
-package mail;
+package mailer;
 
-service Mail {
+service Mailer {
   rpc Health(common.empty.Empty) returns (common.health.HealthReport);
   rpc Status(common.empty.Empty) returns (common.health.StatusInfo);
   rpc Livez(common.empty.Empty) returns (common.health.LiveStatus);

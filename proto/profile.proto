@@ -20,7 +20,7 @@ message UpsertRequest {
 }
 
 message ViewRequest {
-  string owner_id = 1;
+  string profile_id = 1;
 }
 
 message ProfileResponse {
