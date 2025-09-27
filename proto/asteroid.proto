@@ -12,7 +12,7 @@ service Asteroid {
   rpc Readyz(common.empty.Empty) returns (common.health.ReadyStatus);
 
   rpc ListAsteroids(ListAsteroidsRequest) returns (ListAsteroidsResponse);
-  rpc GetAsteroid(GetAsteroidRequest) returns (GetAsteroidResponse);
+  rpc GetAsteroid(GetAsteroidRequest) returns (AsteroidObject);
   rpc ListGalaxies(ListGalaxiesRequest) returns (ListGalaxiesResponse);
 }
 
@@ -41,11 +41,7 @@ enum AsteroidType {
 }
 
 message GetAsteroidRequest {
-  string asteroid_id = 1;
-}
-
-message GetAsteroidResponse {
-  AsteroidObject asteroid = 1;
+  string id = 1;
 }
 
 message ListGalaxiesResponse {

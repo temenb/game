@@ -102,19 +102,19 @@ services:
       - ./services/engine/package.json:/usr/src/app/services/engine/package.json
     command: pnpm dlx turbo run dev --parallel
 
-#  server:
-#    container_name: game-server
-#    build:
-#      context: .
-#      dockerfile: services/server/Dockerfile
-#    env_file:
-#      - services/server/.env
-#    volumes:
-#      - ./shared:/usr/src/app/shared
-#      - ./services/server/src:/usr/src/app/services/server/src/
-#      - ./services/server/package.json:/usr/src/app/services/server/package.json
-#    command: pnpm dlx turbo run dev --parallel
-#
+  server:
+    container_name: game-server
+    build:
+      context: .
+      dockerfile: services/server/Dockerfile
+    env_file:
+      - services/server/.env
+    volumes:
+      - ./shared:/usr/src/app/shared
+      - ./services/server/src:/usr/src/app/services/server/src/
+      - ./services/server/package.json:/usr/src/app/services/server/package.json
+    command: pnpm dlx turbo run dev --parallel
+
 #  ship:
 #    container_name: game-ship
 #    build:

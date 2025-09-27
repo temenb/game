@@ -598,6 +598,100 @@ importers:
         specifier: ^5.9.2
         version: 5.9.2
 
+  services/server:
+    dependencies:
+      '@bufbuild/protobuf':
+        specifier: ^2.6.3
+        version: 2.6.3
+      '@grpc/grpc-js':
+        specifier: ^1.13.4
+        version: 1.13.4
+      '@prisma/client':
+        specifier: ^6.13.0
+        version: 6.13.0(prisma@6.14.0)(typescript@5.9.2)
+      '@shared/kafka':
+        specifier: workspace:*
+        version: link:../../shared/kafka
+      '@shared/logger':
+        specifier: workspace:*
+        version: link:../../shared/logger
+      bcrypt:
+        specifier: ^6.0.0
+        version: 6.0.0
+      dotenv:
+        specifier: ^17.2.1
+        version: 17.2.1
+      express:
+        specifier: ^5.1.0
+        version: 5.1.0
+      jsonwebtoken:
+        specifier: ^9.0.2
+        version: 9.0.2
+      kafkajs:
+        specifier: ^2.2.4
+        version: 2.2.4
+      morgan:
+        specifier: ^1.10.1
+        version: 1.10.1
+    devDependencies:
+      '@types/amqplib':
+        specifier: ^0.10.7
+        version: 0.10.7
+      '@types/bcrypt':
+        specifier: ^6.0.0
+        version: 6.0.0
+      '@types/dotenv':
+        specifier: ^6.1.1
+        version: 6.1.1
+      '@types/express':
+        specifier: ^5.0.3
+        version: 5.0.3
+      '@types/jest':
+        specifier: ^30.0.0
+        version: 30.0.0
+      '@types/jsonwebtoken':
+        specifier: ^9.0.10
+        version: 9.0.10
+      '@types/morgan':
+        specifier: ^1.9.10
+        version: 1.9.10
+      '@types/supertest':
+        specifier: ^6.0.3
+        version: 6.0.3
+      glob:
+        specifier: ^9.3.5
+        version: 9.3.5
+      jest:
+        specifier: ^30.0.5
+        version: 30.0.5(@types/node@24.3.0)(ts-node@10.9.2)
+      nodemon:
+        specifier: ^3.1.10
+        version: 3.1.10
+      prisma:
+        specifier: ^6.14.0
+        version: 6.14.0(typescript@5.9.2)
+      rimraf:
+        specifier: ^4.4.1
+        version: 4.4.1
+      supertest:
+        specifier: ^7.1.4
+        version: 7.1.4
+      ts-jest:
+        specifier: ^29.4.1
+        version: 29.4.1(@babel/core@7.28.3)(jest@30.0.5)(typescript@5.9.2)
+      ts-node:
+        specifier: ^10.9.2
+        version: 10.9.2(@types/node@24.3.0)(typescript@5.9.2)
+      ts-node-dev:
+        specifier: ^2.0.0
+        version: 2.0.0(@types/node@24.3.0)(typescript@5.9.2)
+      tsconfig-paths:
+        specifier: ^4.2.0
+        version: 4.2.0
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.2
+
   services/ship:
     dependencies:
       '@bufbuild/protobuf':

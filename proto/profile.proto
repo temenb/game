@@ -11,8 +11,8 @@ service Profile {
   rpc Livez(common.empty.Empty) returns (common.health.LiveStatus);
   rpc Readyz(common.empty.Empty) returns (common.health.ReadyStatus);
 
-  rpc Upsert (UpsertRequest) returns (ProfileResponse);
-  rpc View (ViewRequest) returns (ProfileResponse);
+  rpc Upsert (UpsertRequest) returns (ProfileObject);
+  rpc View (ViewRequest) returns (ProfileObject);
 }
 
 message UpsertRequest {
@@ -20,11 +20,11 @@ message UpsertRequest {
 }
 
 message ViewRequest {
-  string profile_id = 1;
+  string id = 1;
 }
 
-message ProfileResponse {
-  string profile_id = 1;
+message ProfileObject {
+  string id = 1;
   string owner_id = 2;
   string nickname = 3;
   int64 level = 4;
