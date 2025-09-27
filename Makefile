@@ -67,8 +67,8 @@ commit-all:
 		if git diff --quiet; then \
 			echo "\033[1;33m[-] No changes in $$dir\033[0m"; \
 		else \
-			if [ "$(DRY_RUN)" = "true" ]; then \
-				echo "\033[0;32m[DRY-RUN] Would commit changes in $$dir\033[0m"; \
+			if [ "$(GIT_DRY_RUN)" = "true" ]; then \
+				echo "\033[0;32m[GIT_DRY-RUN] Would commit changes in $$dir\033[0m"; \
 			else \
 				git add . && \
 				git commit -am "$(COMMIT_MSG)" && \
@@ -87,8 +87,8 @@ commit-all:
 	if git diff --quiet; then \
 		echo "\033[1;33m[-] No changes in monorepo\033[0m"; \
 	else \
-		if [ "$(DRY_RUN)" = "true" ]; then \
-			echo "\033[0;32m[DRY-RUN] Would commit changes in monorepo\033[0m"; \
+		if [ "$(GIT_DRY_RUN)" = "true" ]; then \
+			echo "\033[0;32m[DRYGIT_-RUN] Would commit changes in monorepo\033[0m"; \
 		else \
 			git add . && \
 			git commit -am "$(COMMIT_MSG)" && \
