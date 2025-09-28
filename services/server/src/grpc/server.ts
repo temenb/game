@@ -15,3 +15,4 @@ server.addService(ServerService, {
 });
 
 export default server;
+
