@@ -1,4 +1,4 @@
-./auth
-./profile
-./maiiler
-./*.bkp
+/auth/
+/profile/
+/maiiler/
+/*.bkp/
