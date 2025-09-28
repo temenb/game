@@ -23,6 +23,7 @@ RUN apt-get clean && \
     apt-get install -y netcat-openbsd
 
 RUN corepack enable && pnpm install
+RUN cd /usr/src/app/services/ship && npx prisma generate
 RUN chown -R node:node /usr/src/app
 
 USER node

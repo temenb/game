@@ -1,42 +1,4 @@
 services:
-  postgres:
-    container_name: game-postgres
-    image: postgres:17.6
-    restart: always
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: postgres
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
-      timeout: 3s
-      retries: 5
-      start_period: 10s
-
-  mongo:
-    container_name: game-mongo
-    image: mongo:8
-    restart: always
-    ports:
-      - "27017:27017"
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: mongo
-      MONGO_INITDB_ROOT_PASSWORD: mongo
-      MONGO_INITDB_DATABASE: game
-    volumes:
-      - mongo_data:/data/db
-    healthcheck:
-      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 10s
-
   gateway:
     container_name: game-gateway
     build:
@@ -62,6 +24,7 @@ services:
       - services/auth/.env
     volumes:
       - ./shared:/usr/src/app/shared
+      - ./services/auth/prisma:/usr/src/app/services/auth/prisma
       - ./services/auth/src:/usr/src/app/services/auth/src/
       - ./services/auth/package.json:/usr/src/app/services/auth/package.json
     depends_on:
@@ -80,6 +43,7 @@ services:
       - services/profile/.env
     volumes:
       - ./shared:/usr/src/app/shared
+      - ./services/profile/prisma:/usr/src/app/services/profile/prisma
       - ./services/profile/src:/usr/src/app/services/profile/src/
       - ./services/profile/package.json:/usr/src/app/services/profile/package.json
     depends_on:
@@ -98,6 +62,7 @@ services:
       - services/engine/.env
     volumes:
       - ./shared:/usr/src/app/shared
+      - ./services/engine/prisma:/usr/src/app/services/engine/prisma
       - ./services/engine/src:/usr/src/app/services/engine/src/
       - ./services/engine/package.json:/usr/src/app/services/engine/package.json
     command: pnpm dlx turbo run dev --parallel
@@ -111,6 +76,7 @@ services:
       - services/server/.env
     volumes:
       - ./shared:/usr/src/app/shared
+      - ./services/server/prisma:/usr/src/app/services/server/prisma
       - ./services/server/src:/usr/src/app/services/server/src/
       - ./services/server/package.json:/usr/src/app/services/server/package.json
     command: pnpm dlx turbo run dev --parallel
@@ -124,6 +90,7 @@ services:
 #      - services/ship/.env
 #    volumes:
 #      - ./shared:/usr/src/app/shared
+#      - ./services/ship/prisma:/usr/src/app/services/ship/prisma
 #      - ./services/ship/src:/usr/src/app/services/ship/src/
 #      - ./services/ship/package.json:/usr/src/app/services/ship/package.json
 #    command: pnpm dlx turbo run dev --parallel
@@ -142,6 +109,7 @@ services:
 #      - services/asteroid/.env
 #    volumes:
 #      - ./shared:/usr/src/app/shared
+#      - ./services/asteroid/prisma:/usr/src/app/services/asteroid/prisma
 #      - ./services/asteroid/src:/usr/src/app/services/asteroid/src/
 #      - ./services/asteroid/package.json:/usr/src/app/services/asteroid/package.json
 #    depends_on:
@@ -160,8 +128,10 @@ services:
 #    env_file:
 #      - services/mailer/.env
 #    volumes:
-#      - ./services/mailer/:/usr/src/app/
-#      - /usr/src/app/node_modules
+#       - ./shared:/usr/src/app/shared
+#       - ./services/mailer/prisma:/usr/src/app/services/mailer/prisma
+#       - ./services/mailer/src:/usr/src/app/services/mailer/src/
+#       - ./services/mailer/package.json:/usr/src/app/services/mailer/package.json
 #    command: pnpm dlx turbo run dev --parallel
 #    depends_on:
 #      postgres:
@@ -191,6 +161,44 @@ services:
       timeout: 5s
       retries: 5
 
+  postgres:
+    container_name: game-postgres
+    image: postgres:17.6
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+
+#  mongo:
+#    container_name: game-mongo
+#    image: mongo:8
+#    restart: always
+#    ports:
+#      - "27017:27017"
+#    environment:
+#      MONGO_INITDB_ROOT_USERNAME: mongo
+#      MONGO_INITDB_ROOT_PASSWORD: mongo
+#      MONGO_INITDB_DATABASE: game
+#    volumes:
+#      - mongo_data:/data/db
+#    healthcheck:
+#      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 5
+#      start_period: 10s
+#
 #  mailpit:
 #    image: axllent/mailpit
 #    container_name: game-mailpit

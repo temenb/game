@@ -87,4 +87,8 @@ export const livez = async () => {
   };
 };
 
-expor
+export const readyz = async () => {
+  const pgOk = true;
+  const kafkaOk = true;
+  return {ready: pgOk && kafkaOk};
+};

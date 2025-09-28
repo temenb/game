@@ -9,6 +9,11 @@ PROTO_FILES := $(shell find proto -name '*.proto')
 NODE_PROTO_PATH=./src/grpc/generated
 FLUTTER_PROTO_PATH=./lib/src/grpc/generated
 
+up:
+	@echo "🚀 Запуск docker compose (поднимаем все сервисы)..."
+	@docker compose up -d
+	@echo "✅ Сервисы запущены!"
+
 install:
 	@echo "🔧 Инициализация проекта"
 	@echo "📦 Проверка .env файлов для всех сервисов..."
@@ -33,6 +38,9 @@ install:
 	@echo '🚀 Apply migrations...'
 	@make prisma-migrate > /dev/null 2>&1
 	@make seed
+	@echo "🛑 Остановка docker compose (выключаем все сервисы)..."
+	@docker compose down > /dev/null 2>&1
+	@echo "✅ Инициализация завершена!"
 
 prisma-migrate:
 	@echo '🚀 Apply migrations...'
