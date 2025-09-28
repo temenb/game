@@ -3,6 +3,9 @@ import * as profileClient from '../grpc/clients/profile.client';
 import * as engineClient from '../grpc/clients/engine.client';
 import * as serverClient from '../grpc/clients/server.client';
 import * as authClient from '../grpc/clients/auth.client';
+// import * as mailerClient from '../grpc/clients/mailer.client';
+// import * as asteroidClient from '../grpc/clients/asteroid.client';
+// import * as shipClient from '../grpc/clients/ship.client';
 
 const startedAt = Date.now();
 
@@ -12,6 +15,7 @@ async function getServicesHealth() {
     profile,
     engine,
     server,
+    // mailer,
     // asteroid,
     // ship,
   ] = await Promise.all([
@@ -19,6 +23,7 @@ async function getServicesHealth() {
     profileClient.health(),
     engineClient.health(),
     serverClient.health(),
+    // mailerClient.health(),
     // asteroidClient.health(),
     // shipClient.health(),
   ]);
@@ -28,6 +33,7 @@ async function getServicesHealth() {
     profile,
     engine,
     server,
+    // mailer,
     // asteroid,
     // ship,
   };
@@ -81,8 +87,4 @@ export const livez = async () => {
   };
 };
 
-export const readyz = async () => {
-  const pgOk = true;
-  const kafkaOk = true;
-  return {ready: pgOk && kafkaOk};
-};
+expor
