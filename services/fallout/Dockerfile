@@ -8,13 +8,13 @@ COPY turbo.json  ./
 COPY package.json ./
 COPY pnpm-workspace.yaml ./
 COPY tsconfig.json ./
-COPY services/server/package*.json ./services/server/
-COPY services/server/jest.config.js ./services/server/
-COPY services/server/tsconfig.json ./services/server/
-COPY services/server/src ./services/server/src/
-COPY services/server/prisma ./services/server/prisma/
-COPY services/server/__tests__ ./services/server/__tests__/
-COPY services/server/.env ./services/server/.env
+COPY services/fallout/package*.json ./services/fallout/
+COPY services/fallout/jest.config.js ./services/fallout/
+COPY services/fallout/tsconfig.json ./services/fallout/
+COPY services/fallout/src ./services/fallout/src/
+COPY services/fallout/prisma ./services/fallout/prisma/
+COPY services/fallout/__tests__ ./services/fallout/__tests__/
+COPY services/fallout/.env ./services/fallout/.env
 
 USER root
 
@@ -24,14 +24,14 @@ RUN apt-get clean && \
     apt-get install -y netcat-openbsd
 
 RUN corepack enable && pnpm install
-RUN cd /usr/src/app/services/server && npx prisma generate
+RUN cd /usr/src/app/services/fallout && npx prisma generate
 RUN chown -R node:node /usr/src/app
 
 USER node
 
 EXPOSE 3000
 
-CMD ["pnpm", "--filter", "server", "start"]
+CMD ["pnpm", "--filter", "fallout", "start"]
 
 HEALTHCHECK --interval=10s --timeout=3s --start-period=5s --retries=3 \
   CMD nc -z localhost 3000 || exit 1

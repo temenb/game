@@ -1,7 +1,7 @@
 import {logger} from '@shared/logger';
 import * as profileClient from '../grpc/clients/profile.client';
 import * as engineClient from '../grpc/clients/engine.client';
-import * as serverClient from '../grpc/clients/server.client';
+import * as falloutClient from '../grpc/clients/fallout.client';
 import * as authClient from '../grpc/clients/auth.client';
 // import * as mailerClient from '../grpc/clients/mailer.client';
 // import * as asteroidClient from '../grpc/clients/asteroid.client';
@@ -14,7 +14,7 @@ async function getServicesHealth() {
     auth,
     profile,
     engine,
-    server,
+    fallout,
     // mailer,
     // asteroid,
     // ship,
@@ -22,7 +22,7 @@ async function getServicesHealth() {
     authClient.health(),
     profileClient.health(),
     engineClient.health(),
-    serverClient.health(),
+    falloutClient.health(),
     // mailerClient.health(),
     // asteroidClient.health(),
     // shipClient.health(),
@@ -32,7 +32,7 @@ async function getServicesHealth() {
     auth,
     profile,
     engine,
-    server,
+    fallout,
     // mailer,
     // asteroid,
     // ship,

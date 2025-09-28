@@ -1,5 +1,5 @@
 {
-  "name": "server",
+  "name": "fallout",
   "version": "1.0.0",
   "main": "dist/app.js",
   "packageManager": "pnpm@8.6.3",

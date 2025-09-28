@@ -67,18 +67,18 @@ services:
       - ./services/engine/package.json:/usr/src/app/services/engine/package.json
     command: pnpm dlx turbo run dev --parallel
 
-  server:
-    container_name: game-server
+  fallout:
+    container_name: game-fallout
     build:
       context: .
-      dockerfile: services/server/Dockerfile
+      dockerfile: services/fallout/Dockerfile
     env_file:
-      - services/server/.env
+      - services/fallout/.env
     volumes:
       - ./shared:/usr/src/app/shared
-      - ./services/server/prisma:/usr/src/app/services/server/prisma
-      - ./services/server/src:/usr/src/app/services/server/src/
-      - ./services/server/package.json:/usr/src/app/services/server/package.json
+      - ./services/fallout/prisma:/usr/src/app/services/fallout/prisma
+      - ./services/fallout/src:/usr/src/app/services/fallout/src/
+      - ./services/fallout/package.json:/usr/src/app/services/fallout/package.json
     command: pnpm dlx turbo run dev --parallel
 
 #  ship:

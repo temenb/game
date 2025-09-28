@@ -1,5 +1,5 @@
-PRISMA_SERVICES := auth profile engine server #asteroid ship mailer
-NODE_SERVICES := gateway auth profile engine server #asteroid ship mailer
+PRISMA_SERVICES := auth profile engine fallout #asteroid ship mailer
+NODE_SERVICES := gateway auth profile engine fallout #asteroid ship mailer
 GIT_SERVICES:= auth profile mailer
 FLUTTER_SERVICES := front
 
