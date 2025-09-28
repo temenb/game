@@ -1,3 +1,4 @@
-auth
-profile
-maiiler
+./auth
+./profile
+./maiiler
+./*.bkp
