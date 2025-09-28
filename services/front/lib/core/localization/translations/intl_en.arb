@@ -1,0 +1,10 @@
+{
+  "@@locale": "en",
+  "appTitle": "Front App",
+  "welcome": "Welcome to Front App",
+  "play": "Play",
+  "nickname": "Nickname",
+  "exp": "Exp.",
+  "level": "Level",
+  "close": "Close"
+}

@@ -1,0 +1,87 @@
+# ---------- Flutter / Dart ----------
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.metadata
+
+# Ответы анализатора / покрытие
+coverage/
+
+# Сборка
+build/
+
+# Логи
+*.log
+
+# ---------- IDE ----------
+# VS Code
+.vscode/
+
+# IntelliJ / Android Studio
+.idea/
+*.iml
+
+# ---------- Android ----------
+android/.gradle/
+android/captures/
+android/local.properties
+android/key.properties
+android/app/release/
+# Маппинги ProGuard/R8
+android/app/build/outputs/mapping/
+
+# Секреты/ключи (если хранишь локально)
+**/*.jks
+**/*.keystore
+**/*.keystore.properties
+
+# Firebase/Google Services (если не коммитишь их намеренно)
+**/google-services.json
+**/GoogleService-Info.plist
+
+# ---------- iOS ----------
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/.last_build_id
+ios/Flutter/Flutter.framework
+ios/Flutter/App.framework
+ios/Flutter/Generated.xcconfig
+ios/Flutter/ephemeral/
+ios/Runner/GeneratedPluginRegistrant.*
+
+# Fastlane артефакты
+**/fastlane/report.xml
+**/fastlane/Preview.html
+**/fastlane/screenshots
+**/fastlane/test_output
+
+# ---------- macOS ----------
+macos/Pods/
+macos/.symlinks/
+macos/Flutter/ephemeral/
+macos/Runner/GeneratedPluginRegistrant.*
+
+# ---------- Windows ----------
+windows/flutter/ephemeral/
+
+# ---------- Linux ----------
+linux/flutter/ephemeral/
+
+# ---------- Web ----------
+# (общие .dart_tool/build уже покрыты выше)
+
+# ---------- Env / конфиги ----------
+.env
+.env.*
+**/*.pem
+**/*.p12
+**/*.crt
+**/*.key
+
+# ---------- ОС / прочее ----------
+.DS_Store
+Thumbs.db
+
+cmdline-tools.zip
+*.zip

@@ -1,0 +1,96 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
+}
+
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AsteroidType {
+  UNKNOWN
+  BASE
+  ASTEROID
+  PORTAL
+}
+
+enum AsteroidGrade {
+  UNKNOWN
+  BROKEN
+  NORMAL
+  GOOD
+  LEGEND
+  EPIC
+  RELICT
+}
+
+enum ResourceAmount {
+  UNKNOWN
+  LOW
+  NORMAL
+  HEIGHT
+}
+
+enum ResourceType {
+  UNKNOWN
+  IRON
+  CRYSTAL
+}
+
+enum OwnerType {
+  NONE
+  PLAYER
+  GUILD
+}
+
+model Asteroid {
+  id                String   @id @default(uuid())
+  ownerId           String?
+  ownerType         OwnerType @default(NONE)
+  name              String?
+  galaxyId          String
+  asteroidType      AsteroidType
+  asteroidGrade     AsteroidGrade
+  axisX             Int
+  axisY             Int
+  health            Int
+  resourceType      ResourceType @default(UNKNOWN)
+  resourceAmount    ResourceAmount @default(UNKNOWN)
+  deletedAt         DateTime?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([galaxyId])
+  @@index([ownerId])
+  @@index([axisX, axisY])
+}
+
+enum PortalType {
+  INACTIVE
+  OUTBOUND
+  INBOUND
+  BIDIRECTIONAL
+}
+
+model Portal {
+  id                String   @id @default(uuid())
+  ownerId           String?
+  galaxyFrom        String
+  galaxyTo          String
+  type              PortalType @default(INACTIVE)
+  asteroidGrade     AsteroidGrade
+  axisX             Int
+  axisY             Int
+  health            Int
+
+  deletedAt         DateTime?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([galaxyFrom])
+  @@index([galaxyTo])
+  @@index([ownerId])
+  @@index([axisX, axisY])
+}
