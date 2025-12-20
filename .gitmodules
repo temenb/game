@@ -1,0 +1,9 @@
+[submodule "services/mailer"]
+	path = services/mailer
+	url = git@github.com:temenb/mailer.git
+[submodule "services/auth"]
+	path = services/auth
+	url = git@github.com:temenb/auth.git
+[submodule "services/profile"]
+	path = services/profile
+	url = git@github.com:temenb/profile.git
