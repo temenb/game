@@ -73,7 +73,7 @@ git-commit-all:
 	@for dir in $(GIT_SERVICES); do \
 		echo "\033[1;33m[*] Checking $$dir...\033[0m"; \
 		SERVICE_PATH="$(SERVICE_DIR)/$$dir"; \
-		if [ ! -d "$$SERVICE_PATH/.git" ]; then \
+		if [ ! -e "$$SERVICE_PATH/.git" ]; then \
 			echo "\033[0;31m[!] Skipping $$dir — not a git repo\033[0m"; \
 			continue; \
 		fi; \
