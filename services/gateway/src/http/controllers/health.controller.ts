@@ -2,7 +2,11 @@ import * as HealthService from "../../services/health.service";
 import wrapper from "./wrapper";
 
 export const health = wrapper(async (req, res) => {
-  return HealthService.health();
+  if (req.query.full) {
+    return HealthService.fullHealth();
+  } else {
+    return HealthService.health();
+  }
 });
 
 export const fullHealth = wrapper(async (req, res) => {

@@ -41,7 +41,7 @@ async function getServicesHealth() {
 
 export const health = async () => {
   const healthReports = await fullHealth();
-  logger.log(healthReports);
+  // logger.log(healthReports);
 
   // Формируем объект: { auth: true, profile: true, engine: true, ... }
   const components: Record<string, string> = {};
