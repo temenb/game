@@ -10,8 +10,54 @@ service Auth {
   rpc Status(common.empty.Empty) returns (common.health.StatusInfo);
   rpc Livez(common.empty.Empty) returns (common.health.LiveStatus);
   rpc Readyz(common.empty.Empty) returns (common.health.ReadyStatus);
+
+  rpc Register (RegisterRequest) returns (AuthObject);
+  rpc Login (LoginRequest) returns (AuthObject);
+  rpc Logout (LogoutRequest) returns (LogoutResponse);
+  rpc RefreshTokens (RefreshTokensRequest) returns (AuthObject);
+  rpc ForgotPassword(ForgotPasswordRequest) returns (common.empty.Empty);
+  rpc ResetPassword(ResetPasswordRequest) returns (AuthObject);
+  rpc AnonymousSignIn(AnonymousSignInRequest) returns (AuthObject);
+}
+
+message RegisterRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message AuthObject {
+  string access_token = 1;
+  string refresh_token = 2;
+  string user_id = 3;
+}
+
+message LoginRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message RefreshTokensRequest {
+  string token = 1;
+}
+
+message LogoutRequest {
+  string user_id = 1;
+}
+
+message LogoutResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message ForgotPasswordRequest {
+  string email = 1;
+}
+
+message ResetPasswordRequest {
+  string token = 1;
+  string new_password = 2;
 }
 
 message AnonymousSignInRequest {
+  string device_id = 1;
 }
-

@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+import "common/health.proto";
+import "common/empty.proto";
+
+package pawn;
+
+service Pawn {
+  rpc Health(common.empty.Empty) returns (common.health.HealthReport);
+  rpc Status(common.empty.Empty) returns (common.health.StatusInfo);
+  rpc Livez(common.empty.Empty) returns (common.health.LiveStatus);
+  rpc Readyz(common.empty.Empty) returns (common.health.ReadyStatus);
+
+  rpc ListPawns(ListPawnsRequest) returns (ListPawnsResponse);
+  rpc AttackSpawn(AttackSpawnRequest) returns (AttackSpawnResponse);
+}
+
+message ListPawnsRequest {
+  string player_id = 1;
+}
+
+message ListPawnsResponse {
+  repeated PawnObject pawns = 1;
+}
+
+message PawnObject {
+  string id = 1;
+  int32 x = 2;
+  int32 y = 3;
+  bool is_busy = 4;
+  string spawn_id = 5;
+}
+
+message AttackSpawnRequest {
+  string pawn_id = 1;
+  string spawn_id = 2;
+}
+
+message AttackSpawnResponse {
+  bool success = 1;
+  string message = 2;
+}

@@ -1,13 +1,13 @@
-import * as AsteroidClient from "../grpc/clients/asteroid.client";
+import * as SpawnClient from "../grpc/clients/spawn.client";
 
 export const health = async () =>
-  await AsteroidClient.health();
+  await SpawnClient.health();
 
 export const status = async () =>
-  await AsteroidClient.status();
+  await SpawnClient.status();
 
 export const livez = async () =>
-  await AsteroidClient.livez();
+  await SpawnClient.livez();
 
 export const readyz = async () =>
-  await AsteroidClient.readyz();
+  await SpawnClient.readyz();

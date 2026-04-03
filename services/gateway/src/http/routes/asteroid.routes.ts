@@ -1,15 +1,15 @@
 import {Router} from 'express';
-import * as asteroidController from '../controllers/asteroid.controller';
+import * as spawnController from '../controllers/spawn.controller';
 
 const router = Router();
 
-// router.post('/list', asteroidService.list);
-// router.post('/view', asteroidService.view);
-// router.post('/list-galaxies', asteroidService.listGalaxies);
-router.get('/health', asteroidController.health);
-router.get('/status', asteroidController.status);
-router.get('/livez', asteroidController.livez);
-router.get('/readyz', asteroidController.readyz);
+// router.post('/list', spawnService.list);
+// router.post('/view', spawnService.view);
+// router.post('/list-galaxies', spawnService.listGalaxies);
+router.get('/health', spawnController.health);
+router.get('/status', spawnController.status);
+router.get('/livez', spawnController.livez);
+router.get('/readyz', spawnController.readyz);
 
 
 export default router;

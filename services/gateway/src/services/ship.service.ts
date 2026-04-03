@@ -1,13 +1,13 @@
-import * as ShipClient from "../grpc/clients/ship.client";
+import * as PawnClient from "../grpc/clients/pawn.client";
 
 export const health = async () =>
-  await ShipClient.health();
+  await PawnClient.health();
 
 export const status = async () =>
-  await ShipClient.status();
+  await PawnClient.status();
 
 export const livez = async () =>
-  await ShipClient.livez();
+  await PawnClient.livez();
 
 export const readyz = async () =>
-  await ShipClient.readyz();
+  await PawnClient.readyz();

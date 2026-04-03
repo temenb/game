@@ -13,6 +13,6 @@ service Gateway {
   rpc Livez(common.empty.Empty) returns (common.health.LiveStatus);
   rpc Readyz(common.empty.Empty) returns (common.health.ReadyStatus);
 
-//  rpc AnonymousSignIn(auth.AnonymousSignInRequest) returns (auth.AuthObject);
-//  rpc ViewProfile(profile.ViewRequest) returns (profile.ProfileObject);
+  rpc AnonymousSignIn(auth.AnonymousSignInRequest) returns (auth.AuthObject);
+  rpc ViewProfile(profile.ViewRequest) returns (profile.ProfileObject);
 }

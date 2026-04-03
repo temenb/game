@@ -1,19 +1,19 @@
-import * as AsteroidService from "../../services/asteroid.service";
+import * as SpawnService from "../../services/spawn.service";
 import wrapper from "./wrapper";
 
 // Middleware-функции для роутов
 export const health = wrapper(async (req, res) => {
-  return AsteroidService.health();
+  return SpawnService.health();
 });
 
 export const status = wrapper(async (req, res) => {
-  return AsteroidService.status();
+  return SpawnService.status();
 });
 
 export const livez = wrapper(async (req, res) => {
-  return AsteroidService.livez();
+  return SpawnService.livez();
 });
 
 export const readyz = wrapper(async (req, res) => {
-  return AsteroidService.readyz();
+  return SpawnService.readyz();
 });

@@ -1,11 +1,11 @@
 import {Router} from 'express';
-import * as shipController from '../controllers/ship.controller';
+import * as pawnController from '../controllers/pawn.controller';
 
 const router = Router();
 
-router.get('/health', shipController.health);
-router.get('/status', shipController.status);
-router.get('/livez', shipController.livez);
-router.get('/readyz', shipController.readyz);
+router.get('/health', pawnController.health);
+router.get('/status', pawnController.status);
+router.get('/livez', pawnController.livez);
+router.get('/readyz', pawnController.readyz);
 
 export default router;

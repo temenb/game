@@ -1,18 +1,18 @@
-import * as ShipService from "../../services/profile.service";
+import * as PawnService from "../../services/profile.service";
 import wrapper from "./wrapper";
 
 export const health = wrapper(async (req, res) => {
-  return ShipService.health();
+  return PawnService.health();
 });
 
 export const status = wrapper(async (req, res) => {
-  return ShipService.status();
+  return PawnService.status();
 });
 
 export const livez = wrapper(async (req, res) => {
-  return ShipService.livez();
+  return PawnService.livez();
 });
 
 export const readyz = wrapper(async (req, res) => {
-  return ShipService.readyz();
+  return PawnService.readyz();
 });

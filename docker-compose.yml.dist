@@ -81,18 +81,18 @@ services:
       - ./services/fallout/package.json:/usr/src/app/services/fallout/package.json
     command: pnpm dlx turbo run dev --parallel
 
-#  ship:
-#    container_name: game-ship
+#  pawn:
+#    container_name: game-pawn
 #    build:
 #      context: .
-#      dockerfile: services/ship/Dockerfile
+#      dockerfile: services/pawn/Dockerfile
 #    env_file:
-#      - services/ship/.env
+#      - services/pawn/.env
 #    volumes:
 #      - ./shared:/usr/src/app/shared
-#      - ./services/ship/prisma:/usr/src/app/services/ship/prisma
-#      - ./services/ship/src:/usr/src/app/services/ship/src/
-#      - ./services/ship/package.json:/usr/src/app/services/ship/package.json
+#      - ./services/pawn/prisma:/usr/src/app/services/pawn/prisma
+#      - ./services/pawn/src:/usr/src/app/services/pawn/src/
+#      - ./services/pawn/package.json:/usr/src/app/services/pawn/package.json
 #    command: pnpm dlx turbo run dev --parallel
 #    depends_on:
 #      kafka:
@@ -100,18 +100,18 @@ services:
 #      postgres:
 #        condition: service_healthy
 #
-#  asteroid:
-#    container_name: game-asteroid
+#  spawn:
+#    container_name: game-spawn
 #    build:
 #      context: .
-#      dockerfile: services/asteroid/Dockerfile
+#      dockerfile: services/spawn/Dockerfile
 #    env_file:
-#      - services/asteroid/.env
+#      - services/spawn/.env
 #    volumes:
 #      - ./shared:/usr/src/app/shared
-#      - ./services/asteroid/prisma:/usr/src/app/services/asteroid/prisma
-#      - ./services/asteroid/src:/usr/src/app/services/asteroid/src/
-#      - ./services/asteroid/package.json:/usr/src/app/services/asteroid/package.json
+#      - ./services/spawn/prisma:/usr/src/app/services/spawn/prisma
+#      - ./services/spawn/src:/usr/src/app/services/spawn/src/
+#      - ./services/spawn/package.json:/usr/src/app/services/spawn/package.json
 #    depends_on:
 #      kafka:
 #        condition: service_healthy
