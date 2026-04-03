@@ -19,7 +19,6 @@ async function startGrpc() {
           logger.error('❌ Ошибка запуска gRPC:', err);
           return reject(err);
         }
-        grpcServer.start();
         logger.info(`🟢 gRPC сервер запущен на порту ${port}`);
         resolve();
       }

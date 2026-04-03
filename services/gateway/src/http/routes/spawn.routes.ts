@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import * as spawnController from '../controllers/spawn.controller';
+import * as spawnController from '../controllers/spawner.controller';
 
 const router = Router();
 

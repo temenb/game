@@ -1,5 +1,5 @@
 import * as grpc from '@grpc/grpc-js';
-import * as SpawnGrpc from '../generated/spawn';
+import * as SpawnGrpc from '../generated/spawner';
 import * as HealthGrpc from '../generated/common/health';
 import * as EmptyGrpc from '../generated/common/empty';
 import config from '../../config/config';

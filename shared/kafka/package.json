@@ -9,7 +9,7 @@
   },
   "private": true,
   "devDependencies": {
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.3"
   },
   "dependencies": {
     "kafkajs": "^2.2.4"

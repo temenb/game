@@ -1,4 +1,4 @@
-import * as SpawnClient from "../grpc/clients/spawn.client";
+import * as SpawnClient from "../grpc/clients/spawner.client";
 
 export const health = async () =>
   await SpawnClient.health();

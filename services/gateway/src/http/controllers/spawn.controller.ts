@@ -1,4 +1,4 @@
-import * as SpawnService from "../../services/spawn.service";
+import * as SpawnService from "../../services/spawner.service";
 import wrapper from "./wrapper";
 
 // Middleware-функции для роутов

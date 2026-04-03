@@ -5,19 +5,19 @@ import { createProducer } from '@shared/kafka';
 const prisma = new PrismaClient();
 
 export async function findSpawn(ownerId: string) {
-  return prisma.spawn.findFirst({ where: { ownerId } });
+  return prisma.spawner.findFirst({ where: { ownerId } });
 }
 
 
 export async function upsertSpawn(ownerId: string) {
 
-  const existing = await prisma.spawn.findFirst({ where: { ownerId } });
+  const existing = await prisma.spawner.findFirst({ where: { ownerId } });
 
   if (existing) {
     return existing;
   }
 
-  const spawn = await prisma.spawn.create({
+  const spawner = await prisma.spawner.create({
     data: {
       ownerId: ownerId,
       galaxyId: 'galaxy-456',
@@ -35,7 +35,7 @@ export async function upsertSpawn(ownerId: string) {
 
 
   const producer = await createProducer(kafkaConfig);
-  producer.send(createSpawnProducerConfig, [{ value: JSON.stringify({ id: spawn.id }) }]);
+  producer.send(createSpawnProducerConfig, [{ value: JSON.stringify({ id: spawner.id }) }]);
 
-  return spawn;
+  return spawner;
 }

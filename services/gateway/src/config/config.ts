@@ -8,7 +8,7 @@ export const config = {
   serviceAuthUrl: process.env.SERVICE_AUTH_URL || 'auth:3000',
   serviceProfileUrl: process.env.SERVICE_PROFILE_URL || 'profile:3000',
   servicePawnUrl: process.env.SERVICE_SHIP_URL || 'pawn:3000',
-  serviceSpawnUrl: process.env.SERVICE_ASTEROID_URL || 'spawn:3000',
+  serviceSpawnUrl: process.env.SERVICE_ASTEROID_URL || 'spawner:3000',
   serviceEngineUrl: process.env.SERVICE_ENGINE_URL || 'engine:3000',
   serviceServerUrl: process.env.SERVICE_SERVER_URL || 'server:3000',
   rabbitHost: process.env.RABBIT_HOST || 'rabbit',

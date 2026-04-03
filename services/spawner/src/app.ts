@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
-import { SpawnService } from './generated/spawn';
+import { SpawnService } from './generated/spawner';
 import * as grpc from '@grpc/grpc-js';
-import * as spawnHandler from "./grpc/handlers/spawn.handler";
+import * as spawnHandler from "./grpc/handlers/spawner.handler";
 import kafkaConfig, {createProfileConsumerConfig} from "./config/kafka.config";
 import { createConsumer } from '@shared/kafka';
 import {profileCreated} from "./utils/consumers";

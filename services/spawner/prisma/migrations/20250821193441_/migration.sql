@@ -1,2 +1,2 @@
 -- AlterTable
-ALTER TABLE "public"."Spawn" ADD COLUMN     "name" TEXT;
+ALTER TABLE "public"."Spawner" ADD COLUMN     "name" TEXT;

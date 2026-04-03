@@ -19,10 +19,10 @@ export const publicPaths = [
   '/profile/livez',
   '/profile/readyz',
 
-  '/spawn/health',
-  '/spawn/status',
-  '/spawn/livez',
-  '/spawn/readyz',
+  '/spawner/health',
+  '/spawner/status',
+  '/spawner/livez',
+  '/spawner/readyz',
 
   '/pawn/health',
   '/pawn/status',

@@ -3,12 +3,12 @@ dotenv.config();
 
 export const kafkaConfig = {
     brokers: process.env.KAFKA_BROKERS || 'kafka:9092',
-    clientId: process.env.KAFKA_CLIENT_ID || 'spawn-client',
+    clientId: process.env.KAFKA_CLIENT_ID || 'spawner-client',
 };
 
 export const createProfileConsumerConfig = {
     topic: process.env.KAFKA_TOPIC_PROFILE_CREATED || 'profile.created',
-    groupId: process.env.KAFKA_GROUP_ID || 'spawn-service',
+    groupId: process.env.KAFKA_GROUP_ID || 'spawner-service',
     handler: (message: any) => Promise<void>
 }
 

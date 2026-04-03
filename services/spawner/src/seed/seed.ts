@@ -1,3 +1,3 @@
-import * as profileSeed from './spawn.seed';
+import * as profileSeed from './spawner.seed';
 
 profileSeed.seedSpawns();

@@ -45,7 +45,7 @@ enum OwnerType {
   GUILD
 }
 
-model Spawn {
+model Spawner {
   id                String   @id @default(uuid())
   ownerId           String?
   ownerType         OwnerType @default(NONE)

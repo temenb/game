@@ -2,7 +2,7 @@
 CREATE TYPE "public"."SpawnType" AS ENUM ('UNKNOWN', 'BASE', 'ASTEROID', 'PORTAL');
 
 -- CreateTable
-CREATE TABLE "public"."Spawn" (
+CREATE TABLE "public"."Spawner" (
     "id" TEXT NOT NULL,
     "galaxy_id" TEXT NOT NULL,
     "spawn_type" "public"."SpawnType" NOT NULL,

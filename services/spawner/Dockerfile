@@ -7,13 +7,13 @@ COPY shared/ ./shared/
 COPY turbo.json  ./
 COPY package.json ./
 COPY pnpm-workspace.yaml ./
-COPY services/spawn/package*.json ./services/spawn/
-COPY services/spawn/jest.config.js ./services/spawn/
-COPY services/spawn/tsconfig.json ./services/spawn/
-COPY services/spawn/src ./services/spawn/src/
-COPY services/spawn/prisma ./services/spawn/prisma/
-COPY services/spawn/__tests__ ./services/spawn/__tests__/
-COPY services/spawn/.env ./services/spawn/.env
+COPY services/spawner/package*.json ./services/spawner/
+COPY services/spawner/jest.config.js ./services/spawner/
+COPY services/spawner/tsconfig.json ./services/spawner/
+COPY services/spawner/src ./services/spawner/src/
+COPY services/spawner/prisma ./services/spawner/prisma/
+COPY services/spawner/__tests__ ./services/spawner/__tests__/
+COPY services/spawner/.env ./services/spawner/.env
 
 USER root
 
@@ -23,14 +23,14 @@ RUN apt-get clean && \
     apt-get install -y netcat-openbsd
 
 RUN corepack enable && pnpm install
-RUN cd /usr/src/app/services/spawn && npx prisma generate
+RUN cd /usr/src/app/services/spawner && npx prisma generate
 RUN chown -R node:node /usr/src/app
 
 USER node
 
 EXPOSE 3000
 
-CMD ["pnpm", "--filter", "spawn", "start"]
+CMD ["pnpm", "--filter", "spawner", "start"]
 
 HEALTHCHECK --interval=10s --timeout=3s --start-period=5s --retries=3 \
   CMD nc -z localhost 3000 || exit 1

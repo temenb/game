@@ -1,4 +1,4 @@
-import {upsertSpawn} from "../services/spawn.service";
+import {upsertSpawn} from "../services/spawner.service";
 import logger from "@shared/logger";
 
 export async function profileCreated(messages: any): Promise<void> {
