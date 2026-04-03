@@ -4,6 +4,8 @@ import gatewayRoutes from './routes/gateway.routes';
 import authRoutes from './routes/auth.routes';
 import profileRoutes from './routes/profile.routes';
 import falloutRoutes from "./routes/fallout.routes";
+import spawnerRoutes from "./routes/spawner.routes";
+import pqwnRoutes from "./routes/pawn.routes";
 
 const app = express();
 app.use(express.json());
@@ -26,6 +28,8 @@ app.use('/', gatewayRoutes);
 app.use('/auth', authRoutes);
 app.use('/profile', profileRoutes);
 app.use('/fallout', falloutRoutes);
+app.use('/spawner', spawnerRoutes);
+app.use('/pawn', pawnRoutes);
 
 export default app;
 
