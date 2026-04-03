@@ -53,7 +53,7 @@ prisma-generate:
 	@echo '🚀 Generating Prisma clients...'
 	@for service in $(PRISMA_SERVICES); do \
 		echo '🚀 Generating' $$service 'Prisma client...' && \
-		docker cp ./$(SERVICE_DIR)/$$service/prisma game-$$service:/usr/src/app/$(SERVICE_DIR)/$$service/prisma; \
+		docker cp ./$(SERVICE_DIR)/$$service/prisma game-$$service:/usr/src/app/$(SERVICE_DIR)/$$service; \
 		docker compose exec -T -w /usr/src/app/services/$$service $$service npx prisma generate; \
     done
 
