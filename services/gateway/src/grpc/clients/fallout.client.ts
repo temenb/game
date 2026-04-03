@@ -6,7 +6,7 @@ import config from '../../config/config';
 import {GrpcClientManager} from '@shared/grpc-client-manager';
 
 const falloutManager = new GrpcClientManager<FalloutGrpc.FalloutClient>(() => {
-  return new FalloutGrpc.FalloutClient(config.serviceServerUrl, grpc.credentials.createInsecure());
+  return new FalloutGrpc.FalloutClient(config.serviceFalloutUrl, grpc.credentials.createInsecure());
 });
 
 export const health = (): Promise<HealthGrpc.HealthReport | null> => {
