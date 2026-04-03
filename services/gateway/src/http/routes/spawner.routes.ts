@@ -1,15 +1,15 @@
 import {Router} from 'express';
-import * as spawnController from '../controllers/spawner.controller';
+import * as spawnerController from '../controllers/spawner.controller';
 
 const router = Router();
 
-// router.post('/list', spawnService.list);
-// router.post('/view', spawnService.view);
-// router.post('/list-galaxies', spawnService.listGalaxies);
-router.get('/health', spawnController.health);
-router.get('/status', spawnController.status);
-router.get('/livez', spawnController.livez);
-router.get('/readyz', spawnController.readyz);
+// router.post('/list', spawnerService.list);
+// router.post('/view', spawnerService.view);
+// router.post('/list-galaxies', spawnerService.listGalaxies);
+router.get('/health', spawnerController.health);
+router.get('/status', spawnerController.status);
+router.get('/livez', spawnerController.livez);
+router.get('/readyz', spawnerController.readyz);
 
 
 export default router;

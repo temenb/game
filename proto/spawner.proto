@@ -11,36 +11,36 @@ service Spawner {
   rpc Livez(common.empty.Empty) returns (common.health.LiveStatus);
   rpc Readyz(common.empty.Empty) returns (common.health.ReadyStatus);
 
-  rpc ListSpawns(ListSpawnsRequest) returns (ListSpawnsResponse);
-  rpc GetSpawn(GetSpawnRequest) returns (SpawnObject);
+  rpc ListSpawners(ListSpawnersRequest) returns (ListSpawnersResponse);
+  rpc GetSpawner(GetSpawnerRequest) returns (SpawnerObject);
   rpc ListGalaxies(ListGalaxiesRequest) returns (ListGalaxiesResponse);
 }
 
-message ListSpawnsRequest {
+message ListSpawnersRequest {
   string owner_id = 1;
   string galaxy_id = 2;
 }
 
-message ListSpawnsResponse {
-  repeated SpawnObject spawns = 1;
+message ListSpawnersResponse {
+  repeated SpawnerObject spawners = 1;
 }
 
-message SpawnObject {
+message SpawnerObject {
   string id = 1;
-  SpawnType type = 2;
+  SpawnerType type = 2;
   int32 x = 3;
   int32 y = 4;
   int32 hp = 5;
 }
 
-enum SpawnType {
+enum SpawnerType {
   UNKNOWN = 0;
   BASE = 1;
   ASTEROID = 2;
   PORTAL = 3;
 }
 
-message GetSpawnRequest {
+message GetSpawnerRequest {
   string id = 1;
 }
 

@@ -9,14 +9,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum SpawnType {
+enum SpawnerType {
   UNKNOWN
   BASE
   ASTEROID
   PORTAL
 }
 
-enum SpawnGrade {
+enum SpawnerGrade {
   UNKNOWN
   BROKEN
   NORMAL
@@ -51,8 +51,8 @@ model Spawner {
   ownerType         OwnerType @default(NONE)
   name              String?
   galaxyId          String
-  spawnType      SpawnType
-  spawnGrade     SpawnGrade
+  spawnerType      SpawnerType
+  spawnerGrade     SpawnerGrade
   axisX             Int
   axisY             Int
   health            Int
@@ -80,7 +80,7 @@ model Portal {
   galaxyFrom        String
   galaxyTo          String
   type              PortalType @default(INACTIVE)
-  spawnGrade     SpawnGrade
+  spawnerGrade     SpawnerGrade
   axisX             Int
   axisY             Int
   health            Int

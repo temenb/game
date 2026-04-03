@@ -12,7 +12,7 @@ service Pawn {
   rpc Readyz(common.empty.Empty) returns (common.health.ReadyStatus);
 
   rpc ListPawns(ListPawnsRequest) returns (ListPawnsResponse);
-  rpc AttackSpawn(AttackSpawnRequest) returns (AttackSpawnResponse);
+  rpc AttackSpawner(AttackSpawnerRequest) returns (AttackSpawnerResponse);
 }
 
 message ListPawnsRequest {
@@ -28,15 +28,15 @@ message PawnObject {
   int32 x = 2;
   int32 y = 3;
   bool is_busy = 4;
-  string spawn_id = 5;
+  string spawner_id = 5;
 }
 
-message AttackSpawnRequest {
+message AttackSpawnerRequest {
   string pawn_id = 1;
-  string spawn_id = 2;
+  string spawner_id = 2;
 }
 
-message AttackSpawnResponse {
+message AttackSpawnerResponse {
   bool success = 1;
   string message = 2;
 }

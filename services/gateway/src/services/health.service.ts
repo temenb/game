@@ -4,8 +4,8 @@ import * as engineClient from '../grpc/clients/engine.client';
 import * as falloutClient from '../grpc/clients/fallout.client';
 import * as authClient from '../grpc/clients/auth.client';
 // import * as mailerClient from '../grpc/clients/mailer.client';
-// import * as spawnClient from '../grpc/clients/spawner.client';
-// import * as pawnClient from '../grpc/clients/pawn.client';
+import * as spawnerClient from '../grpc/clients/spawner.client';
+import * as pawnClient from '../grpc/clients/pawn.client';
 
 const startedAt = Date.now();
 
@@ -16,16 +16,16 @@ async function getServicesHealth() {
     engine,
     fallout,
     // mailer,
-    // spawner,
-    // pawn,
+    spawner,
+    pawn,
   ] = await Promise.all([
     authClient.health(),
     profileClient.health(),
     engineClient.health(),
     falloutClient.health(),
     // mailerClient.health(),
-    // spawnClient.health(),
-    // pawnClient.health(),
+    spawnerClient.health(),
+    pawnClient.health(),
   ]);
 
   return {
@@ -34,8 +34,8 @@ async function getServicesHealth() {
     engine,
     fallout,
     // mailer,
-    // spawner,
-    // pawn,
+    spawner,
+    pawn,
   };
 }
 

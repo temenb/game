@@ -12,7 +12,7 @@ export const createProfileConsumerConfig = {
     handler: (message: any) => Promise<void>
 }
 
-export const createSpawnProducerConfig = {
+export const createSpawnerProducerConfig = {
     topic: process.env.KAFKA_TOPIC_ASTEROID_CREATED || 'profile.created',
 }
 

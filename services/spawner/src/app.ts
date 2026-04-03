@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
-import { SpawnService } from './generated/spawner';
+import { SpawnerService } from './generated/spawner';
 import * as grpc from '@grpc/grpc-js';
-import * as spawnHandler from "./grpc/handlers/spawner.handler";
+import * as spawnerHandler from "./grpc/handlers/spawner.handler";
 import kafkaConfig, {createProfileConsumerConfig} from "./config/kafka.config";
 import { createConsumer } from '@shared/kafka';
 import {profileCreated} from "./utils/consumers";
@@ -10,17 +10,17 @@ dotenv.config();
 
 const server = new grpc.Server();
 
-server.addService(SpawnService, {
-    // register: spawnHandler.register,
-    // login: spawnHandler.login,
-    // refreshTokens: spawnHandler.refreshTokens,
-    // logout: spawnHandler.logout,
-    // forgotPassword: spawnHandler.forgotPassword,
-    // resetPassword: spawnHandler.resetPassword,
-  health: spawnHandler.health,
-  status: spawnHandler.status,
-  livez: spawnHandler.livez,
-  readyz: spawnHandler.readyz,
+server.addService(SpawnerService, {
+    // register: spawnerHandler.register,
+    // login: spawnerHandler.login,
+    // refreshTokens: spawnerHandler.refreshTokens,
+    // logout: spawnerHandler.logout,
+    // forgotPassword: spawnerHandler.forgotPassword,
+    // resetPassword: spawnerHandler.resetPassword,
+  health: spawnerHandler.health,
+  status: spawnerHandler.status,
+  livez: spawnerHandler.livez,
+  readyz: spawnerHandler.readyz,
 });
 
 createConsumer(kafkaConfig, {

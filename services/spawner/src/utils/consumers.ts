@@ -1,4 +1,4 @@
-import {upsertSpawn} from "../services/spawner.service";
+import {upsertSpawner} from "../services/spawner.service";
 import logger from "@shared/logger";
 
 export async function profileCreated(messages: any): Promise<void> {
@@ -6,7 +6,7 @@ export async function profileCreated(messages: any): Promise<void> {
   for (const raw of messages) {
     try {
       const payload = JSON.parse(raw.value);
-      await upsertSpawn(payload.ownerId);
+      await upsertSpawner(payload.ownerId);
     } catch (error) {
       logger.error(`[Kafka] Failed to process message`, {
         rawValue: raw.value,

@@ -3,6 +3,6 @@ import {PrismaClient} from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function seedSpawns() {
-  logger.log('👤 Spawns are created');
+export async function seedSpawners() {
+  logger.log('👤 Spawners are created');
 }

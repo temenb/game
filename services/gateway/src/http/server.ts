@@ -5,7 +5,7 @@ import authRoutes from './routes/auth.routes';
 import profileRoutes from './routes/profile.routes';
 import falloutRoutes from "./routes/fallout.routes";
 import spawnerRoutes from "./routes/spawner.routes";
-import pqwnRoutes from "./routes/pawn.routes";
+import pawnRoutes from "./routes/pawn.routes";
 
 const app = express();
 app.use(express.json());
