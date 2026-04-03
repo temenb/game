@@ -65,7 +65,7 @@ seed:
 
 git-commit-and-push-all:
 	@echo "🚀 Commit all repos..."
-	@meke commit-all
+	@make commit-all
 	@echo "🚀 Push all repos..."
 	@make push-all
 
