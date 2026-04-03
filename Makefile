@@ -65,9 +65,9 @@ seed:
 
 git-commit-and-push-all:
 	@echo "🚀 Commit all repos..."
-	@make commit-all
+	@make git-commit-all
 	@echo "🚀 Push all repos..."
-	@make push-all
+	@make git-push-all
 
 git-commit-all:
 	@for dir in $(GIT_SERVICES); do \
