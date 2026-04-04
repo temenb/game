@@ -69,33 +69,41 @@ git-commit-and-push-all:
 	@echo "🚀 Push all repos..."
 	@make git-push-all
 
+SHELL := /bin/bash
+
 git-commit-all:
 	@for dir in $(GIT_SERVICES); do \
-		echo "\033[1;33m[*] Checking $$dir...\033[0m"; \
-		SERVICE_PATH="$(SERVICE_DIR)/$$dir"; \
-		if [ ! -e "$$SERVICE_PATH/.git" ]; then \
-			echo "\033[0;31m[!] Skipping $$dir — not a git repo\033[0m"; \
-			continue; \
-		fi; \
-		cd "$$SERVICE_PATH"; \
-		if git diff --quiet; then \
-			echo "\033[1;33m[-] No changes in $$dir\033[0m"; \
-		else \
-			git add . && \
-			git commit -am "$(COMMIT_MSG)" && \
-			echo "git commit -am \"$(COMMIT_MSG)\""; \
-		fi; \
-		cd - > /dev/null; \
-	done
+        echo "\033[1;33m[*] Checking $$dir...\033[0m"; \
+        SERVICE_PATH="$(SERVICE_DIR)/$$dir"; \
+        if [ ! -e "$$SERVICE_PATH/.git" ]; then \
+            echo "\033[0;31m[!] Skipping $$dir — not a git repo\033[0m"; \
+            continue; \
+        fi; \
+        cd "$$SERVICE_PATH"; \
+        if git diff --quiet; then \
+            echo "\033[1;33m[-] No changes in $$dir\033[0m"; \
+        else \
+            git add . && \
+            git commit -am "$(COMMIT_MSG)" && \
+            echo "\033[0;32m[✓] Committed changes in $$dir\033[0m"; \
+        fi; \
+        cd - > /dev/null; \
+    done
 
 	@echo "\033[1;33m[*] Checking monorepo...\033[0m"; \
-	if git diff --quiet; then \
-		echo "\033[1;33m[-] No changes in monorepo\033[0m"; \
-	else \
-		git add . && \
-		git commit -am "$(COMMIT_MSG)" && \
-		echo "git commit -am \"$(COMMIT_MSG)\""; \
-	fi;
+    if git diff --quiet; then \
+        echo "\033[1;33m[-] No changes in monorepo\033[0m"; \
+    else \
+        git add . && \
+        git commit -am "$(COMMIT_MSG)" && \
+        echo "\033[0;32m[✓] Committed changes in monorepo\033[0m"; \
+    fi; \
+    if git push > /dev/null 2>&1; then \
+        echo "\033[0;32m[✓] Pushed monorepo\033[0m"; \
+    else \
+        echo "\033[0;31m[✗] Failed to push monorepo\033[0m"; \
+    fi
+
 
 git-push-all:
 	@for dir in $(GIT_SERVICES); do \
