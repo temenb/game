@@ -95,7 +95,8 @@ git-commit-all:
 		git add . && \
 		git commit -am "$(COMMIT_MSG)" && \
 		echo "git commit -am \"$(COMMIT_MSG)\""; \
-	fi;
+	fi;\
+	cd - > /dev/null;
 
 git-push-all:
 	@for dir in $(GIT_SERVICES); do \
