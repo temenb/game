@@ -16,16 +16,16 @@ async function getServicesHealth() {
     engine,
     fallout,
     // mailer,
-    spawner,
-    pawn,
+    // spawner,
+    // pawn,
   ] = await Promise.all([
     authClient.health(),
     profileClient.health(),
     engineClient.health(),
     falloutClient.health(),
     // mailerClient.health(),
-    spawnerClient.health(),
-    pawnClient.health(),
+    // spawnerClient.health(),
+    // pawnClient.health(),
   ]);
 
   return {
@@ -34,8 +34,8 @@ async function getServicesHealth() {
     engine,
     fallout,
     // mailer,
-    spawner,
-    pawn,
+    // spawner,
+    // pawn,
   };
 }
 

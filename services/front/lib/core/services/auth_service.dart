@@ -1,7 +1,7 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:grpc/grpc.dart';
-import 'package:front/grpc/generated/gateway.pbgrpc.dart';
-import 'package:front/grpc/generated/auth.pbgrpc.dart';
+import 'package:front/src/grpc/generated/gateway.pbgrpc.dart';
+import 'package:front/src/grpc/generated/auth.pbgrpc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:front/core/services/device_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
