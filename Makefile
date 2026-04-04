@@ -69,8 +69,6 @@ git-commit-and-push-all:
 	@echo "🚀 Push all repos..."
 	@make git-push-all
 
-SHELL := /bin/bash
-
 git-commit-all:
 	@for dir in $(GIT_SERVICES); do \
         echo "\033[1;33m[*] Checking $$dir...\033[0m"; \
