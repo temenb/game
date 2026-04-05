@@ -10,7 +10,7 @@ class ErrorApp extends StatelessWidget {
       home: Scaffold(
         body: Center(
           child: Text(
-            'Ошибка: $error',
+            'Error: $error',
             style: const TextStyle(color: Colors.red, fontSize: 16),
           ),
         ),

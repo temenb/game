@@ -11,7 +11,7 @@ void main() async {
     final context = await AppInitializer.initialize();
     runApp(MyApp(state: context.state, settings: context.settings));
   } catch (e, stack) {
-    debugPrint('Ошибка при запуске: $e');
+    debugPrint('Start up error: $e');
     debugPrint('$stack');
     runApp(ErrorApp(error: e.toString()));
   }

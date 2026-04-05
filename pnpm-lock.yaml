@@ -115,8 +115,8 @@ importers:
         specifier: ^1.14.3
         version: 1.14.3
       '@prisma/client':
-        specifier: ^6.19.3
-        version: 6.19.3(prisma@6.19.3)(typescript@5.9.3)
+        specifier: ^7.6.0
+        version: 7.6.0(prisma@7.6.0)(typescript@5.9.3)
       '@shared/kafka':
         specifier: workspace:*
         version: link:../../shared/kafka
@@ -176,8 +176,8 @@ importers:
         specifier: ^3.1.14
         version: 3.1.14
       prisma:
-        specifier: ^6.19.3
-        version: 6.19.3(typescript@5.9.3)
+        specifier: ^7.6.0
+        version: 7.6.0(@types/react@19.2.14)(react-dom@19.2.4)(react@19.2.4)(typescript@5.9.3)
       rimraf:
         specifier: ^4.4.1
         version: 4.4.1
@@ -209,8 +209,8 @@ importers:
         specifier: ^1.14.3
         version: 1.14.3
       '@prisma/client':
-        specifier: ^6.19.3
-        version: 6.19.3(prisma@6.19.3)(typescript@5.9.3)
+        specifier: ^7.6.0
+        version: 7.6.0(prisma@7.6.0)(typescript@5.9.3)
       '@shared/kafka':
         specifier: workspace:*
         version: link:../../shared/kafka
@@ -270,8 +270,8 @@ importers:
         specifier: ^3.1.14
         version: 3.1.14
       prisma:
-        specifier: ^6.19.3
-        version: 6.19.3(typescript@5.9.3)
+        specifier: ^7.6.0
+        version: 7.6.0(@types/react@19.2.14)(react-dom@19.2.4)(react@19.2.4)(typescript@5.9.3)
       rimraf:
         specifier: ^4.4.1
         version: 4.4.1
@@ -576,8 +576,8 @@ importers:
         specifier: ^1.14.3
         version: 1.14.3
       '@prisma/client':
-        specifier: ^6.19.3
-        version: 6.19.3(prisma@6.19.3)(typescript@5.9.3)
+        specifier: ^7.6.0
+        version: 7.6.0(prisma@7.6.0)(typescript@5.9.3)
       '@shared/kafka':
         specifier: workspace:*
         version: link:../../shared/kafka
@@ -631,8 +631,8 @@ importers:
         specifier: ^3.1.14
         version: 3.1.14
       prisma:
-        specifier: ^6.19.3
-        version: 6.19.3(typescript@5.9.3)
+        specifier: ^7.6.0
+        version: 7.6.0(@types/react@19.2.14)(react-dom@19.2.4)(react@19.2.4)(typescript@5.9.3)
       rimraf:
         specifier: ^5.0.10
         version: 5.0.10
@@ -1642,6 +1642,23 @@ packages:
       typescript: 5.9.3
     dev: false
 
+  /@prisma/client@7.6.0(prisma@7.6.0)(typescript@5.9.3):
+    resolution: {integrity: sha512-7Pe/1ayh3GgWPEg4mmT4ax77LJ1wC+XlnIFvQ94bLP2DsUnOpnruQQR3Jw7r+Frthk94QqDNxo3FjSg8h9PXeQ==}
+    engines: {node: ^20.19 || ^22.12 || >=24.0}
+    peerDependencies:
+      prisma: '*'
+      typescript: '>=5.4.0'
+    peerDependenciesMeta:
+      prisma:
+        optional: true
+      typescript:
+        optional: true
+    dependencies:
+      '@prisma/client-runtime-utils': 7.6.0
+      prisma: 7.6.0(@types/react@19.2.14)(react-dom@19.2.4)(react@19.2.4)(typescript@5.9.3)
+      typescript: 5.9.3
+    dev: false
+
   /@prisma/client@7.6.0(prisma@7.6.0)(typescript@6.0.2):
     resolution: {integrity: sha512-7Pe/1ayh3GgWPEg4mmT4ax77LJ1wC+XlnIFvQ94bLP2DsUnOpnruQQR3Jw7r+Frthk94QqDNxo3FjSg8h9PXeQ==}
     engines: {node: ^20.19 || ^22.12 || >=24.0}
@@ -1687,6 +1704,29 @@ packages:
 
   /@prisma/debug@7.6.0:
     resolution: {integrity: sha512-LpHr3qos4lQZ6sxwjStf59YBht7m9/QF7NSQsMH6qGENWZu2w3UkQUGn1h5iRkDjnWRj3VHykOu9qFhps4ADvA==}
+
+  /@prisma/dev@0.24.3(typescript@5.9.3):
+    resolution: {integrity: sha512-ffHlQuKXZiaDt9Go0OnCTdJZrHxK0k7omJKNV86/VjpsXu5EIHZLK0T7JSWgvNlJwh56kW9JFu9v0qJciFzepg==}
+    dependencies:
+      '@electric-sql/pglite': 0.4.1
+      '@electric-sql/pglite-socket': 0.1.1(@electric-sql/pglite@0.4.1)
+      '@electric-sql/pglite-tools': 0.3.1(@electric-sql/pglite@0.4.1)
+      '@hono/node-server': 1.19.11(hono@4.12.10)
+      '@prisma/get-platform': 7.2.0
+      '@prisma/query-plan-executor': 7.2.0
+      '@prisma/streams-local': 0.1.2
+      foreground-child: 3.3.1
+      get-port-please: 3.2.0
+      hono: 4.12.10
+      http-status-codes: 2.3.0
+      pathe: 2.0.3
+      proper-lockfile: 4.1.2
+      remeda: 2.33.4
+      std-env: 3.10.0
+      valibot: 1.2.0(typescript@5.9.3)
+      zeptomatch: 2.1.0
+    transitivePeerDependencies:
+      - typescript
 
   /@prisma/dev@0.24.3(typescript@6.0.2):
     resolution: {integrity: sha512-ffHlQuKXZiaDt9Go0OnCTdJZrHxK0k7omJKNV86/VjpsXu5EIHZLK0T7JSWgvNlJwh56kW9JFu9v0qJciFzepg==}
@@ -2692,7 +2732,7 @@ packages:
     hasBin: true
     dependencies:
       baseline-browser-mapping: 2.10.14
-      caniuse-lite: 1.0.30001784
+      caniuse-lite: 1.0.30001785
       electron-to-chromium: 1.5.331
       node-releases: 2.0.37
       update-browserslist-db: 1.2.3(browserslist@4.28.2)
@@ -2778,8 +2818,8 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /caniuse-lite@1.0.30001784:
-    resolution: {integrity: sha512-WU346nBTklUV9YfUl60fqRbU5ZqyXlqvo1SgigE1OAXK5bFL8LL9q1K7aap3N739l4BvNqnkm3YrGHiY9sfUQw==}
+  /caniuse-lite@1.0.30001785:
+    resolution: {integrity: sha512-blhOL/WNR+Km1RI/LCVAvA73xplXA7ZbjzI4YkMK9pa6T/P3F2GxjNpEkyw5repTw9IvkyrjyHpwjnhZ5FOvYQ==}
     dev: true
 
   /case-anything@2.1.13:
@@ -4979,6 +5019,34 @@ packages:
     transitivePeerDependencies:
       - magicast
 
+  /prisma@7.6.0(@types/react@19.2.14)(react-dom@19.2.4)(react@19.2.4)(typescript@5.9.3):
+    resolution: {integrity: sha512-OKJIPT81K3+F+AayIkY/Y3mkF2NWoFh7lZApaaqPYy7EHILKdO0VsmGkP+hDKYTySHsFSyLWXm/JgcR1B8fY1Q==}
+    engines: {node: ^20.19 || ^22.12 || >=24.0}
+    hasBin: true
+    requiresBuild: true
+    peerDependencies:
+      better-sqlite3: '>=9.0.0'
+      typescript: '>=5.4.0'
+    peerDependenciesMeta:
+      better-sqlite3:
+        optional: true
+      typescript:
+        optional: true
+    dependencies:
+      '@prisma/config': 7.6.0
+      '@prisma/dev': 0.24.3(typescript@5.9.3)
+      '@prisma/engines': 7.6.0
+      '@prisma/studio-core': 0.27.3(@types/react@19.2.14)(react-dom@19.2.4)(react@19.2.4)
+      mysql2: 3.15.3
+      postgres: 3.4.7
+      typescript: 5.9.3
+    transitivePeerDependencies:
+      - '@types/react'
+      - '@types/react-dom'
+      - magicast
+      - react
+      - react-dom
+
   /prisma@7.6.0(@types/react@19.2.14)(react-dom@19.2.4)(react@19.2.4)(typescript@6.0.2):
     resolution: {integrity: sha512-OKJIPT81K3+F+AayIkY/Y3mkF2NWoFh7lZApaaqPYy7EHILKdO0VsmGkP+hDKYTySHsFSyLWXm/JgcR1B8fY1Q==}
     engines: {node: ^20.19 || ^22.12 || >=24.0}
@@ -5954,6 +6022,16 @@ packages:
       '@types/istanbul-lib-coverage': 2.0.6
       convert-source-map: 2.0.0
     dev: true
+
+  /valibot@1.2.0(typescript@5.9.3):
+    resolution: {integrity: sha512-mm1rxUsmOxzrwnX5arGS+U4T25RdvpPjPN4yR0u9pUBov9+zGVtO84tif1eY4r6zWxVxu3KzIyknJy3rxfRZZg==}
+    peerDependencies:
+      typescript: '>=5'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+    dependencies:
+      typescript: 5.9.3
 
   /valibot@1.2.0(typescript@6.0.2):
     resolution: {integrity: sha512-mm1rxUsmOxzrwnX5arGS+U4T25RdvpPjPN4yR0u9pUBov9+zGVtO84tif1eY4r6zWxVxu3KzIyknJy3rxfRZZg==}

@@ -23,7 +23,7 @@
     "fast-glob": "^3.3.3",
     "jest": "^30.3.0",
     "nodemon": "^3.1.14",
-    "prisma": "^6.19.3",
+    "prisma": "^7.6.0",
     "rimraf": "^4.4.1",
     "supertest": "^7.2.2",
     "ts-jest": "^29.4.9",
@@ -35,7 +35,7 @@
   "dependencies": {
     "@bufbuild/protobuf": "^2.11.0",
     "@grpc/grpc-js": "^1.14.3",
-    "@prisma/client": "^6.19.3",
+    "@prisma/client": "^7.6.0",
     "@shared/kafka": "workspace:*",
     "@shared/logger": "workspace:*",
     "bcrypt": "^6.0.0",
