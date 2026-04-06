@@ -6,8 +6,8 @@ import logger from '@shared/logger';
 
 dotenv.config();
 
-const GRPC_PORT = process.env.GRPC_PORT ?? '3000';
-const HTTP_PORT = process.env.HTTP_PORT ?? 5000;
+const GRPC_PORT = process.env.GRPC_PORT ?? '50051';
+const HTTP_PORT = process.env.HTTP_PORT ?? 9090;
 
 async function startGrpc() {
   return new Promise<void>((resolve, reject) => {

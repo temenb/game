@@ -17,7 +17,7 @@ export async function initKafka(clientId: string) {
       retries: 5,
       initialRetryTime: 300,
     },
-    requestTimeout: 3000,
+    requestTimeout: 50051,
   });
 
   producer = kafka.producer({

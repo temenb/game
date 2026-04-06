@@ -24,7 +24,7 @@ describe('Gateway Service', () => {
     it('should allow CORS headers', async () => {
         const res = await request(app)
             .options('/profile/me')
-            .set('Origin', 'http://localhost:3000');
+            .set('Origin', 'http://localhost:50051');
 
         expect(res.headers['access-control-allow-origin']).toBe('*');
         expect(res.status).toBe(204); // preflight OK

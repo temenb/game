@@ -29,9 +29,9 @@ RUN chown -R node:node /usr/src/app
 
 USER node
 
-EXPOSE 3000
+EXPOSE 50051
 
 CMD ["pnpm", "--filter", "engine", "start"]
 
 HEALTHCHECK --interval=10s --timeout=3s --start-period=5s --retries=3 \
-  CMD nc -z localhost 3000 || exit 1
+  CMD nc -z localhost 50051 || exit 1

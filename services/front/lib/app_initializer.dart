@@ -26,7 +26,7 @@ class AppInitializer {
     if (host == null || host.isEmpty) {
       throw Exception('GATEWAY_HOST не задан в .env!');
     }
-    final port = int.tryParse(dotenv.env['GATEWAY_PORT'] ?? '') ?? 3000;
+    final port = int.tryParse(dotenv.env['GATEWAY_PORT'] ?? '') ?? 50051;
     final config = AppConfig(grpcHost: host, grpcPort: port, env: environment);
 
     final authService = AuthService();

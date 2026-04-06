@@ -1,0 +1,4 @@
+{
+  "pawnId": "{{ faker.random.uuid }}",
+  "spawnerId": "{{ faker.random.uuid }}"
+}
