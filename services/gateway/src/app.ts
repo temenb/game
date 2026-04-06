@@ -1,13 +1,11 @@
-import dotenv from 'dotenv';
 import httpApp from './http/server';
 import grpcServer from './grpc/server';
 import * as grpc from '@grpc/grpc-js';
 import logger from '@shared/logger';
 
-dotenv.config();
 
-const GRPC_PORT = process.env.GRPC_PORT ?? '50051';
-const HTTP_PORT = process.env.HTTP_PORT ?? 9090;
+const GRPC_PORT = Number(process.env.GRPC_PORT ?? 50051);
+const HTTP_PORT = Number(process.env.HTTP_PORT ?? 9090);
 
 async function startGrpc() {
   return new Promise<void>((resolve, reject) => {
@@ -28,7 +26,7 @@ async function startGrpc() {
 
 async function startHttp() {
   return new Promise<void>((resolve) => {
-    httpApp.listen(HTTP_PORT, () => {
+    httpApp.listen(HTTP_PORT, "0.0.0.0", () => {
       logger.info(`🌐 HTTP сервер запущен на порту ${HTTP_PORT}`);
       resolve();
     });

@@ -1,7 +1,3 @@
-import dotenv from 'dotenv';
-
-dotenv.config();
-
 export const config = {
   grpcPort: process.env.GRPC_PORT || 50051,
   httpPort: process.env.HTTP_PORT || 9090,
