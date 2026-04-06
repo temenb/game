@@ -8,7 +8,8 @@
     "dev": {
       "cache": false,
       "persistent": true,
-      "dependsOn": ["^dev"]
+      "dependsOn": ["^dev"],
+      "env": ["*"]
     }
   }
 }
