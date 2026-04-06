@@ -3,9 +3,7 @@
   "version": "1.0.0",
   "main": "dist/server.js",
   "devDependencies": {
-    "dotenv-cli": "^11.0.0",
-    "ts-proto": "^2.11.6",
-    "turbo": "^2.9.3"
+    "ts-proto": "^2.11.6"
   },
   "packageManager": "pnpm@8.6.3"
 }
