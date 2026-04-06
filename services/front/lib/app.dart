@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:front/app_state.dart';
-import 'package:front/core/services/settings_service.dart';
-// import 'package:front/features/home/home_screen.dart';
-// import 'package:front/features/settings/settings_screen.dart';
-// import 'package:front/features/profile/profile_screen.dart';
+import 'package:front/features/setting/services/setting_service.dart';
+import 'package:front/features/home/ui/home_screen.dart';
+import 'package:front/features/setting/ui/settings_screen.dart';
+import 'package:front/features/profile/ui/profile_screen.dart';
 import 'package:front/theme.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:front/core/localization/generated/l10n.dart';
 
 class MyApp extends StatelessWidget {
   final AppState state;
-  final SettingsService settings;
+  final SettingService settings;
 
   const MyApp({required this.state, required this.settings, super.key});
 
@@ -30,9 +30,9 @@ class MyApp extends StatelessWidget {
         ],
         supportedLocales: S.delegate.supportedLocales,
         routes: {
-          // '/': (context) => const HomeScreen(),
-          // '/settings': (context) => SettingsScreen(),
-          // '/profile': (context) => const ProfileScreen(),
+          '/': (context) => const HomeScreen(),
+          '/settings': (context) => SettingsScreen(),
+          '/profile': (context) => const ProfileScreen(),
         },
       ),
     );

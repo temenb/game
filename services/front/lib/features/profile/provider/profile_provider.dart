@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:front/core/services/profile_service.dart';
-import 'package:front/core/models/profile.dart';
+import '../services/profile_service.dart';
+import '../models/profile.dart';
 
 final profileProvider = FutureProvider<Profile>((ref) async {
   final service = ProfileService();

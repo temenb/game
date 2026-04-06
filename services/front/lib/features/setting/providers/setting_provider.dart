@@ -1,12 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'settings_service.dart';
-import 'settings_model.dart';
+import '../services/setting_service.dart';
+import '../models/setting.dart';
 
-class SettingsNotifier extends StateNotifier<SettingsState> {
-  final SettingsService _service;
+class SettingNotifier extends StateNotifier<Setting> {
+  final SettingService _service;
 
-  SettingsNotifier(this._service)
-      : super(const SettingsState(
+  SettingNotifier(this._service)
+      : super(const Setting(
           soundEnabled: true,
           effectsSoundEnabled: true,
           vibrationEnabled: true,
@@ -18,7 +18,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     final sound = await _service.getSoundEnabled();
     final effects = await _service.getEffectsSoundEnabled();
     final vibration = await _service.getVibrationEnabled();
-    state = SettingsState(
+    state = Setting(
       soundEnabled: sound,
       effectsSoundEnabled: effects,
       vibrationEnabled: vibration,
@@ -41,8 +41,8 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   }
 }
 
-final settingsProvider = StateNotifierProvider<SettingsNotifier, SettingsState>((ref) {
-  final service = SettingsService();
-  return SettingsNotifier(service);
+final settingsProvider = StateNotifierProvider<SettingNotifier, Setting>((ref) {
+  final service = SettingService();
+  return SettingNotifier(service);
 });
 

@@ -1,6 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import '../models/setting.dart';
 
-class SettingsService {
+class SettingService {
   static const _soundKey = 'soundEnabled';
   static const _effectsKey = 'effectsSoundEnabled';
   static const _vibrationKey = 'vibrationEnabled';
@@ -33,6 +34,17 @@ class SettingsService {
   Future<void> setVibrationEnabled(bool value) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_vibrationKey, value);
+  }
+
+  Future<Setting> load() async {
+    final sound = true;
+    final effects = true;
+    final vibration = true;
+    return Setting(
+      soundEnabled: sound,
+      effectsSoundEnabled: effects,
+      vibrationEnabled: vibration,
+    );
   }
 }
 

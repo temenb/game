@@ -1,13 +1,17 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:front/core/services/auth_service.dart';
+import 'package:front/features/auth/services/auth_service.dart';
 import 'package:front/app_state.dart';
 import 'package:front/app_context.dart';
-import 'package:front/core/services/settings_service.dart';
+import 'package:front/features/setting/services/setting_service.dart';
 import 'package:front/core/provider/config_provider.dart';
 import 'package:front/core/provider/environment_provider.dart';
+import 'package:logger/logger.dart';
+
+final logger = Logger();
 
 class AppInitializer {
   static Future<AppContext> initialize() async {
+    logger.i("Приложение запущено");   // info
     await dotenv.load(fileName: '.env');
 
     final env = dotenv.env['ENV'] ?? 'dev';
@@ -35,7 +39,7 @@ class AppInitializer {
     final state = AppState();
     state.setJwt(jwt);
 
-    final settings = SettingsService();
+    final settings = SettingService();
     await settings.load();
 
     // TODO: загрузить сохранённую локализацию
