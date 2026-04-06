@@ -9,7 +9,7 @@ server.addService(GatewayService, {
 
   anonymousSignIn: gatewayHandler.anonymousSignIn,
   viewProfile: gatewayHandler.viewProfile,
-  // health: healthHandler.health,
+  health: healthHandler.health,
   status: healthHandler.status,
   livez: healthHandler.livez,
   readyz: healthHandler.readyz,

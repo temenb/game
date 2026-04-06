@@ -13,6 +13,7 @@ export const health = async (
 
     callback(null, response);
 
+
   } catch (err: any) {
     callbackError(callback, err);
   }
