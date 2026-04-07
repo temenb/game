@@ -1,3 +1,0 @@
-{
-  "deviceId": "{{ faker.random.uuid }}"
-}

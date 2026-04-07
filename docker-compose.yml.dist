@@ -22,6 +22,8 @@ services:
       dockerfile: services/auth/Dockerfile
     env_file:
       - services/auth/.env
+    environment:
+      KAFKAJS_NO_PARTITIONER_WARNING: 1
     volumes:
       - ./shared:/usr/src/app/shared
       - ./services/auth/prisma:/usr/src/app/services/auth/prisma

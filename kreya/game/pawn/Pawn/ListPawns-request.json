@@ -1,3 +1,0 @@
-{
-  "playerId": "{{ faker.random.uuid }}"
-}

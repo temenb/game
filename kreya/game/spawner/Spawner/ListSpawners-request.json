@@ -1,4 +1,0 @@
-{
-  "ownerId": "{{ faker.random.uuid }}",
-  "galaxyId": "{{ faker.random.uuid }}"
-}
