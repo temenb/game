@@ -1,5 +1,5 @@
 import * as AuthService from "../../services/auth.service";
-import getUserId from "../../utils/getUserId";
+import getUserId from "../../lib/getUserId";
 import wrapper from "./wrapper";
 
 // Middleware-функции для роутов

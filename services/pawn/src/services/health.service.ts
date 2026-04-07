@@ -1,4 +1,4 @@
-import prisma from '../utils/prisma';
+import prisma from '../lib/prisma';
 import logger from '@shared/logger';
 import kafkaConfig from '../config/kafka.config';
 import { createProducer, createConsumer } from '@shared/kafka';

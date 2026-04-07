@@ -1,6 +1,6 @@
 import * as ProfileService from "../../services/profile.service";
 import wrapper from "./wrapper";
-import getUserId from '../../utils/getUserId';
+import getUserId from '../../lib/getUserId';
 
 export const health = wrapper(async (req, res) => {
   return ProfileService.health();

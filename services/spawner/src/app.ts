@@ -3,7 +3,7 @@ import * as grpc from '@grpc/grpc-js';
 import * as spawnerHandler from "./grpc/handlers/spawner.handler";
 import kafkaConfig, {createProfileConsumerConfig} from "./config/kafka.config";
 import { createConsumer } from '@shared/kafka';
-import {profileCreated} from "./utils/consumers";
+import {profileCreated} from "./lib/consumers";
 
 const server = new grpc.Server();
 

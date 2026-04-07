@@ -1,5 +1,5 @@
 import logger from "@shared/logger";
-import prisma from '../utils/prisma';
+import prisma from '../lib/prisma';
 import { createProducer } from '@shared/kafka';
 import kafkaConfig from "../config/kafka.config";
 
