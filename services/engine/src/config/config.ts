@@ -1,7 +1,3 @@
-import dotenv from 'dotenv';
-
-dotenv.config();
-
 export  const config = {
     port: process.env.PORT || 50051,
     // accessTokenSecret: process.env.JWT_ACCESS_SECRET!,

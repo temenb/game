@@ -1,9 +1,6 @@
-import dotenv from 'dotenv';
 import { PawnService } from './generated/pawn';
 import * as grpc from '@grpc/grpc-js';
 import * as pawnHandler from "./grpc/handlers/pawn.handler";
-
-dotenv.config();
 
 const server = new grpc.Server();
 

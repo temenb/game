@@ -1,12 +1,9 @@
-import dotenv from 'dotenv';
 import { SpawnerService } from './generated/spawner';
 import * as grpc from '@grpc/grpc-js';
 import * as spawnerHandler from "./grpc/handlers/spawner.handler";
 import kafkaConfig, {createProfileConsumerConfig} from "./config/kafka.config";
 import { createConsumer } from '@shared/kafka';
 import {profileCreated} from "./utils/consumers";
-
-dotenv.config();
 
 const server = new grpc.Server();
 
