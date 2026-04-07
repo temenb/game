@@ -95,12 +95,7 @@ git-commit-all:
         git add . && \
         git commit -am "$(COMMIT_MSG)" && \
         echo "\033[0;32m[✓] Committed changes in monorepo\033[0m"; \
-    fi; \
-    if git push > /dev/null 2>&1; then \
-        echo "\033[0;32m[✓] Pushed monorepo\033[0m"; \
-    else \
-        echo "\033[0;31m[✗] Failed to push monorepo\033[0m"; \
-    fi
+    fi;
 
 
 git-push-all:
