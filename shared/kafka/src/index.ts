@@ -2,6 +2,7 @@ export * from './register';
 export * from './producer';
 export * from './consumer';
 export * from './types';
+export * from './eventQueue';
 
 // import { createProducer, createConsumer } from './kafka';
 //
