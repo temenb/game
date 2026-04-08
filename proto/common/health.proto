@@ -7,6 +7,12 @@ message HealthReport {
   bool healthy = 2;
 }
 
+//message HealthReport {
+////  string service = 1;   // имя сервиса
+//  string status = 2;    // состояние: "SERVING", "NOT_SERVING"
+//  int64 timestamp = 4;  // время отчёта (unix time)
+//}
+
 message StatusInfo {
   string name = 1;
   string version = 2;

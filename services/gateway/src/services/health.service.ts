@@ -8,6 +8,28 @@ import * as spawnerClient from '../grpc/clients/spawner.client';
 import * as pawnClient from '../grpc/clients/pawn.client';
 
 const startedAt = Date.now();
+// const clients = {
+//   auth: authClient,
+//   profile: profileClient,
+//   // engine: engineClient,
+//   // fallout: falloutClient,
+//   // mailer: mailerClient,
+//   // spawner: spawnerClient,
+//   // pawn: pawnClient,
+// };
+//
+//
+// async function getServicesHealth(service) {
+//   return await clients.{service}.authClient.health();
+// }
+//
+// export const health = async (service: string) => {
+//   if (!service) {
+//     return { serving: 'UNKNOWN' };
+//   }
+//
+//   const healthReports = await getServicesHealth(service);
+// };
 
 async function getServicesHealth() {
   const [
