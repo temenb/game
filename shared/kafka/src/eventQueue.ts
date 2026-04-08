@@ -1,9 +1,9 @@
 import { boss } from '@shared/pg-boss';
 
-export interface EventPayload {
-  topic: string;
-  data: object;
-}
+// export interface EventPayload {
+//   topic: string;
+//   data: object;
+// }
 
 export async function enqueueEvent(topic: string, data: object) {
   const jobName = `event.${topic}`;

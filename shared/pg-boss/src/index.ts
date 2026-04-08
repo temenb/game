@@ -1,19 +1,16 @@
-const PgBoss = require('pg-boss');
+import logger from '@shared/logger';
 
-export type PgBossInstance = {
-  start(): Promise<void>;
-  send: (...args: any[]) => Promise<any>;
-  // publish: (...args: any[]) => Promise<any>;
-  // work: (...args: any[]) => Promise<any>;
-};
+const { PgBoss } = require('pg-boss');
 
-let _boss: PgBossInstance | null = null;
+let _boss: typeof PgBoss | null = null;
 
-export async function createBoss(): Promise<PgBossInstance> {
+export async function createBoss(): Promise<typeof PgBoss> {
   if (!_boss) {
     _boss = new PgBoss({
       connectionString: process.env.DATABASE_URL,
-    }) as PgBossInstance;
+    }) as typeof PgBoss;
+
+    logger.log(process.env.DATABASE_URL);
 
     await _boss.start();
     console.log('PgBoss started');
@@ -22,9 +19,10 @@ export async function createBoss(): Promise<PgBossInstance> {
   return _boss!;
 }
 
-export function boss(): PgBossInstance {
+export function boss(): typeof PgBoss {
   if (!_boss) {
     throw new Error('Boss has not been initialized. Call createBoss() first.');
   }
   return _boss!;
 }
+
