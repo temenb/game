@@ -1,7 +1,7 @@
 import { boss } from '@shared/pg-boss';
-import { createProducer } from '@shared/kafka';
+import {createProducer, KafkaConfig} from '@shared/kafka';
 
-export async function startEventWorker(kafkaConfig) {
+export async function startEventWorker(kafkaConfig: KafkaConfig) {
   const producer = await createProducer(kafkaConfig);
 
   await boss().work('event.kafka-*', async job => {
@@ -9,10 +9,10 @@ export async function startEventWorker(kafkaConfig) {
       const { name, data } = job;
       const topic = name.replace('event.', '');
 
-      await producer.send({
+      await producer.send(
         topic,
-        messages: [{ value: JSON.stringify(data) }],
-      });
+        [{ value: JSON.stringify(data) }]
+      );
 
       return true;
     } catch (err) {
@@ -20,5 +20,4 @@ export async function startEventWorker(kafkaConfig) {
       throw err; // pg-boss отметит задачу как неуспешную
     }
   });
-;
 }
