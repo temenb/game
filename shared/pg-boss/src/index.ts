@@ -1,14 +1,29 @@
-import PgBoss from 'pg-boss';
+const PgBoss = require('pg-boss');
 
-let boss: InstanceType<typeof PgBoss> | null = null;
+export type PgBossInstance = {
+  start(): Promise<void>;
+  publish: (...args: any[]) => Promise<any>;
+  work: (...args: any[]) => Promise<any>;
+};
 
-export async function initBoss() {
-  if (!boss) {
-    boss = new PgBoss({
+let _boss: PgBossInstance | null = null;
+
+export async function createBoss(): Promise<PgBossInstance> {
+  if (!_boss) {
+    _boss = new PgBoss({
       connectionString: process.env.DATABASE_URL,
     });
-    await boss.start();
+
+    await _boss.start();
     console.log('PgBoss started');
   }
-  return boss;
+
+  return _boss;
+}
+
+export function boss(): PgBossInstance {
+  if (!_boss) {
+    throw new Error('Boss has not been initialized. Call createBoss() first.');
+  }
+  return _boss;
 }
