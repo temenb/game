@@ -5,7 +5,8 @@
     "rootDir": "src"
   },
   "references": [
-    { "path": "../pg-boss" }
+    { "path": "../pg-boss" },
+    { "path": "../logger" }
   ],
   "include": ["src"]
 }

@@ -4,7 +4,7 @@ const { PgBoss } = require('pg-boss');
 
 let _boss: typeof PgBoss | null = null;
 
-export async function createBoss(): Promise<typeof PgBoss> {
+export async function initBoss(cb: () => void): Promise<typeof PgBoss> {
   if (!_boss) {
     _boss = new PgBoss({
       connectionString: process.env.DATABASE_URL,
@@ -13,6 +13,8 @@ export async function createBoss(): Promise<typeof PgBoss> {
     logger.log(process.env.DATABASE_URL);
 
     await _boss.start();
+
+    cb();
     console.log('PgBoss started');
   }
 

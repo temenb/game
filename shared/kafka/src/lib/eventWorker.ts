@@ -1,10 +1,11 @@
 import { boss } from '@shared/pg-boss';
 import {createProducer, KafkaConfig} from '@shared/kafka';
+import logger from "@shared/logger";
 
-export async function startEventWorker(kafkaConfig: KafkaConfig) {
+export async function startKafkaEventWorker(kafkaConfig: KafkaConfig) {
   const producer = await createProducer(kafkaConfig);
 
-  await boss().work('event.kafka-*', async job => {
+  await boss().work('event.kafka*', async job => {
     try {
       const { name, data } = job;
       const topic = name.replace('event.', '');
@@ -13,11 +14,12 @@ export async function startEventWorker(kafkaConfig: KafkaConfig) {
         topic,
         [{ value: JSON.stringify(data) }]
       );
+      logger.log('Kafka event worker started');
 
       return true;
     } catch (err) {
-      console.error('Kafka send failed:', err);
-      throw err; // pg-boss отметит задачу как неуспешную
+      logger.error('Kafka send failed:', err);
+      throw err;
     }
   });
 }
