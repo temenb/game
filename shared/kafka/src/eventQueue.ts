@@ -1,4 +1,4 @@
-import { startBoss, boss } from './lib/pgBoss';
+import { boss } from '@shared/pg-boss';
 
 export interface EventPayload {
   topic: string;

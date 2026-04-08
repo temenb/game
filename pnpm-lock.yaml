@@ -751,6 +751,19 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
+  shared/pg-boss:
+    dependencies:
+      kafkajs:
+        specifier: ^2.2.4
+        version: 2.2.4
+      pg-boss:
+        specifier: ^12.15.0
+        version: 12.15.0
+    devDependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
 packages:
 
   /@babel/code-frame@7.29.0:
@@ -3679,7 +3692,7 @@ packages:
       pretty-format: 30.3.0
       slash: 3.0.0
       strip-json-comments: 3.1.1
-      ts-node: 10.9.2(@types/node@24.12.0)(typescript@5.9.3)
+      ts-node: 10.9.2(@types/node@24.12.0)(typescript@6.0.2)
     transitivePeerDependencies:
       - babel-plugin-macros
       - supports-color
