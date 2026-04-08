@@ -1,20 +1,17 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createBoss = createBoss;
+exports.initBoss = initBoss;
 exports.boss = boss;
-const logger_1 = __importDefault(require("@shared/logger"));
 const { PgBoss } = require('pg-boss');
 let _boss = null;
-async function createBoss() {
+async function initBoss(cb) {
     if (!_boss) {
         _boss = new PgBoss({
             connectionString: process.env.DATABASE_URL,
         });
-        logger_1.default.log(process.env.DATABASE_URL);
+        // logger.log(process.env.DATABASE_URL);
         await _boss.start();
+        cb();
         console.log('PgBoss started');
     }
     return _boss;

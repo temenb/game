@@ -1,4 +1,5 @@
 import logger from '@shared/logger';
+export * from './enqueueEvent';
 
 const { PgBoss } = require('pg-boss');
 

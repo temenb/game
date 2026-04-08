@@ -1,4 +1,4 @@
-import { boss } from '@shared/pg-boss';
+import { boss } from './index';
 
 export async function enqueueEvent(topic: string, data: object) {
   const jobName = `event.${topic}`;
