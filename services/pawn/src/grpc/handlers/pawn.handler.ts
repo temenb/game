@@ -3,6 +3,7 @@ import * as PawnGrpc from '../../generated/auth';
 import * as HealthGrpc from '../../generated//common/health';
 import * as EmptyGrpc from '../../generated//common/empty';
 import * as heathService from '../../services/health.service';
+import logger from "@shared/logger/dist";
 
 export const callbackError = (callback: grpc.sendUnaryData<any>, err: unknown) => {
   const message = err instanceof Error ? err.message : 'Unknown error';
@@ -19,6 +20,7 @@ export const health = async (
     callback(null, response);
 
   } catch (err: any) {
+    logger.log(err);
     callbackError(callback, err);
   }
 };
@@ -33,6 +35,7 @@ export const status = async (
     callback(null, response);
 
   } catch (err: any) {
+    logger.log(err);
     callbackError(callback, err);
   }
 };
@@ -47,6 +50,7 @@ export const livez = async (
     callback(null, response);
 
   } catch (err: any) {
+    logger.log(err);
     callbackError(callback, err);
   }
 };
@@ -61,6 +65,7 @@ export const readyz = async (
     callback(null, response);
 
   } catch (err: any) {
+    logger.log(err);
     callbackError(callback, err);
   }
 };

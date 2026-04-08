@@ -36,53 +36,53 @@ services:
         condition: service_healthy
     command: pnpm dlx turbo run dev --parallel
 
-  profile:
-    container_name: game-profile
-    build:
-      context: .
-      dockerfile: services/profile/Dockerfile
-    env_file:
-      - services/profile/.env
-    volumes:
-      - ./shared:/usr/src/app/shared
-      - ./services/profile/prisma:/usr/src/app/services/profile/prisma
-      - ./services/profile/src:/usr/src/app/services/profile/src/
-      - ./services/profile/package.json:/usr/src/app/services/profile/package.json
-    depends_on:
-      kafka:
-        condition: service_healthy
-      postgres:
-        condition: service_healthy
-    command: pnpm dlx turbo run dev --parallel
-
-  engine:
-    container_name: game-engine
-    build:
-      context: .
-      dockerfile: services/engine/Dockerfile
-    env_file:
-      - services/engine/.env
-    volumes:
-      - ./shared:/usr/src/app/shared
-      - ./services/engine/prisma:/usr/src/app/services/engine/prisma
-      - ./services/engine/src:/usr/src/app/services/engine/src/
-      - ./services/engine/package.json:/usr/src/app/services/engine/package.json
-    command: pnpm dlx turbo run dev --parallel
-
-  fallout:
-    container_name: game-fallout
-    build:
-      context: .
-      dockerfile: services/fallout/Dockerfile
-    env_file:
-      - services/fallout/.env
-    volumes:
-      - ./shared:/usr/src/app/shared
-      - ./services/fallout/prisma:/usr/src/app/services/fallout/prisma
-      - ./services/fallout/src:/usr/src/app/services/fallout/src/
-      - ./services/fallout/package.json:/usr/src/app/services/fallout/package.json
-    command: pnpm dlx turbo run dev --parallel
-
+#  profile:
+#    container_name: game-profile
+#    build:
+#      context: .
+#      dockerfile: services/profile/Dockerfile
+#    env_file:
+#      - services/profile/.env
+#    volumes:
+#      - ./shared:/usr/src/app/shared
+#      - ./services/profile/prisma:/usr/src/app/services/profile/prisma
+#      - ./services/profile/src:/usr/src/app/services/profile/src/
+#      - ./services/profile/package.json:/usr/src/app/services/profile/package.json
+#    depends_on:
+#      kafka:
+#        condition: service_healthy
+#      postgres:
+#        condition: service_healthy
+#    command: pnpm dlx turbo run dev --parallel
+#
+#  engine:
+#    container_name: game-engine
+#    build:
+#      context: .
+#      dockerfile: services/engine/Dockerfile
+#    env_file:
+#      - services/engine/.env
+#    volumes:
+#      - ./shared:/usr/src/app/shared
+#      - ./services/engine/prisma:/usr/src/app/services/engine/prisma
+#      - ./services/engine/src:/usr/src/app/services/engine/src/
+#      - ./services/engine/package.json:/usr/src/app/services/engine/package.json
+#    command: pnpm dlx turbo run dev --parallel
+#
+#  fallout:
+#    container_name: game-fallout
+#    build:
+#      context: .
+#      dockerfile: services/fallout/Dockerfile
+#    env_file:
+#      - services/fallout/.env
+#    volumes:
+#      - ./shared:/usr/src/app/shared
+#      - ./services/fallout/prisma:/usr/src/app/services/fallout/prisma
+#      - ./services/fallout/src:/usr/src/app/services/fallout/src/
+#      - ./services/fallout/package.json:/usr/src/app/services/fallout/package.json
+#    command: pnpm dlx turbo run dev --parallel
+#
 #  pawn:
 #    container_name: game-pawn
 #    build:

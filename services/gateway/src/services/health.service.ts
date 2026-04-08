@@ -34,17 +34,17 @@ const startedAt = Date.now();
 async function getServicesHealth() {
   const [
     auth,
-    profile,
-    engine,
-    fallout,
+    // profile,
+    // engine,
+    // fallout,
     // mailer,
     // spawner,
     // pawn,
   ] = await Promise.all([
     authClient.health(),
-    profileClient.health(),
-    engineClient.health(),
-    falloutClient.health(),
+    // profileClient.health(),
+    // engineClient.health(),
+    // falloutClient.health(),
     // mailerClient.health(),
     // spawnerClient.health(),
     // pawnClient.health(),
@@ -52,9 +52,9 @@ async function getServicesHealth() {
 
   return {
     auth,
-    profile,
-    engine,
-    fallout,
+    // profile,
+    // engine,
+    // fallout,
     // mailer,
     // spawner,
     // pawn,

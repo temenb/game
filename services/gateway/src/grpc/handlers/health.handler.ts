@@ -3,6 +3,7 @@ import * as HealthGrpc from '../generated/common/health';
 import * as EmptyGrpc from '../generated/common/empty';
 import * as heathService from '../../services/health.service';
 import {callbackError} from './callback.error';
+import logger from "@shared/logger";
 
 export const health = async (
   call: grpc.ServerUnaryCall<EmptyGrpc.Empty, HealthGrpc.HealthReport>,
@@ -15,6 +16,7 @@ export const health = async (
 
 
   } catch (err: any) {
+    logger.log(err);
     callbackError(callback, err);
   }
 };
@@ -29,6 +31,7 @@ export const status = async (
     callback(null, response);
 
   } catch (err: any) {
+    logger.log(err);
     callbackError(callback, err);
   }
 };
@@ -43,6 +46,7 @@ export const livez = async (
     callback(null, response);
 
   } catch (err: any) {
+    logger.log(err);
     callbackError(callback, err);
   }
 };
@@ -57,6 +61,7 @@ export const readyz = async (
     callback(null, response);
 
   } catch (err: any) {
+    logger.log(err);
     callbackError(callback, err);
   }
 };

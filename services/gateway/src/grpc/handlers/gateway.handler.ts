@@ -4,6 +4,7 @@ import * as ProfileGrpc from '../generated/profile';
 import * as AuthService from '../../services/auth.service';
 import * as ProfileService from '../../services/profile.service';
 import {callbackError} from './callback.error';
+import logger from "@shared/logger";
 
 
 export const anonymousSignIn = async (
@@ -15,6 +16,7 @@ export const anonymousSignIn = async (
     const result = await AuthService.anonymousSignIn(deviceId);
     callback(null, result);
   } catch (err: any) {
+    logger.log(err);
     callback({
       code: grpc.status.INTERNAL,
       message: err.message,
@@ -31,6 +33,7 @@ export const viewProfile = async (
     const result = await ProfileService.getProfile(id);
     callback(null, result);
   } catch (err: any) {
+    logger.log(err);
     callback({
       code: grpc.status.INTERNAL,
       message: err.message,
