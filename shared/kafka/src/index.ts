@@ -2,7 +2,8 @@ export * from './register';
 export * from './producer';
 export * from './consumer';
 export * from './types';
-export * from './eventQueue';
+export * from './lib/enqueueEvent';
+export * from './lib/eventWorker';
 
 // import { createProducer, createConsumer } from './kafka';
 //
