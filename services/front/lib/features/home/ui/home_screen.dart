@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:front/core/localization/generated/l10n.dart';
+import 'package:front/src/localization/generated/l10n.dart';
 import 'package:front/features/setting/providers/setting_provider.dart';
 import 'package:front/features/setting/ui/settings_screen.dart';
 

@@ -5,7 +5,7 @@ import 'package:front/src/grpc/generated/auth.pbgrpc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:front/features/auth/services/device_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:front/core/provider/config_provider.dart';
+import 'package:front/src/providers/grpc_config_provider.dart';
 
 final authServiceProvider = Provider<AuthService>((ref) {
   final service = AuthService();
@@ -33,11 +33,11 @@ class AuthService {
   }
 
   void init(ProviderRef ref) {
-    final config = ref.read(configProvider);
+    final config = ref.read(grpcConfigProvider);
     _initClient(config.grpcHost, config.grpcPort);
   }
 
-  void initWithConfig(AppConfig config) {
+  void initWithConfig(GrpcConfig config) {
     _initClient(config.grpcHost, config.grpcPort);
   }
 

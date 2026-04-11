@@ -7,7 +7,7 @@ import 'package:front/features/setting/ui/settings_screen.dart';
 import 'package:front/features/profile/ui/profile_screen.dart';
 import 'package:front/theme.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:front/core/localization/generated/l10n.dart';
+import 'package:front/src/localization/generated/l10n.dart';
 
 class MyApp extends StatelessWidget {
   final AppState state;

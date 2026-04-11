@@ -11,7 +11,7 @@ export async function initBoss(cb: () => void): Promise<typeof PgBoss> {
       connectionString: process.env.DATABASE_URL,
     }) as typeof PgBoss;
 
-    logger.log(process.env.DATABASE_URL);
+    // logger.log(process.env.DATABASE_URL);
 
     await _boss.start();
 

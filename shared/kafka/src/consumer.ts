@@ -1,6 +1,7 @@
 import { getKafkaInstance } from './register';
 import { KafkaConfig, ConsumerConfig } from './types';
 import { KafkaJSProtocolError } from 'kafkajs';
+import logger from "@shared/logger";
 
 export async function createConsumer(config: KafkaConfig, consumerConfig: ConsumerConfig) {
   const kafka = getKafkaInstance(config);
@@ -24,10 +25,19 @@ export async function createConsumer(config: KafkaConfig, consumerConfig: Consum
 
   await consumer.connect();
 
+
+  // logger.log(consumerConfig.topic)
+
   // Подписка с retry на случай гонки
   for (let attempt = 0; attempt < 5; attempt++) {
     try {
       await consumer.subscribe({ topic: consumerConfig.topic, fromBeginning: true });
+      await consumer.run({
+        eachMessage: async ({ topic, partition, message }) => {
+          await consumerConfig.handler(topic, partition, message);
+        },
+
+      });
       break;
     } catch (err) {
       if (

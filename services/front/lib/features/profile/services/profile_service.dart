@@ -3,7 +3,7 @@ import 'package:front/src/grpc/generated/gateway.pbgrpc.dart';
 import 'package:front/src/grpc/generated/profile.pb.dart';
 import '../models/profile.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:front/core/provider/config_provider.dart';
+import 'package:front/src/providers/grpc_config_provider.dart';
 
 class ProfileService {
   late final ClientChannel channel;

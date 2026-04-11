@@ -24,6 +24,8 @@ services:
       - services/auth/.env
     environment:
       KAFKAJS_NO_PARTITIONER_WARNING: 1
+#    ports:
+#      - "50051:50051"
     volumes:
       - ./shared:/usr/src/app/shared
       - ./services/auth/prisma:/usr/src/app/services/auth/prisma
@@ -36,25 +38,27 @@ services:
         condition: service_healthy
     command: pnpm dlx turbo run dev --parallel
 
-#  profile:
-#    container_name: game-profile
-#    build:
-#      context: .
-#      dockerfile: services/profile/Dockerfile
-#    env_file:
-#      - services/profile/.env
-#    volumes:
-#      - ./shared:/usr/src/app/shared
-#      - ./services/profile/prisma:/usr/src/app/services/profile/prisma
-#      - ./services/profile/src:/usr/src/app/services/profile/src/
-#      - ./services/profile/package.json:/usr/src/app/services/profile/package.json
-#    depends_on:
-#      kafka:
-#        condition: service_healthy
-#      postgres:
-#        condition: service_healthy
-#    command: pnpm dlx turbo run dev --parallel
-#
+  profile:
+    container_name: game-profile
+    build:
+      context: .
+      dockerfile: services/profile/Dockerfile
+    env_file:
+      - services/profile/.env
+  #    ports:
+  #      - "50051:50051"
+    volumes:
+      - ./shared:/usr/src/app/shared
+      - ./services/profile/prisma:/usr/src/app/services/profile/prisma
+      - ./services/profile/src:/usr/src/app/services/profile/src/
+      - ./services/profile/package.json:/usr/src/app/services/profile/package.json
+    depends_on:
+      kafka:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    command: pnpm dlx turbo run dev --parallel
+
 #  engine:
 #    container_name: game-engine
 #    build:
@@ -62,6 +66,8 @@ services:
 #      dockerfile: services/engine/Dockerfile
 #    env_file:
 #      - services/engine/.env
+#  #    ports:
+#  #      - "50051:50051"
 #    volumes:
 #      - ./shared:/usr/src/app/shared
 #      - ./services/engine/prisma:/usr/src/app/services/engine/prisma
@@ -76,6 +82,8 @@ services:
 #      dockerfile: services/fallout/Dockerfile
 #    env_file:
 #      - services/fallout/.env
+#  #    ports:
+#  #      - "50051:50051"
 #    volumes:
 #      - ./shared:/usr/src/app/shared
 #      - ./services/fallout/prisma:/usr/src/app/services/fallout/prisma
@@ -90,6 +98,8 @@ services:
 #      dockerfile: services/pawn/Dockerfile
 #    env_file:
 #      - services/pawn/.env
+#  #    ports:
+#  #      - "50051:50051"
 #    volumes:
 #      - ./shared:/usr/src/app/shared
 #      - ./services/pawn/prisma:/usr/src/app/services/pawn/prisma
@@ -109,6 +119,8 @@ services:
 #      dockerfile: services/spawner/Dockerfile
 #    env_file:
 #      - services/spawner/.env
+#  #    ports:
+#  #      - "50051:50051"
 #    volumes:
 #      - ./shared:/usr/src/app/shared
 #      - ./services/spawner/prisma:/usr/src/app/services/spawner/prisma

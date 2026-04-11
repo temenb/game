@@ -4,7 +4,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:front/src/grpc/generated/user.pbgrpc.dart';
-import 'package:front/core/provider/config_provider.dart';
+import 'package:front/src/providers/grpc_config_provider.dart';
 import 'auth_service.dart'; // чтобы использовать withAuth()
 
 final userServiceProvider = Provider<UserService>((ref) {
