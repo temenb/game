@@ -1,5 +1,6 @@
+import 'package:front/main.dart';
+import 'package:front/src/grpc/generated/profile.pbgrpc.dart';
 import 'package:grpc/grpc.dart';
-import 'package:front/src/grpc/generated/gateway.pbgrpc.dart';
 import 'package:front/src/grpc/generated/profile.pb.dart';
 import '../models/profile.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,23 +8,31 @@ import 'package:front/src/providers/grpc_config_provider.dart';
 
 class ProfileService {
   late final ClientChannel channel;
-  late final GatewayClient gatewayClient;
+  late final ProfileClient profileClient;
 
   ProfileService();
 
-  void init(WidgetRef ref) {
-    final config = ref.read(configProvider);
+  void init(Ref ref) {
+    final config = ref.read(grpcConfigProvider);
+    logger.i(config);
+    logger.i('Init started with config: $config');
     channel = ClientChannel(
       config.grpcHost,
       port: config.grpcPort,
       options: const ChannelOptions(credentials: ChannelCredentials.insecure()),
     );
-    gatewayClient = GatewayClient(channel);
+    profileClient = ProfileClient(channel);
   }
 
   Future<Profile> fetchProfile(String profileId) async {
+    // return Profile(
+    //   id: '1',
+    //   name: 'supernickname',
+    //   email: '', // email не возвращается, можно добавить в proto при необходимости
+    // );
+
     final request = ViewRequest()..id = profileId;
-    final response = await gatewayClient.viewProfile(request);
+    final response = await profileClient.view(request);
     return Profile(
       id: response.id,
       name: response.nickname,

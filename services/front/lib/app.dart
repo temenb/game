@@ -11,9 +11,10 @@ import 'package:front/src/localization/generated/l10n.dart';
 
 class MyApp extends StatelessWidget {
   final AppState state;
-  final SettingService settings;
+  // final SettingService settings;
 
-  const MyApp({required this.state, required this.settings, super.key});
+  // const MyApp({required this.state, required this.settings, super.key});
+  const MyApp({required this.state, super.key});
 
   @override
   Widget build(BuildContext context) {

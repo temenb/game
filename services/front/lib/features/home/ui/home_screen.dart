@@ -55,8 +55,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final settings = ref.watch(settingsProvider);
-    final notifier = ref.read(settingsProvider.notifier);
+    // final settings = ref.watch(settingsProvider);
+    // final notifier = ref.read(settingsProvider.notifier);
 
     return Scaffold(
       appBar: AppBar(

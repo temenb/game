@@ -43,6 +43,8 @@ class SettingNotifier extends StateNotifier<Setting> {
 
 final settingsProvider = StateNotifierProvider<SettingNotifier, Setting>((ref) {
   final service = SettingService();
+
+  // await service.load();
   return SettingNotifier(service);
 });
 

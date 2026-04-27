@@ -1,63 +1,56 @@
+import 'package:front/features/auth/services/device_service.dart';
+import 'package:front/src/grpc/generated/gateway.pbgrpc.dart';
 import 'package:grpc/grpc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/foundation.dart';
 
-import 'package:front/src/grpc/generated/user.pbgrpc.dart';
+import 'package:front/src/grpc/generated/auth.pbgrpc.dart';
 import 'package:front/src/providers/grpc_config_provider.dart';
 import 'auth_service.dart'; // чтобы использовать withAuth()
 
-final userServiceProvider = Provider<UserService>((ref) {
-  final service = UserService();
-  service.init(ref);
-  return service;
-});
-
-class UserService {
-  late final ClientChannel _channel;
-  late final UserClient _client;
-
+class AuthService {
+  final ClientChannel _channel;
+  final GatewayClient _client;
   final _storage = const FlutterSecureStorage();
 
-  void _initClient(String host, int port) {
-    _channel = ClientChannel(
-      host,
-      port: port,
-      options: const ChannelOptions(
-        credentials: ChannelCredentials.insecure(),
-      ),
-    );
-    _client = UserClient(_channel);
+  AuthService(GrpcConfig config)
+      : _channel = ClientChannel(
+    config.grpcHost,
+    port: config.grpcPort,
+    options: const ChannelOptions(
+      credentials: ChannelCredentials.insecure(),
+    ),
+  ),
+        _client = GatewayClient(
+          ClientChannel(
+            config.grpcHost,
+            port: config.grpcPort,
+            options: const ChannelOptions(
+              credentials: ChannelCredentials.insecure(),
+            ),
+          ),
+        );
+
+  Future<String> getOrCreateJwt() async {
+    final existingJwt = await _storage.read(key: 'jwt');
+    if (existingJwt != null) return existingJwt;
+
+    final deviceId = await DeviceService.getDeviceId();
+    final request = AnonymousSignInRequest(deviceId: deviceId);
+    final response = await _client.anonymousSignIn(request);
+    final newJwt = response.accessToken;
+    debugPrint(newJwt);
+    await _storage.write(key: 'jwt', value: newJwt);
+    return newJwt;
   }
 
-  void init(ProviderRef ref) {
-    final config = ref.read(configProvider);
-    _initClient(config.grpcHost, config.grpcPort);
-  }
-
-  void initWithConfig(AppConfig config) {
-    _initClient(config.grpcHost, config.grpcPort);
-  }
-
-  /// Получить профиль пользователя по userId
-  Future<UserResponse> getUser(String userId, AuthService authService) async {
-    final callOptions = await authService.withAuth();
-    final request = GetUserRequest()..userId = userId;
-    final response = await _client.getUser(request, options: callOptions);
-    return response;
-  }
-
-  /// Обновить профиль (например email или имя)
-  Future<UserResponse> updateUser(UpdateUserRequest request, AuthService authService) async {
-    final callOptions = await authService.withAuth();
-    final response = await _client.updateUser(request, options: callOptions);
-    return response;
-  }
-
-  /// Удалить пользователя (если есть такой метод в proto)
-  Future<void> deleteUser(String userId, AuthService authService) async {
-    final callOptions = await authService.withAuth();
-    final request = DeleteUserRequest()..userId = userId;
-    await _client.deleteUser(request, options: callOptions);
+  Future<CallOptions> withAuth() async {
+    final jwt = await getOrCreateJwt();
+    return CallOptions(metadata: {
+      'authorization': 'Bearer $jwt',
+    });
   }
 }
+
+
