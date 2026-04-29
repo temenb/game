@@ -1,32 +1,42 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:front/app_context.dart';
-import 'package:front/app_initializer.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:front/app.dart';
 import 'package:front/app_state.dart';
-import 'package:front/error_app.dart';
-import 'package:front/features/auth/providers/auth_service_provider.dart';
 import 'package:logger/logger.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final logger = Logger();
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  final appState = new AppState();
-
-  runApp(MyApp(
-    state: appState
-  ));
-
+  // Глобальный перехват ошибок Flutter
   FlutterError.onError = (FlutterErrorDetails details) {
     FlutterError.dumpErrorToConsole(details); // стандартный вывод
+    debugPrint(
+      'Flutter error: ${details.exceptionAsString()}\n${details.stack}',
+    );
     logger.e(
       'Flutter error',
       error: details.exception,
       stackTrace: details.stack,
     );
   };
+  
+  // Глобальный перехват ошибок в асинхронных зонах
+  runZonedGuarded(() async {
+    WidgetsFlutterBinding.ensureInitialized();
+
+    await dotenv.load(fileName: ".env");
+
+    final appState = AppState();
+
+    runApp(
+      ProviderScope(
+        child: MyApp(state: appState),
+      ),
+    );
+  }, (error, stack) {
+    debugPrint('Uncaught async error: $error\n$stack');
+    logger.e('Async error', error: error, stackTrace: stack);
+  });
 }
-
-

@@ -3,6 +3,7 @@ export const config = {
   httpPort: process.env.HTTP_PORT || 9090,
   serviceAuthUrl: process.env.SERVICE_AUTH_URL || 'auth:50051',
   serviceProfileUrl: process.env.SERVICE_PROFILE_URL || 'profile:50051',
+  serviceBffUrl: process.env.SERVICE_BFF_URL || 'bff:50051',
   servicePawnUrl: process.env.SERVICE_SHIP_URL || 'pawn:50051',
   serviceSpawnerUrl: process.env.SERVICE_ASTEROID_URL || 'spawner:50051',
   serviceEngineUrl: process.env.SERVICE_ENGINE_URL || 'engine:50051',

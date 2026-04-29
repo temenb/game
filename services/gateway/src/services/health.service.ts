@@ -1,5 +1,6 @@
 import {logger} from '@shared/logger';
 import * as profileClient from '../grpc/clients/profile.client';
+import * as bffClient from '../grpc/clients/bff.client';
 import * as engineClient from '../grpc/clients/engine.client';
 import * as falloutClient from '../grpc/clients/fallout.client';
 import * as authClient from '../grpc/clients/auth.client';
@@ -8,6 +9,8 @@ import * as spawnerClient from '../grpc/clients/spawner.client';
 import * as pawnClient from '../grpc/clients/pawn.client';
 
 const startedAt = Date.now();
+
+///////////////////////////////////////////////////////////////////////////////////
 // const clients = {
 //   auth: authClient,
 //   profile: profileClient,
@@ -30,21 +33,25 @@ const startedAt = Date.now();
 //
 //   const healthReports = await getServicesHealth(service);
 // };
+///////////////////////////////////////////////////////////////////////////////////
+
 
 async function getServicesHealth() {
   const [
     auth,
     profile,
+    bff,
     // engine,
-    // fallout,
+    fallout,
     // mailer,
     // spawner,
     // pawn,
   ] = await Promise.all([
     authClient.health(),
     profileClient.health(),
+    bffClient.health(),
     // engineClient.health(),
-    // falloutClient.health(),
+    falloutClient.health(),
     // mailerClient.health(),
     // spawnerClient.health(),
     // pawnClient.health(),
@@ -53,8 +60,9 @@ async function getServicesHealth() {
   return {
     auth,
     profile,
+    bff,
     // engine,
-    // fallout,
+    fallout,
     // mailer,
     // spawner,
     // pawn,

@@ -11,13 +11,13 @@ service Profile {
   rpc Livez(common.empty.Empty) returns (common.health.LiveStatus);
   rpc Readyz(common.empty.Empty) returns (common.health.ReadyStatus);
 
-//  rpc Upsert (UpsertRequest) returns (ProfileObject);
+  rpc Upsert (UpsertRequest) returns (ProfileObject);
   rpc View (ViewRequest) returns (ProfileObject);
 }
 
-//message UpsertRequest {
-//  string owner_id = 1;
-//}
+message UpsertRequest {
+  string owner_id = 1;
+}
 
 message ViewRequest {
   string id = 1;

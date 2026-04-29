@@ -6,7 +6,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:front/src/grpc/generated/auth.pbgrpc.dart';
-import 'package:front/src/providers/grpc_config_provider.dart';
+import 'package:front/src/providers/config/grpc_provider.dart';
 import 'auth_service.dart'; // чтобы использовать withAuth()
 
 class AuthService {

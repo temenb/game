@@ -24,9 +24,9 @@ async function startGrpc() {
 async function bootstrap() {
   try {
     await Promise.all([startGrpc()]);
-    logger.info('🚀 Auth успешно запущен: gRPC');
+    logger.info('🚀 Engine успешно запущен: gRPC');
   } catch (err) {
-    logger.error('💥 Ошибка запуска Auth:', err);
+    logger.error('💥 Ошибка запуска Engine:', err);
     process.exit(1);
   }
 

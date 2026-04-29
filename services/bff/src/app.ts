@@ -24,9 +24,9 @@ async function startGrpc() {
 async function bootstrap() {
   try {
     await Promise.all([startGrpc()]);
-    logger.info('🚀 Fallout успешно запущен: gRPC');
+    logger.info('🚀 Bff успешно запущен: gRPC');
   } catch (err) {
-    logger.error('💥 Ошибка запуска Fallout:', err);
+    logger.error('💥 Ошибка запуска Bff:', err);
     process.exit(1);
   }
 
