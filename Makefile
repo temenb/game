@@ -46,7 +46,7 @@ prisma-migrate:
 	@echo '🚀 Apply migrations...'
 	@for service in $(PRISMA_SERVICES); do \
 		echo "▶️  Running migrations for $$service..."; \
-		docker compose exec -T -w /usr/src/app/services/$$service $$service npx prisma migrate dev --schema=prisma/schema.prisma; \
+		docker compose exec -T -w /usr/src/app/$(SERVICE_DIR)/$$service $$service npx prisma migrate dev --schema=prisma/schema.prisma; \
 	done
 
 prisma-generate:

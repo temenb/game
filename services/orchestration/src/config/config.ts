@@ -1,6 +1,5 @@
 export const config = {
   grpcPort: process.env.GRPC_PORT || 50051,
-  httpPort: process.env.HTTP_PORT || 9090,
   serviceAuthUrl: process.env.SERVICE_AUTH_URL || 'auth:50051',
   serviceProfileUrl: process.env.SERVICE_PROFILE_URL || 'profile:50051',
   serviceOrchestrationUrl: process.env.SERVICE_BFF_URL || 'orchestration:50051',
@@ -13,6 +12,7 @@ export const config = {
   rabbitPass: process.env.RABBIT_PASS || 'password',
   jwtAccessSecret: process.env.JWT_ACCESS_SECRET || "your_access_secret",
   jwtRefreshSecret: process.env.JWT_REFRESH_SECRET || "your_refresh_secret",
+  postgresUrl: process.env.POSTGRES_URL || '',
 };
 
 export default config;

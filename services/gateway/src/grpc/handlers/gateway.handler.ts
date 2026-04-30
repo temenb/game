@@ -2,9 +2,10 @@ import * as grpc from '@grpc/grpc-js';
 import * as AuthGrpc from '../generated/auth';
 import * as ProfileGrpc from '../generated/profile';
 import * as AuthService from '../../services/auth.service';
-import * as ProfileService from '../../services/profile.service';
+import * as OrchestrationService from '../../services/orchestration.service';
 import {callbackError} from './callback.error';
 import logger from "@shared/logger";
+import * as EmptyGrpc from "../generated/common/empty";
 
 
 export const anonymousSignIn = async (
@@ -24,13 +25,12 @@ export const anonymousSignIn = async (
   }
 };
 
-export const viewProfile = async (
-  call: grpc.ServerUnaryCall<ProfileGrpc.ViewRequest, ProfileGrpc.ProfileObject>,
+export const viewMyProfile = async (
+  call: grpc.ServerUnaryCall<EmptyGrpc.Empty, ProfileGrpc.ProfileObject>,
   callback: grpc.sendUnaryData<ProfileGrpc.ProfileObject>
 ) => {
-  const { id } = call.request;
   try {
-    const result = await ProfileService.getProfile(id);
+    const result = await OrchestrationService.viewMyProfile();
     callback(null, result);
   } catch (err: any) {
     logger.log(err);

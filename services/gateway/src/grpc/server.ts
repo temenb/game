@@ -8,7 +8,7 @@ const server = new grpc.Server();
 server.addService(GatewayService, {
 
   anonymousSignIn: gatewayHandler.anonymousSignIn,
-  viewProfile: gatewayHandler.viewProfile,
+  viewProfile: gatewayHandler.viewMyProfile,
   health: healthHandler.health,
   status: healthHandler.status,
   livez: healthHandler.livez,

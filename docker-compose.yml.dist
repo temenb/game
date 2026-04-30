@@ -38,20 +38,20 @@ services:
         condition: service_healthy
     command: pnpm dlx turbo run dev --parallel
 
-  bff:
-    container_name: game-bff
+  orchestration:
+    container_name: game-orchestration
     build:
       context: .
-      dockerfile: services/bff/Dockerfile
+      dockerfile: services/orchestration/Dockerfile
     env_file:
-      - services/bff/.env
+      - services/orchestration/.env
   #    ports:
   #      - "50051:50051"
     volumes:
       - ./shared:/usr/src/app/shared
-      - ./services/bff/prisma:/usr/src/app/services/bff/prisma
-      - ./services/bff/src:/usr/src/app/services/bff/src/
-      - ./services/bff/package.json:/usr/src/app/services/bff/package.json
+      - ./services/orchestration/prisma:/usr/src/app/services/orchestration/prisma
+      - ./services/orchestration/src:/usr/src/app/services/orchestration/src/
+      - ./services/orchestration/package.json:/usr/src/app/services/orchestration/package.json
     command: pnpm dlx turbo run dev --parallel
 
   profile:

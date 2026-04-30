@@ -24,9 +24,9 @@ async function startGrpc() {
 async function bootstrap() {
   try {
     await Promise.all([startGrpc()]);
-    logger.info('🚀 Bff успешно запущен: gRPC');
+    logger.info('🚀 Orchestration успешно запущен: gRPC');
   } catch (err) {
-    logger.error('💥 Ошибка запуска Bff:', err);
+    logger.error('💥 Ошибка запуска Orchestration:', err);
     process.exit(1);
   }
 

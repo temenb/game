@@ -1,6 +1,6 @@
 import {logger} from '@shared/logger';
 import * as profileClient from '../grpc/clients/profile.client';
-import * as bffClient from '../grpc/clients/bff.client';
+import * as orchestrationClient from '../grpc/clients/orchestration.client';
 import * as engineClient from '../grpc/clients/engine.client';
 import * as falloutClient from '../grpc/clients/fallout.client';
 import * as authClient from '../grpc/clients/auth.client';
@@ -40,7 +40,7 @@ async function getServicesHealth() {
   const [
     auth,
     profile,
-    bff,
+    orchestration,
     // engine,
     fallout,
     // mailer,
@@ -49,7 +49,7 @@ async function getServicesHealth() {
   ] = await Promise.all([
     authClient.health(),
     profileClient.health(),
-    bffClient.health(),
+    orchestrationClient.health(),
     // engineClient.health(),
     falloutClient.health(),
     // mailerClient.health(),
@@ -60,7 +60,7 @@ async function getServicesHealth() {
   return {
     auth,
     profile,
-    bff,
+    orchestration,
     // engine,
     fallout,
     // mailer,
