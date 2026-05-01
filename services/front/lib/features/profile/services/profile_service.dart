@@ -1,30 +1,23 @@
-import 'package:front/features/auth/services/user_service.dart';
-import 'package:front/src/grpc/generated/profile.pbgrpc.dart';
-import 'package:grpc/grpc.dart';
+import 'package:front/features/auth/services/auth_service.dart';
+import 'package:front/src/grpc/generated/common/empty.pb.dart' as $0;
+import 'package:front/src/grpc/generated/gateway.pbgrpc.dart';
+import 'package:grpc/service_api.dart';
+import 'package:logger/logger.dart';
+
 import '../models/profile.dart';
 
+final logger = Logger();
+
 class ProfileService {
-  final ClientChannel channel;
+  final GatewayClient gatewayClient;
   final AuthService authService;
-  late final ProfileClient profileClient;
 
-  ProfileService(this.channel, this.authService) : profileClient = ProfileClient(channel);
+  ProfileService(this.gatewayClient, this.authService);
 
 
-  Future<Profile> fetchProfile() async {
-    await authService.getOrCreateJwt();
-
-    return Profile(
-      id: 'response.id',
-      name: 'response.nickname',
-      email: '',
-    );
-    // final request = ViewRequest()..id = profileId;
-    // final response = await profileClient.view(request);
-    // return Profile(
-    //   id: response.id,
-    //   name: response.nickname,
-    //   email: '',
-    // );
+  Future<Profile> viewProfile() async {
+    final options = await authService.optionsWithAuth();
+    final response = await gatewayClient.viewMyProfile($0.Empty(), options: options);
+    return Profile(id: response.id, name: response.nickname, email: '');
   }
 }

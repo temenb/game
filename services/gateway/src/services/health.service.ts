@@ -76,7 +76,7 @@ export const health = async () => {
   // Формируем объект: { auth: true, profile: true, engine: true, ... }
   const components: Record<string, string> = {};
   for (const [key, value] of Object.entries(healthReports.components ?? {})) {
-    components[key] = (value?.healthy ?? false)? 'ok' :  'fail';
+    components[key] = (value?.healthy ?? false) ? 'ok' : 'fail';
   }
 
   return {
@@ -96,7 +96,7 @@ export const fullHealth = async () => {
     healthy: Object.values(reports).every(r => r?.healthy === true),
   };
 
-    result.components = reports;
+  result.components = reports;
 
   return result;
 }

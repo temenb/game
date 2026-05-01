@@ -1,6 +1,4 @@
-import config from "../config/config";
 // import {upsertProfile} from "../services/profile.service";
-import logger from '@shared/logger';
 
 export async function initConsumers() {
   // await consumeEvent(config.kafkaTopicUserCreated, async ({topic, partition, message}): Promise<void> => {

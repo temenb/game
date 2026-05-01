@@ -6,13 +6,14 @@ import * as OrchestrationService from '../../services/orchestration.service';
 import {callbackError} from './callback.error';
 import logger from "@shared/logger";
 import * as EmptyGrpc from "../generated/common/empty";
+import {forwardAuthMetadata} from "../../lib/authMetadata";
 
 
 export const anonymousSignIn = async (
   call: grpc.ServerUnaryCall<AuthGrpc.AnonymousSignInRequest, AuthGrpc.AuthObject>,
   callback: grpc.sendUnaryData<AuthGrpc.AuthObject>
 ) => {
-  const { deviceId } = call.request;
+  const {deviceId} = call.request;
   try {
     const result = await AuthService.anonymousSignIn(deviceId);
     callback(null, result);
@@ -30,7 +31,8 @@ export const viewMyProfile = async (
   callback: grpc.sendUnaryData<ProfileGrpc.ProfileObject>
 ) => {
   try {
-    const result = await OrchestrationService.viewMyProfile();
+    const metadata = forwardAuthMetadata(call);
+    const result = await OrchestrationService.viewMyProfile(metadata);
     callback(null, result);
   } catch (err: any) {
     logger.log(err);

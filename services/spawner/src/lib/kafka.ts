@@ -30,7 +30,7 @@ export async function initKafka(clientId: string) {
 
 export async function broadcastEvent(topic: string, messages: ProducerRecord['messages']) {
   if (!producer) throw new Error('Kafka producer not initialized');
-  await producer.send({ topic, messages });
+  await producer.send({topic, messages});
 }
 
 
@@ -38,7 +38,7 @@ export async function ensureTopic(topic: string) {
   const topics = await admin.listTopics()
   if (!topics.includes(topic)) {
     await admin.createTopics({
-      topics: [{ topic, numPartitions: 1, replicationFactor: 1 }]
+      topics: [{topic, numPartitions: 1, replicationFactor: 1}]
     })
     console.log(`✅ Created topic: ${topic}`)
   }
@@ -50,7 +50,7 @@ export async function consumeEvent(
   handler: (payload: EachMessagePayload) => Promise<void>,
   groupId: string = 'default-group'
 ) {
-  consumer = kafka.consumer({ groupId });
+  consumer = kafka.consumer({groupId});
   await consumer.connect();
 
   logger.log('herere', topic, groupId);

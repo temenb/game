@@ -4,12 +4,13 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 class GrpcConfig {
   final String grpcHost;
   final int grpcPort;
+
   // final Environment env;
 
   factory GrpcConfig.fromEnv() {
-      final host = dotenv.env['GATEWAY_HOST'] ?? 'localhost';
-      final port = int.tryParse(dotenv.env['GATEWAY_PORT'] ?? '') ?? 50051;
-      return GrpcConfig(grpcHost: host, grpcPort: port);
+    final host = dotenv.env['GATEWAY_HOST'] ?? 'localhost';
+    final port = int.tryParse(dotenv.env['GATEWAY_PORT'] ?? '') ?? 50051;
+    return GrpcConfig(grpcHost: host, grpcPort: port);
   }
 
   const GrpcConfig({

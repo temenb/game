@@ -35,4 +35,3 @@ class SettingService {
     await prefs.setBool(_vibrationKey, value);
   }
 }
-

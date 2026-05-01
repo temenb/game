@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class ErrorApp extends StatelessWidget {
   final String error;
+
   const ErrorApp({required this.error, super.key});
 
   @override

@@ -1,4 +1,4 @@
-import { PawnService } from './generated/pawn';
+import {PawnService} from './generated/pawn';
 import * as grpc from '@grpc/grpc-js';
 import * as pawnHandler from "./grpc/handlers/pawn.handler";
 

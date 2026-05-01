@@ -14,4 +14,3 @@ final environmentProvider = Provider<Environment>((ref) {
       return Environment.dev;
   }
 });
-

@@ -1,17 +1,17 @@
-import { PrismaClient } from '@prisma/client';
+import {PrismaClient} from '@prisma/client';
 import {createSpawnerProducerConfig, kafkaConfig} from "../config/kafka.config";
-import { createProducer } from '@shared/kafka';
+import {createProducer} from '@shared/kafka';
 
 const prisma = new PrismaClient();
 
 export async function findSpawner(ownerId: string) {
-  return prisma.spawner.findFirst({ where: { ownerId } });
+  return prisma.spawner.findFirst({where: {ownerId}});
 }
 
 
 export async function upsertSpawner(ownerId: string) {
 
-  const existing = await prisma.spawner.findFirst({ where: { ownerId } });
+  const existing = await prisma.spawner.findFirst({where: {ownerId}});
 
   if (existing) {
     return existing;
@@ -33,9 +33,8 @@ export async function upsertSpawner(ownerId: string) {
   });
 
 
-
   const producer = await createProducer(kafkaConfig);
-  producer.send(createSpawnerProducerConfig, [{ value: JSON.stringify({ id: spawner.id }) }]);
+  producer.send(createSpawnerProducerConfig, [{value: JSON.stringify({id: spawner.id})}]);
 
   return spawner;
 }

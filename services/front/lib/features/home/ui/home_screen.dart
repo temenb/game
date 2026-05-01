@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:front/src/localization/generated/l10n.dart';
-import 'package:front/features/setting/providers/setting_provider.dart';
-import 'package:front/features/setting/ui/settings_screen.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -89,10 +87,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           PopupMenuButton<String>(
             icon: const Icon(Icons.menu),
             itemBuilder: (context) => [
-              const PopupMenuItem(value: 'settings', child: Text('⚙️ Настройки')),
+              const PopupMenuItem(
+                value: 'settings',
+                child: Text('⚙️ Настройки'),
+              ),
               const PopupMenuDivider(),
-              const PopupMenuItem(value: 'google', child: Text('🔐 Войти через Google')),
-              const PopupMenuItem(value: 'facebook', child: Text('🔐 Войти через Facebook')),
+              const PopupMenuItem(
+                value: 'google',
+                child: Text('🔐 Войти через Google'),
+              ),
+              const PopupMenuItem(
+                value: 'facebook',
+                child: Text('🔐 Войти через Facebook'),
+              ),
             ],
             onSelected: (value) => _handleMenuSelection(context, value),
           ),

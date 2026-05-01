@@ -24,8 +24,12 @@ class User {
     email: json['email'],
     passwordHash: json['passwordHash'],
     googleId: json['googleId'],
-    lastLoginAt: json['lastLoginAt'] != null ? DateTime.parse(json['lastLoginAt']) : null,
-    lastActiveAt: json['lastActiveAt'] != null ? DateTime.parse(json['lastActiveAt']) : null,
+    lastLoginAt: json['lastLoginAt'] != null
+        ? DateTime.parse(json['lastLoginAt'])
+        : null,
+    lastActiveAt: json['lastActiveAt'] != null
+        ? DateTime.parse(json['lastActiveAt'])
+        : null,
     createdAt: DateTime.parse(json['createdAt']),
     updatedAt: DateTime.parse(json['updatedAt']),
   );

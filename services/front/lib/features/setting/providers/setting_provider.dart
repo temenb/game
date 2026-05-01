@@ -1,16 +1,19 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../services/setting_service.dart';
+
 import '../models/setting.dart';
+import '../services/setting_service.dart';
 
 class SettingNotifier extends StateNotifier<Setting> {
   final SettingService _service;
 
   SettingNotifier(this._service)
-      : super(const Setting(
+    : super(
+        const Setting(
           soundEnabled: true,
           effectsSoundEnabled: true,
           vibrationEnabled: true,
-        )) {
+        ),
+      ) {
     _load();
   }
 
@@ -47,4 +50,3 @@ final settingsProvider = StateNotifierProvider<SettingNotifier, Setting>((ref) {
   // await service.load();
   return SettingNotifier(service);
 });
-

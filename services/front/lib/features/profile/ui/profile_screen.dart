@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../provider/profile_provider.dart';
+import 'package:front/features/profile/provider/profile_provider.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -20,7 +19,10 @@ class ProfileScreen extends ConsumerWidget {
             children: [
               Text('ID: ${profile.id}', style: const TextStyle(fontSize: 18)),
               const SizedBox(height: 8),
-              Text('Nickname: ${profile.name}', style: const TextStyle(fontSize: 18)),
+              Text(
+                'Nickname: ${profile.name}',
+                style: const TextStyle(fontSize: 18),
+              ),
             ],
           ),
         ),

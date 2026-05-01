@@ -1,4 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../models/setting.dart';
 
 class SettingService {
@@ -47,4 +48,3 @@ class SettingService {
     );
   }
 }
-

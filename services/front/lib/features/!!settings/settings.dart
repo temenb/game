@@ -1,10 +1,12 @@
-export 'settings_model.dart';
-export 'settings_provider.dart';
-export 'settings_service.dart';
-export 'settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'settings_provider.dart';
+
+export 'settings_model.dart';
+export 'settings_provider.dart';
+export 'settings_screen.dart';
+export 'settings_service.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -38,4 +40,3 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 }
-

@@ -6,7 +6,7 @@ import 'package:logger/logger.dart';
 
 final logger = Logger();
 
-final grpcClientProvider = Provider<GatewayClient>((ref) {
+final gatewayClientProvider = Provider<GatewayClient>((ref) {
   final config = GrpcConfig.fromEnv();;
   logger.i(config);
   logger.i('Init started with config: $config');
@@ -18,7 +18,7 @@ final grpcClientProvider = Provider<GatewayClient>((ref) {
     ),
   );
 
-  final grpcClient = GatewayClient(channel);
+  final gatewayClient = GatewayClient(channel);
 
-  return grpcClient;
+  return gatewayClient;
 });

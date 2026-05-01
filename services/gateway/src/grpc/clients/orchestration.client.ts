@@ -3,6 +3,7 @@ import * as OrchestrationGrpc from '../generated/orchestration';
 import * as ProfileGrpc from '../generated/profile';
 import * as HealthGrpc from '../generated/common/health';
 import * as EmptyGrpc from '../generated/common/empty';
+import logger from '@shared/logger';
 import config from '../../config/config';
 import {GrpcClientManager} from '@shared/grpc-client-manager';
 
@@ -30,7 +31,8 @@ export const readyz = (): Promise<HealthGrpc.ReadyStatus | null> => {
   return orchestrationManager.call((client, cb) => client.readyz(grpcRequest, cb));
 };
 
-export const viewMyProfile = (): Promise<ProfileGrpc.ProfileObject | null> => {
+export const viewMyProfile = (metadata: grpc.Metadata): Promise<ProfileGrpc.ProfileObject | null> => {
   const grpcRequest: EmptyGrpc.Empty = {};
-  return orchestrationManager.call((client, cb) => client.viewMyProfile(grpcRequest, cb));
+  logger.log(metadata);
+  return orchestrationManager.call((client, cb) => client.viewMyProfile(grpcRequest, metadata, cb));
 };

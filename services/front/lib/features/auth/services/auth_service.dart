@@ -1,17 +1,15 @@
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:grpc/grpc.dart';
-import 'package:front/src/grpc/generated/gateway.pbgrpc.dart';
-import 'package:front/src/grpc/generated/auth.pbgrpc.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:front/features/auth/services/device_service.dart';
-import 'package:front/src/providers/config/grpc_provider.dart';
+import 'package:front/src/grpc/generated/auth.pbgrpc.dart';
+import 'package:front/src/grpc/generated/gateway.pbgrpc.dart';
+import 'package:grpc/grpc.dart';
 
 class AuthService {
-  final ClientChannel channel;
   final GatewayClient gatewayClient;
   final _storage = const FlutterSecureStorage();
 
-  AuthService(this.channel) : gatewayClient = GatewayClient(channel);
+  AuthService(this.gatewayClient);
 
   Future<String> getOrCreateJwt() async {
     final existingJwt = await _storage.read(key: 'jwt');
@@ -26,10 +24,8 @@ class AuthService {
     return newJwt;
   }
 
-  Future<CallOptions> withAuth() async {
+  Future<CallOptions> optionsWithAuth() async {
     final jwt = await getOrCreateJwt();
-    return CallOptions(metadata: {
-      'authorization': 'Bearer $jwt',
-    });
+    return CallOptions(metadata: {'authorization': 'Bearer $jwt'});
   }
 }
