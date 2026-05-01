@@ -14,5 +14,6 @@ service Gateway {
   rpc Readyz(common.empty.Empty) returns (common.health.ReadyStatus);
 
   rpc AnonymousSignIn(auth.AnonymousSignInRequest) returns (auth.AuthObject);
+  rpc RefreshTokens (auth.RefreshTokensRequest) returns (auth.AuthObject);
   rpc ViewMyProfile(common.empty.Empty) returns (profile.ProfileObject);
 }

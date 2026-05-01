@@ -26,6 +26,23 @@ export const anonymousSignIn = async (
   }
 };
 
+export const refreshTokens = async (
+  call: grpc.ServerUnaryCall<AuthGrpc.RefreshTokensRequest, AuthGrpc.AuthObject>,
+  callback: grpc.sendUnaryData<AuthGrpc.AuthObject>
+) => {
+  const {token} = call.request;
+  try {
+    const result = await AuthService.refreshTokens(token);
+    callback(null, result);
+  } catch (err: any) {
+    logger.log(err);
+    callback({
+      code: grpc.status.INTERNAL,
+      message: err.message,
+    }, undefined);
+  }
+};
+
 export const viewMyProfile = async (
   call: grpc.ServerUnaryCall<EmptyGrpc.Empty, ProfileGrpc.ProfileObject>,
   callback: grpc.sendUnaryData<ProfileGrpc.ProfileObject>

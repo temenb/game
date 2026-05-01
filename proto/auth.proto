@@ -28,7 +28,6 @@ message RegisterRequest {
 message AuthObject {
   string access_token = 1;
   string refresh_token = 2;
-  string user_id = 3;
 }
 
 message LoginRequest {
