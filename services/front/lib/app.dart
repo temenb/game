@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:front/app_state.dart';
+import 'package:front/features/game_board/ui/game_board_screen.dart';
 import 'package:front/features/home/ui/home_screen.dart';
 import 'package:front/features/profile/ui/profile_screen.dart';
 import 'package:front/features/setting/ui/settings_screen.dart';
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
           '/': (context) => const HomeScreen(),
           '/settings': (context) => SettingsScreen(),
           '/profile': (context) => const ProfileScreen(),
+          '/game': (context) => const GameBoardScreen(),
         },
       ),
     );

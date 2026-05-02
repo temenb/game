@@ -54,6 +54,38 @@ services:
       - ./services/orchestration/package.json:/usr/src/app/services/orchestration/package.json
     command: pnpm dlx turbo run dev --parallel
 
+  game-board:
+    container_name: game-game-board
+    build:
+      context: .
+      dockerfile: services/game-board/Dockerfile
+    env_file:
+      - services/game-board/.env
+#    ports:
+#      - "50051:50051"
+    volumes:
+      - ./shared:/usr/src/app/shared
+      - ./services/game-board/prisma:/usr/src/app/services/game-board/prisma
+      - ./services/game-board/src:/usr/src/app/services/game-board/src/
+      - ./services/game-board/package.json:/usr/src/app/services/game-board/package.json
+    command: pnpm dlx turbo run dev --parallel
+
+  streaming:
+    container_name: game-streaming
+    build:
+      context: .
+      dockerfile: services/streaming/Dockerfile
+    env_file:
+      - services/streaming/.env
+#    ports:
+#      - "50051:50051"
+    volumes:
+      - ./shared:/usr/src/app/shared
+      - ./services/streaming/prisma:/usr/src/app/services/streaming/prisma
+      - ./services/streaming/src:/usr/src/app/services/streaming/src/
+      - ./services/streaming/package.json:/usr/src/app/services/streaming/package.json
+    command: pnpm dlx turbo run dev --parallel
+
   profile:
     container_name: game-profile
     build:
@@ -75,21 +107,21 @@ services:
         condition: service_healthy
     command: pnpm dlx turbo run dev --parallel
 
-#  engine:
-#    container_name: game-engine
-#    build:
-#      context: .
-#      dockerfile: services/engine/Dockerfile
-#    env_file:
-#      - services/engine/.env
-#  #    ports:
-#  #      - "50051:50051"
-#    volumes:
-#      - ./shared:/usr/src/app/shared
-#      - ./services/engine/prisma:/usr/src/app/services/engine/prisma
-#      - ./services/engine/src:/usr/src/app/services/engine/src/
-#      - ./services/engine/package.json:/usr/src/app/services/engine/package.json
-#    command: pnpm dlx turbo run dev --parallel
+ engine:
+   container_name: game-engine
+   build:
+     context: .
+     dockerfile: services/engine/Dockerfile
+   env_file:
+     - services/engine/.env
+ #    ports:
+ #      - "50051:50051"
+   volumes:
+     - ./shared:/usr/src/app/shared
+     - ./services/engine/prisma:/usr/src/app/services/engine/prisma
+     - ./services/engine/src:/usr/src/app/services/engine/src/
+     - ./services/engine/package.json:/usr/src/app/services/engine/package.json
+   command: pnpm dlx turbo run dev --parallel
 
   fallout:
     container_name: game-fallout
@@ -106,50 +138,7 @@ services:
       - ./services/fallout/src:/usr/src/app/services/fallout/src/
       - ./services/fallout/package.json:/usr/src/app/services/fallout/package.json
     command: pnpm dlx turbo run dev --parallel
-#
-#  pawn:
-#    container_name: game-pawn
-#    build:
-#      context: .
-#      dockerfile: services/pawn/Dockerfile
-#    env_file:
-#      - services/pawn/.env
-#  #    ports:
-#  #      - "50051:50051"
-#    volumes:
-#      - ./shared:/usr/src/app/shared
-#      - ./services/pawn/prisma:/usr/src/app/services/pawn/prisma
-#      - ./services/pawn/src:/usr/src/app/services/pawn/src/
-#      - ./services/pawn/package.json:/usr/src/app/services/pawn/package.json
-#    command: pnpm dlx turbo run dev --parallel
-#    depends_on:
-#      kafka:
-#        condition: service_healthy
-#      postgres:
-#        condition: service_healthy
-#
-#  spawner:
-#    container_name: game-spawner
-#    build:
-#      context: .
-#      dockerfile: services/spawner/Dockerfile
-#    env_file:
-#      - services/spawner/.env
-#  #    ports:
-#  #      - "50051:50051"
-#    volumes:
-#      - ./shared:/usr/src/app/shared
-#      - ./services/spawner/prisma:/usr/src/app/services/spawner/prisma
-#      - ./services/spawner/src:/usr/src/app/services/spawner/src/
-#      - ./services/spawner/package.json:/usr/src/app/services/spawner/package.json
-#    depends_on:
-#      kafka:
-#        condition: service_healthy
-#      postgres:
-#        condition: service_healthy
-#    command: pnpm dlx turbo run dev --parallel
-#
-#
+
 #  mailer:
 #    container_name: game-mailer
 #    build:

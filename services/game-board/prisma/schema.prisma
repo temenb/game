@@ -1,0 +1,58 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model gameBoard {
+  id         String   @id @default(uuid())
+  ownerId    String   @unique
+  nickname   String   @default("guest")
+  level      Int      @default(1)
+  rating     Int      @default(1000)
+  experience Int      @default(0)
+
+  achievements owner_achievement[]
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model owner_achievement {
+  id            String   @id @default(uuid())
+  gameBoardId     String
+  achievementId String
+
+  gameBoard       gameBoard  @relation(fields: [gameBoardId], references: [id])
+  achievement   achievement @relation(fields: [achievementId], references: [id])
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([gameBoardId, achievementId])
+}
+
+model achievement {
+  id          String   @id @default(uuid())
+  title       String   @unique
+  description String?
+
+  Owners       owner_achievement[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model experience_level {
+  level        Int    @id
+  nextRequired Int
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+

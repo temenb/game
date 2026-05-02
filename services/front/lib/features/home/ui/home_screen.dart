@@ -12,10 +12,6 @@ class HomeScreen extends ConsumerStatefulWidget {
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   String _currentLocaleCode = 'ru';
 
-  void _showProfileDialog(BuildContext context) {
-    Navigator.pushNamed(context, '/profile');
-  }
-
   void _handleLocaleChange(BuildContext context, String code) {
     Locale newLocale;
     switch (code) {
@@ -60,7 +56,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.person),
-          onPressed: () => _showProfileDialog(context),
+          onPressed: () => Navigator.pushNamed(context, '/profile'),
         ),
         actions: [
           Padding(
@@ -111,9 +107,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           children: [
             const SizedBox(height: 40),
             ElevatedButton(
-              onPressed: () {
-                // TODO: переход к игровому экрану
-              },
+              onPressed: () => Navigator.pushNamed(context, '/game'),
               style: ElevatedButton.styleFrom(
                 shape: const CircleBorder(),
                 padding: const EdgeInsets.all(60),
