@@ -54,20 +54,20 @@ services:
       - ./services/orchestration/package.json:/usr/src/app/services/orchestration/package.json
     command: pnpm dlx turbo run dev --parallel
 
-  game-board:
-    container_name: game-game-board
+  battle:
+    container_name: game-battle
     build:
       context: .
-      dockerfile: services/game-board/Dockerfile
+      dockerfile: services/battle/Dockerfile
     env_file:
-      - services/game-board/.env
+      - services/battle/.env
 #    ports:
 #      - "50051:50051"
     volumes:
       - ./shared:/usr/src/app/shared
-      - ./services/game-board/prisma:/usr/src/app/services/game-board/prisma
-      - ./services/game-board/src:/usr/src/app/services/game-board/src/
-      - ./services/game-board/package.json:/usr/src/app/services/game-board/package.json
+      - ./services/battle/prisma:/usr/src/app/services/battle/prisma
+      - ./services/battle/src:/usr/src/app/services/battle/src/
+      - ./services/battle/package.json:/usr/src/app/services/battle/package.json
     command: pnpm dlx turbo run dev --parallel
 
   streaming:

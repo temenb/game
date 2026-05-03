@@ -1,9 +1,12 @@
 import grpcServer from './grpc/server';
 import * as grpc from '@grpc/grpc-js';
 import logger from '@shared/logger';
+import kafkaConfig, {createUserConsumerConfig} from "./config/kafka.config";
+import {createConsumer} from '@shared/kafka';
+// import {userCreated} from "./lib/consumers";
+import {initBoss} from "@shared/pg-boss";
 
-
-const GRPC_PORT = Number(process.env.GRPC_PORT ?? 50051);
+const GRPC_PORT = process.env.GRPC_PORT ?? '50051';
 
 async function startGrpc() {
   return new Promise<void>((resolve, reject) => {
@@ -22,12 +25,29 @@ async function startGrpc() {
   });
 }
 
+async function startPgBoss() {
+  return new Promise<void>(() => {
+    initBoss(() => new Promise<void>(() => {
+      // startUserCreatedWorker(kafkaConfig);
+    }));
+  });
+}
+
+async function createKafkaConsumers() {
+  // return new Promise<void>(() => {
+  //   createConsumer(kafkaConfig, {
+  //     ...createUserConsumerConfig,
+  //     handler: userCreated,
+  //   });
+  // });
+}
+
 async function bootstrap() {
   try {
-    await Promise.all([startGrpc()]);
-    logger.info('🚀 Streaming успешно запущен: gRPC + HTTP');
+    await Promise.all([startGrpc(), startPgBoss(), createKafkaConsumers()]);
   } catch (err) {
-    logger.error('💥 Ошибка запуска Streaming:', err);
+    logger.error('💥 Ошибка запуска Battle:', err);
+    logger.log('here')
     process.exit(1);
   }
 
@@ -36,6 +56,8 @@ async function bootstrap() {
     grpcServer.forceShutdown();
     process.exit(0);
   });
+
 }
 
 bootstrap();
+

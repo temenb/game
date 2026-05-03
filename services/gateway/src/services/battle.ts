@@ -1,5 +1,4 @@
 import * as OrchestrationClient from "../grpc/clients/orchestration.client";
-import * as grpc from "@grpc/grpc-js";
 
 export const health = async () =>
   await OrchestrationClient.health();
@@ -12,6 +11,3 @@ export const livez = async () =>
 
 export const readyz = async () =>
   await OrchestrationClient.readyz();
-
-export const viewMyProfile = async (metadata: grpc.Metadata) =>
-  await OrchestrationClient.viewMyProfile(metadata);

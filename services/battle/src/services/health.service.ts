@@ -1,18 +1,20 @@
 import logger from "@shared/logger";
-// import prisma from '../lib/prisma';
+import prisma from '../lib/prisma';
 import kafkaConfig from "../config/kafka.config";
 import {createProducer} from '@shared/kafka';
 
 const startedAt = Date.now();
 
 export const health = async () => {
-  const [kafkaOk] = await Promise.all([
+  const [pgOk, kafkaOk] = await Promise.all([
+    checkPostgres(),
     checkKafka(),
   ]);
 
   return {
-    healthy: kafkaOk,
+    healthy: pgOk && kafkaOk,
     components: {
+      postgres: pgOk ? 'ok' : 'fail',
       kafka: kafkaOk ? 'ok' : 'fail',
     },
   };
@@ -20,7 +22,7 @@ export const health = async () => {
 
 export const status = async () => {
   return {
-    name: 'auth',
+    name: 'battle',
     version: process.env.BUILD_VERSION || 'dev',
     env: process.env.NODE_ENV || 'development',
     uptime: Math.floor((Date.now() - startedAt) / 1000),
@@ -35,16 +37,30 @@ export const livez = async () => {
 };
 
 export const readyz = async () => {
-  const [kafkaOk] = await Promise.all([
+  const [pgOk, kafkaOk] = await Promise.all([
+    checkPostgres(),
     checkKafka(),
   ]);
 
-  return {ready: kafkaOk};
+  return {ready: pgOk && kafkaOk};
 };
+
+export const checkPostgres = async (): Promise<boolean> => {
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+    return true;
+  } catch (err) {
+    console.error('❌ Prisma/Postgres health check failed:', err);
+    return false;
+  }
+};
+
 
 export const checkKafka = async (): Promise<boolean> => {
   try {
-    const producer = await createProducer(kafkaConfig);
+    const {clientId, brokers} = kafkaConfig;
+    const config = {clientId, brokers};
+    const producer = await createProducer(config);
     producer.send({topic: 'healthcheck'}, [{value: 'ping'}]);
     return true;
   } catch (err) {

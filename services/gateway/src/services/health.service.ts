@@ -1,12 +1,12 @@
 import {logger} from '@shared/logger';
+import * as authClient from '../grpc/clients/auth.client';
 import * as profileClient from '../grpc/clients/profile.client';
 import * as orchestrationClient from '../grpc/clients/orchestration.client';
 import * as engineClient from '../grpc/clients/engine.client';
 import * as falloutClient from '../grpc/clients/fallout.client';
-import * as authClient from '../grpc/clients/auth.client';
+import * as battleClient from '../grpc/clients/battle.client';
+import * as streamingClient from '../grpc/clients/streaming.client';
 // import * as mailerClient from '../grpc/clients/mailer.client';
-import * as spawnerClient from '../grpc/clients/spawner.client';
-import * as pawnClient from '../grpc/clients/pawn.client';
 
 const startedAt = Date.now();
 
@@ -17,8 +17,6 @@ const startedAt = Date.now();
 //   // engine: engineClient,
 //   // fallout: falloutClient,
 //   // mailer: mailerClient,
-//   // spawner: spawnerClient,
-//   // pawn: pawnClient,
 // };
 //
 //
@@ -41,31 +39,31 @@ async function getServicesHealth() {
     auth,
     profile,
     orchestration,
-    // engine,
+    engine,
     fallout,
+    battle,
+    streaming,
     // mailer,
-    // spawner,
-    // pawn,
   ] = await Promise.all([
     authClient.health(),
     profileClient.health(),
     orchestrationClient.health(),
-    // engineClient.health(),
+    engineClient.health(),
     falloutClient.health(),
+    battleClient.health(),
+    streamingClient.health(),
     // mailerClient.health(),
-    // spawnerClient.health(),
-    // pawnClient.health(),
   ]);
 
   return {
     auth,
     profile,
     orchestration,
-    // engine,
+    engine,
     fallout,
+    battle,
+    streaming,
     // mailer,
-    // spawner,
-    // pawn,
   };
 }
 

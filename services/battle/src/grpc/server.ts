@@ -1,11 +1,13 @@
-import {StreamingService} from './generated/streaming';
+import {BattleService} from './generated/battle';
 import * as grpc from '@grpc/grpc-js';
-import * as streamingHandler from "./handlers/streaming.handler";
+import * as battleHandler from "./handlers/battle.handler";
 import * as healthHandler from "./handlers/health.handler";
 
 const server = new grpc.Server();
 
-server.addService(StreamingService, {
+server.addService(BattleService, {
+  // upsert: battleHandler.upsert,
+  // viewBattleByUser: battleHandler.viewBattleByUser,
 
   health: healthHandler.health,
   status: healthHandler.status,
