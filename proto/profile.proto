@@ -12,7 +12,7 @@ service Profile {
   rpc Readyz(common.empty.Empty) returns (common.health.ReadyStatus);
 
   rpc UpsertProfile (UserIdRequest) returns (ProfileObject);
-  rpc ViewProfileByUser (UserIdRequest) returns (ProfileObject);
+  rpc GetProfileByUser (UserIdRequest) returns (ProfileObject);
 }
 
 message UserIdRequest {

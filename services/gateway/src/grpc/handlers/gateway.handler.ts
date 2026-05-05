@@ -1,7 +1,10 @@
 import * as grpc from '@grpc/grpc-js';
 import * as AuthGrpc from '../generated/auth';
+import * as EngineGrpc from '../generated/engine';
+import * as BattleGrpc from '../generated/battle';
 import * as ProfileGrpc from '../generated/profile';
 import * as AuthService from '../../services/auth.service';
+import * as EngineService from '../../services/engine.service';
 import * as OrchestrationService from '../../services/orchestration.service';
 import {callbackError} from './callback.error';
 import logger from "@shared/logger";
@@ -36,10 +39,7 @@ export const refreshTokens = async (
     callback(null, result);
   } catch (err: any) {
     logger.log(err);
-    callback({
-      code: grpc.status.INTERNAL,
-      message: err.message,
-    }, undefined);
+    callbackError(callback, err);
   }
 };
 
@@ -50,6 +50,41 @@ export const viewMyProfile = async (
   try {
     const metadata = forwardAuthMetadata(call);
     const result = await OrchestrationService.viewMyProfile(metadata);
+    callback(null, result);
+  } catch (err: any) {
+    logger.log(err);
+    callback({
+      code: grpc.status.INTERNAL,
+      message: err.message,
+    }, undefined);
+  }
+};
+
+export const newBattle = async (
+  call: grpc.ServerUnaryCall<EmptyGrpc.Empty, BattleGrpc.BattleObject>,
+  callback: grpc.sendUnaryData<BattleGrpc.BattleObject>
+) => {
+  try {
+    const metadata = forwardAuthMetadata(call);
+    const result = await EngineService.newBattle(metadata);
+    callback(null, result);
+  } catch (err: any) {
+    logger.log(err);
+    callback({
+      code: grpc.status.INTERNAL,
+      message: err.message,
+    }, undefined);
+  }
+};
+
+export const makeMove = async (
+  call: grpc.ServerUnaryCall<BattleGrpc.MakeMoveRequest, ProfileGrpc.ProfileObject>,
+  callback: grpc.sendUnaryData<BattleGrpc.BattleObject>
+) => {
+  try {
+    const metadata = forwardAuthMetadata(call);
+    const {battleId, colIdx, rowIdx} = call.request;
+    const result = await EngineService.makeMove(metadata, battleId, colIdx, rowIdx);
     callback(null, result);
   } catch (err: any) {
     logger.log(err);

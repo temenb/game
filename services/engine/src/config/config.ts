@@ -1,9 +1,7 @@
 export const config = {
   port: process.env.GRPC_PORT || 50051,
-  // accessTokenSecret: process.env.JWT_ACCESS_SECRET!,
-  // refreshTokenSecret: process.env.JWT_REFRESH_SECRET!,
-  // accessTokenExpiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN || '15m',
-  // refreshTokenExpiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN || '7d',
+  serviceBattleUrl: process.env.SERVICE_BATTLE_URL || 'battle:50051',
+  jwtAccessSecret: process.env.JWT_ACCESS_SECRET!,
 };
 
 export default config;

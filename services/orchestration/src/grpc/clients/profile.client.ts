@@ -11,5 +11,5 @@ const profileManager = new GrpcClientManager<ProfileGrpc.ProfileClient>(() => {
 
 export const viewProfile = (userId: string): Promise<ProfileGrpc.ProfileObject | null> => {
   const grpcRequest: ProfileGrpc.UserIdRequest = {userId};
-  return profileManager.call((client, cb) => client.viewProfileByUser(grpcRequest, cb));
+  return profileManager.call((client, cb) => client.getProfileByUser(grpcRequest, cb));
 };

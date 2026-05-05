@@ -9,7 +9,6 @@ export const config = {
   rabbitUser: process.env.RABBIT_USER || 'user',
   rabbitPass: process.env.RABBIT_PASS || 'password',
   jwtAccessSecret: process.env.JWT_ACCESS_SECRET || "your_access_secret",
-  jwtRefreshSecret: process.env.JWT_REFRESH_SECRET || "your_refresh_secret",
   postgresUrl: process.env.POSTGRES_URL || '',
 };
 

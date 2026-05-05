@@ -16,5 +16,7 @@ enum CellValue {
 
 model Battle {
   id        String   @id @default(uuid())
-  cells     Json
+  cells     CellValue[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

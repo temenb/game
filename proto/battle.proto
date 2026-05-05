@@ -2,6 +2,7 @@ syntax = "proto3";
 
 import "common/health.proto";
 import "common/empty.proto";
+//import "google/protobuf/timestamp.proto";
 
 package battle;
 
@@ -10,4 +11,31 @@ service Battle {
   rpc Status(common.empty.Empty) returns (common.health.StatusInfo);
   rpc Livez(common.empty.Empty) returns (common.health.LiveStatus);
   rpc Readyz(common.empty.Empty) returns (common.health.ReadyStatus);
+
+  rpc NewBattle (common.empty.Empty) returns (BattleObject);
+  rpc MakeMove (MakeMoveRequest) returns (BattleObject);
+  rpc GetBattle (GetBattleRequest) returns (BattleObject);
+}
+
+message MakeMoveRequest {
+  string battleId = 1;
+  int32 colIdx = 2;
+  int32 rowIdx = 3;
+}
+
+message GetBattleRequest {
+  string battleId = 1;
+}
+
+enum CellValue {
+  CELL_EMPTY = 0;
+  CELL_X     = 1;
+  CELL_O     = 2;
+}
+
+message BattleObject {
+  string id = 1;
+  repeated CellValue cells = 2;
+//  google.protobuf.Timestamp createdAt = 3;
+//  google.protobuf.Timestamp updatedAt = 4;
 }

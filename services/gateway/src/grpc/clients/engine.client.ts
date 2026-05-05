@@ -1,5 +1,6 @@
 import * as grpc from '@grpc/grpc-js';
 import * as EngineGrpc from '../generated/engine';
+import * as BattleGrpc from '../generated/battle';
 import * as HealthGrpc from '../generated/common/health';
 import * as EmptyGrpc from '../generated/common/empty';
 import config from '../../config/config';
@@ -27,5 +28,15 @@ export const livez = (): Promise<HealthGrpc.LiveStatus | null> => {
 export const readyz = (): Promise<HealthGrpc.ReadyStatus | null> => {
   const grpcRequest: EmptyGrpc.Empty = {};
   return engineManager.call((client, cb) => client.readyz(grpcRequest, cb));
+};
+
+export const newBattle = (metadata: grpc.Metadata): Promise<BattleGrpc.BattleObject | null> => {
+  const grpcRequest: EmptyGrpc.Empty = {};
+  return engineManager.call((client, cb) => client.newBattle(grpcRequest, metadata, cb));
+};
+
+export const makeMove = (metadata: grpc.Metadata, battleId: string, colIdx: number, rowIdx: number): Promise<BattleGrpc.BattleObject | null> => {
+  const grpcRequest: BattleGrpc.MakeMoveRequest = {battleId, colIdx, rowIdx};
+  return engineManager.call((client, cb) => client.makeMove(grpcRequest, metadata, cb));
 };
 

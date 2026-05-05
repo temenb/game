@@ -13,6 +13,8 @@ server.addService(BattleService, {
   status: healthHandler.status,
   livez: healthHandler.livez,
   readyz: healthHandler.readyz,
+
+  getBattle: battleHandler.getBattle,
 });
 
 export default server;

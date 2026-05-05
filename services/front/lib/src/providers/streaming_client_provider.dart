@@ -1,13 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:front/src/config/gateway_config.dart';
-import 'package:front/src/grpc/generated/gateway.pbgrpc.dart';
+import 'package:front/src/config/streaming_config.dart';
+import 'package:front/src/grpc/generated/streaming.pbgrpc.dart';
 import 'package:grpc/grpc.dart';
 import 'package:logger/logger.dart';
 
 final logger = Logger();
 
-final gatewayClientProvider = Provider<GatewayClient>((ref) {
-  final config = GatewayConfig.fromEnv();;
+final streamingClientProvider = Provider<StreamingClient>((ref) {
+  final config = StreamingConfig.fromEnv();;
   logger.i(config);
   logger.i('Init started with config: $config');
   final channel = ClientChannel(
@@ -18,7 +18,7 @@ final gatewayClientProvider = Provider<GatewayClient>((ref) {
     ),
   );
 
-  final gatewayClient = GatewayClient(channel);
+  final gatewayClient = StreamingClient(channel);
 
   return gatewayClient;
 });
