@@ -14,7 +14,7 @@ export const readyz = async () =>
   await EngineClient.readyz();
 
 export const makeMove = async (metadata: grpc.Metadata, battleId: string, colIdx: number, rowIdx: number) =>
-  await EngineClient.makeMove(metadata, battleId, colIdx, rowIdx);
+  EngineClient.makeMove(metadata, battleId, colIdx, rowIdx);
 
 export const newBattle = async (metadata: grpc.Metadata) =>
-  await EngineClient.newBattle(metadata);
+  EngineClient.newBattle(metadata);

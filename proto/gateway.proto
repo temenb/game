@@ -18,6 +18,7 @@ service Gateway {
   rpc RefreshTokens (auth.RefreshTokensRequest) returns (auth.AuthObject);
   rpc ViewMyProfile(common.empty.Empty) returns (profile.ProfileObject);
 
-  rpc NewBattle (common.empty.Empty) returns (battle.BattleObject);
-  rpc MakeMove (battle.MakeMoveRequest) returns (battle.BattleObject);
+
+  rpc NewBattle (common.empty.Empty) returns (common.empty.Empty);
+  rpc MakeMove (battle.MakeMoveRequest) returns (common.empty.Empty);
 }

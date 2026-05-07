@@ -12,8 +12,8 @@ service Engine {
   rpc Livez(common.empty.Empty) returns (common.health.LiveStatus);
   rpc Readyz(common.empty.Empty) returns (common.health.ReadyStatus);
 
-  rpc NewBattle (common.empty.Empty) returns (battle.BattleObject);
-  rpc MakeMove (battle.MakeMoveRequest) returns (battle.BattleObject);
+  rpc NewBattle (common.empty.Empty) returns (common.empty.Empty);
+  rpc MakeMove (battle.MakeMoveRequest) returns (common.empty.Empty);
 }
 
 

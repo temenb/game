@@ -11,12 +11,12 @@ import {forwardAuthMetadata} from "../../lib/authMetadata";
 
 export const newBattle = async (
   call: grpc.ServerUnaryCall<EmptyGrpc.Empty, BattleGrpc.BattleObject>,
-  callback: grpc.sendUnaryData<BattleGrpc.BattleObject>
+  callback: grpc.sendUnaryData<EmptyGrpc.Empty>
 ) => {
   try {
     const metadata = forwardAuthMetadata(call);
-    const result = await battleService.newBattle(metadata);
-    callback(null, result);
+    battleService.newBattle(metadata);
+    callback(null, {});
   } catch (err: any) {
     logger.log(err);
     callbackError(callback, err);
@@ -25,13 +25,13 @@ export const newBattle = async (
 
 export const makeMove = async (
   call: grpc.ServerUnaryCall<BattleGrpc.MakeMoveRequest, ProfileGrpc.ProfileObject>,
-  callback: grpc.sendUnaryData<BattleGrpc.BattleObject>
+  callback: grpc.sendUnaryData<EmptyGrpc.Empty>
 ) => {
   try {
     const metadata = forwardAuthMetadata(call);
     const {battleId, colIdx, rowIdx} = call.request;
-    const result = await battleService.makeMove(metadata, battleId, colIdx, rowIdx);
-    callback(null, result);
+    battleService.makeMove(metadata, battleId, colIdx, rowIdx);
+    callback(null, {});
   } catch (err: any) {
     logger.log(err);
     callbackError(callback, err);

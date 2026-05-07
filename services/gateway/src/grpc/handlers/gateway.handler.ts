@@ -62,12 +62,12 @@ export const viewMyProfile = async (
 
 export const newBattle = async (
   call: grpc.ServerUnaryCall<EmptyGrpc.Empty, BattleGrpc.BattleObject>,
-  callback: grpc.sendUnaryData<BattleGrpc.BattleObject>
+  callback: grpc.sendUnaryData<EmptyGrpc.Empty>
 ) => {
   try {
     const metadata = forwardAuthMetadata(call);
-    const result = await EngineService.newBattle(metadata);
-    callback(null, result);
+    EngineService.newBattle(metadata);
+    callback(null, {});
   } catch (err: any) {
     logger.log(err);
     callback({
@@ -79,13 +79,13 @@ export const newBattle = async (
 
 export const makeMove = async (
   call: grpc.ServerUnaryCall<BattleGrpc.MakeMoveRequest, ProfileGrpc.ProfileObject>,
-  callback: grpc.sendUnaryData<BattleGrpc.BattleObject>
+  callback: grpc.sendUnaryData<EmptyGrpc.Empty>
 ) => {
   try {
     const metadata = forwardAuthMetadata(call);
     const {battleId, colIdx, rowIdx} = call.request;
-    const result = await EngineService.makeMove(metadata, battleId, colIdx, rowIdx);
-    callback(null, result);
+    EngineService.makeMove(metadata, battleId, colIdx, rowIdx);
+    callback(null, {});
   } catch (err: any) {
     logger.log(err);
     callback({
