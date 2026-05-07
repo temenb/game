@@ -11,9 +11,9 @@ import getUserIdFromMetadata from "../lib/getUserIdFromMetadata";
 const startedAt = Date.now();
 
 export const newBattle = async (userId: string) => {
-  await prisma.$transaction(async (tx) => {
-    await enqueueEventTx(kafkaProducersConfig.topicBattleNew, {userId: userId}, tx);
-  });
+  // await prisma.$transaction(async (tx) => {
+  //   await enqueueEventTx(kafkaProducersConfig.topicBattleNew, {userId: userId}, tx);
+  // });
 };
 
 export const makeMove = async (userId: string, battleId: string, colIdx: number, rowIdx: number) => {
