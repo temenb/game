@@ -1,9 +1,10 @@
 import {Prisma} from '@prisma/client';
+import prisma from './prisma';
 
 export async function enqueueEventTx(
-  tx: Prisma.TransactionClient,
   topic: string,
-  data: object
+  data: object,
+  tx: Prisma.TransactionClient = prisma
 ): Promise<string | undefined> {
   const jobName = `event.${topic}`;
 
@@ -12,11 +13,9 @@ export async function enqueueEventTx(
   const result = await tx.$queryRaw<{ send: string }[]>`
       insert into pgboss.job (name, data)
       values (${jobName}, ${JSON.stringify(data)}::jsonb)
-      returning id
+      returning send
   `;
 
   return result[0]?.send;
 }
-
-
 

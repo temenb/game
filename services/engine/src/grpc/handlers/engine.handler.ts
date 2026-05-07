@@ -14,8 +14,8 @@ export const newBattle = async (
   callback: grpc.sendUnaryData<EmptyGrpc.Empty>
 ) => {
   try {
-    const metadata = forwardAuthMetadata(call);
-    battleService.newBattle(metadata);
+    const userId = getUserIdFromMetadata(call);
+    battleService.newBattle(userId);
     callback(null, {});
   } catch (err: any) {
     logger.log(err);
@@ -28,9 +28,9 @@ export const makeMove = async (
   callback: grpc.sendUnaryData<EmptyGrpc.Empty>
 ) => {
   try {
-    const metadata = forwardAuthMetadata(call);
+    const userId = getUserIdFromMetadata(call);
     const {battleId, colIdx, rowIdx} = call.request;
-    battleService.makeMove(metadata, battleId, colIdx, rowIdx);
+    battleService.makeMove(userId, battleId, colIdx, rowIdx);
     callback(null, {});
   } catch (err: any) {
     logger.log(err);
