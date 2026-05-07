@@ -2,16 +2,16 @@ import {boss} from '@shared/pg-boss';
 import {Job} from 'pg-boss';
 import {createProducer, KafkaConfig} from '@shared/kafka';
 import logger from "@shared/logger";
+import {kafkaProducersConfig} from "../config/kafka.config";
 
-export const pgBossKafkaEventName = 'user.created';
 export const pgBossKafkaEventPrefix = 'event.';
 
 export async function startUserCreatedWorker(kafkaConfig: KafkaConfig) {
   const producer = await createProducer(kafkaConfig);
 
-  await boss().createQueue(pgBossKafkaEventPrefix + pgBossKafkaEventName);
+  await boss().createQueue(pgBossKafkaEventPrefix + kafkaProducersConfig.topicBattleNew);
 
-  await boss().work(pgBossKafkaEventPrefix + pgBossKafkaEventName, async (job: Job) => {
+  await boss().work(pgBossKafkaEventPrefix + kafkaProducersConfig.topicBattleNew, async (job: Job) => {
     try {
 
       const j = Array.isArray(job) ? job[0] : job;
@@ -23,7 +23,7 @@ export async function startUserCreatedWorker(kafkaConfig: KafkaConfig) {
       const topic = name.replace('event.', '');
 
       await producer.send({topic}, data);
-      logger.log('pgBoss user.created event successfully done');
+      logger.log('pgBoss ' + kafkaProducersConfig.topicBattleNew + ' event successfully done');
 
       return true;
     } catch (err) {
@@ -31,5 +31,5 @@ export async function startUserCreatedWorker(kafkaConfig: KafkaConfig) {
       throw err;
     }
   });
-  logger.log('Kafka user.created event worker started');
+  logger.log('Kafka ' + kafkaProducersConfig.topicBattleNew + ' event worker started');
 }

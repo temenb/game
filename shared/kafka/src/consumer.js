@@ -19,10 +19,16 @@ async function createConsumer(config, consumerConfig) {
     }
     await admin.disconnect();
     await consumer.connect();
+    // logger.log(consumerConfig.topic)
     // Подписка с retry на случай гонки
     for (let attempt = 0; attempt < 5; attempt++) {
         try {
             await consumer.subscribe({ topic: consumerConfig.topic, fromBeginning: true });
+            await consumer.run({
+                eachMessage: async ({ topic, partition, message }) => {
+                    await consumerConfig.handler(topic, partition, message);
+                },
+            });
             break;
         }
         catch (err) {

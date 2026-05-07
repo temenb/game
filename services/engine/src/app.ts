@@ -1,6 +1,7 @@
 import grpcServer from './grpc/server';
 import * as grpc from '@grpc/grpc-js';
 import logger from '@shared/logger';
+import {initBoss} from "@shared/pg-boss";
 
 const GRPC_PORT = process.env.GRPC_PORT ?? '50051';
 
@@ -18,6 +19,14 @@ async function startGrpc() {
         resolve();
       }
     );
+  });
+}
+
+async function startPgBoss() {
+  return new Promise<void>(() => {
+    initBoss(() => new Promise<void>(() => {
+      startNewBattleWorker(kafkaConfig);
+    }));
   });
 }
 
