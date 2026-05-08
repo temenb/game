@@ -6,7 +6,7 @@ const kafkaMap = new Map();
 function getKafkaInstance(config) {
     const { clientId, brokers } = config;
     if (!kafkaMap.has(clientId)) {
-        const brokerList = brokers.split(',').map(b => b.trim());
+        const brokerList = brokers.map(b => b.trim());
         const kafka = new kafkajs_1.Kafka({
             clientId,
             brokers: brokerList,

@@ -45,7 +45,7 @@ export const readyz = async () => {
 export const checkKafka = async (): Promise<boolean> => {
   try {
     const producer = await createProducer(kafkaConfig);
-    producer.send({topic: 'healthcheck'}, [{value: 'ping'}]);
+    producer.send('healthcheck', [{value: 'ping'}]);
     return true;
   } catch (err) {
     logger.error('❌ Kafka health check failed:', err);

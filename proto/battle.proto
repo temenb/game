@@ -12,8 +12,8 @@ service Battle {
   rpc Livez(common.empty.Empty) returns (common.health.LiveStatus);
   rpc Readyz(common.empty.Empty) returns (common.health.ReadyStatus);
 
-  rpc NewBattle (common.empty.Empty) returns (BattleObject);
-  rpc MakeMove (MakeMoveRequest) returns (BattleObject);
+//  rpc NewBattle (common.empty.Empty) returns (BattleObject);
+//  rpc MakeMove (MakeMoveRequest) returns (BattleObject);
   rpc GetBattle (GetBattleRequest) returns (BattleObject);
 }
 

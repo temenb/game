@@ -6,7 +6,7 @@ import logger from "@shared/logger";
 export async function createConsumer(config: KafkaConfig, consumerConfig: ConsumerConfig) {
   const kafka = getKafkaInstance(config);
   const admin = kafka.admin();
-  const consumer = kafka.consumer({ groupId: consumerConfig.groupId });
+  const consumer = kafka.consumer({ groupId: config.groupId });
 
   await admin.connect();
 

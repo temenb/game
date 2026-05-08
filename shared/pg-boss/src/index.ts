@@ -45,7 +45,7 @@ export async function startWorker(kafkaConfig: KafkaConfig, topic: string) {
 
       const topic = name.replace('event.', '');
 
-      await producer.send({topic}, data);
+      await producer.send(topic, data);
       logger.log('pgBoss ' + topic + ' event successfully done');
 
       return true;

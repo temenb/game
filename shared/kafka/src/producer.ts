@@ -7,7 +7,7 @@ export async function createProducer(config: KafkaConfig) {
   await producer.connect();
 
   return {
-    send: async ({ topic }: ProducerConfig, message: any) => {
+    send: async (topic: String, message: any) => {
       await producer.send({
         topic,
         messages: [{ value: JSON.stringify(message) }],

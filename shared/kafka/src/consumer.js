@@ -6,7 +6,7 @@ const kafkajs_1 = require("kafkajs");
 async function createConsumer(config, consumerConfig) {
     const kafka = (0, register_1.getKafkaInstance)(config);
     const admin = kafka.admin();
-    const consumer = kafka.consumer({ groupId: consumerConfig.groupId });
+    const consumer = kafka.consumer({ groupId: config.groupId });
     await admin.connect();
     // Проверка существования топика
     const metadata = await admin.fetchTopicMetadata();
