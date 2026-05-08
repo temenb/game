@@ -1,6 +1,5 @@
 import logger from '@shared/logger';
 import {createProducer, KafkaConfig} from "@shared/kafka";
-export * from './enqueueEvent';
 import {Job} from 'pg-boss';
 
 const { PgBoss } = require('pg-boss');
@@ -37,6 +36,9 @@ export async function startWorker(kafkaConfig: KafkaConfig, topic: string) {
 
   await boss().createQueue(pgBossKafkaEventPrefix + topic);
 
+
+  logger.log('startWorker ' + pgBossKafkaEventPrefix);
+  logger.log('startWorker ' + pgBossKafkaEventPrefix + topic);
   await boss().work(pgBossKafkaEventPrefix + topic, async (job: Job) => {
     try {
 

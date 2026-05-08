@@ -18,13 +18,16 @@ enum Status {
   New
   Active
   Finished
+  Abandoned
 }
 
 model Battle {
-  id        String   @id @default(uuid())
-  cells     CellValue[]
-  status    Status
-  Winner    String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         String   @id @default(uuid())
+  players    String[]
+  cells      CellValue[]
+  status     Status
+  Winner     String?
+  lastMoveAt DateTime @default(now())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
