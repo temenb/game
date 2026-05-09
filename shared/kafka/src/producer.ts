@@ -1,5 +1,5 @@
 import { getKafkaInstance } from './register';
-import { KafkaConfig, ProducerConfig } from './types';
+import { KafkaConfig } from './types';
 
 export async function createProducer(config: KafkaConfig) {
   const kafka = getKafkaInstance(config);
@@ -7,7 +7,7 @@ export async function createProducer(config: KafkaConfig) {
   await producer.connect();
 
   return {
-    send: async (topic: String, message: any) => {
+    send: async (topic: string, message: any) => {
       await producer.send({
         topic,
         messages: [{ value: JSON.stringify(message) }],

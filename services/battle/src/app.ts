@@ -47,7 +47,6 @@ async function bootstrap() {
     await Promise.all([startGrpc(), startPgBoss(), createKafkaConsumers()]);
   } catch (err) {
     logger.error('💥 Ошибка запуска Battle:', err);
-    logger.log('here')
     process.exit(1);
   }
 

@@ -14,6 +14,10 @@ export async function createConsumer(config: KafkaConfig, consumerConfig: Consum
   const metadata = await admin.fetchTopicMetadata();
   const topicExists = metadata.topics.some(t => t.name === consumerConfig.topic);
 
+  logger.log('createConsumer config');
+  logger.log(config);
+  logger.log('createConsumer consumerConfig');
+  logger.log(consumerConfig);
   if (!topicExists) {
     await admin.createTopics({
       topics: [{ topic: consumerConfig.topic, numPartitions: 1 }],
@@ -32,12 +36,6 @@ export async function createConsumer(config: KafkaConfig, consumerConfig: Consum
   for (let attempt = 0; attempt < 5; attempt++) {
     try {
       await consumer.subscribe({ topic: consumerConfig.topic, fromBeginning: true });
-      await consumer.run({
-        eachMessage: async ({ topic, partition, message }) => {
-          await consumerConfig.handler(topic, partition, message);
-        },
-
-      });
       break;
     } catch (err) {
       if (
@@ -52,13 +50,19 @@ export async function createConsumer(config: KafkaConfig, consumerConfig: Consum
   }
 
   await consumer.run({
-    eachMessage: async ({ message }) => {
+    eachMessage: async ({ topic, partition, message }) => {
       const value = message.value?.toString();
       if (value) {
-        await consumerConfig.handler(JSON.parse(value));
+        await consumerConfig.handler(
+          topic,
+          partition,
+          JSON.parse(value)
+        );
       }
     },
+    retry: { retries: 10, initialRetryTime: 1000 }
   });
+
 
   return consumer;
 }

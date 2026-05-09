@@ -6,5 +6,5 @@ export type KafkaConfig = {
 
 export type ConsumerConfig = {
   topic: string;
-  handler: (messages: any) => Promise<void>;
+  handler: (topic: string, partition: number, message: any) => Promise<void>;
 };
