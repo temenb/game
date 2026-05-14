@@ -36,8 +36,6 @@ export async function startWorker(kafkaConfig: KafkaConfig, topic: string) {
 
   await boss().createQueue(pgBossKafkaEventPrefix + topic);
 
-
-  logger.log('startWorker ' + pgBossKafkaEventPrefix);
   logger.log('startWorker ' + pgBossKafkaEventPrefix + topic);
   await boss().work(pgBossKafkaEventPrefix + topic, async (job: Job) => {
     try {

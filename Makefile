@@ -57,6 +57,17 @@ prisma-generate:
 		docker compose exec -T -w /usr/src/app/services/$$service $$service npx prisma generate; \
     done
 
+reset:
+	docker stop $$(docker ps -aq) || true
+	docker rm $$(docker ps -aq) || true
+	docker volume rm $$(docker volume ls -q) || true
+	docker compose up -d
+	@make prisma-migrate
+	docker stop $$(docker ps -aq) || true
+	docker rm $$(docker ps -aq) || true
+	docker compose up -d
+
+
 seed:
 	@echo "🌱 Запуск сидов"
 	@for service in $(PRISMA_SERVICES); do \

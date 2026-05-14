@@ -140,6 +140,7 @@ services:
     command: pnpm dlx turbo run dev --parallel
 
   kafka-ui:
+    container_name: game-kafka-ui
     image: provectuslabs/kafka-ui:latest
     ports:
       - "8080:8080"

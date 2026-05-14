@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:front/app_state.dart';
+import 'package:front/features/auth/providers/auth_service_provider.dart';
 import 'package:front/features/battle/ui/battle_screen.dart';
 import 'package:front/features/home/ui/home_screen.dart';
 import 'package:front/features/profile/ui/profile_screen.dart';

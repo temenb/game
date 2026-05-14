@@ -5,6 +5,9 @@ import 'package:front/src/grpc/generated/auth.pbgrpc.dart';
 import 'package:front/src/grpc/generated/gateway.pbgrpc.dart';
 import 'package:grpc/grpc.dart';
 import 'package:jwt_decode/jwt_decode.dart';
+import 'package:logger/logger.dart';
+
+final logger = Logger();
 
 class AuthService {
   final GatewayClient gatewayClient;
@@ -12,7 +15,13 @@ class AuthService {
 
   AuthService(this.gatewayClient);
 
+  Future<void> init() async {
+    await getOrCreateJwt();
+  }
+
   Future<String> getOrCreateJwt() async {
+    // await _storage.deleteAll();
+
     final existingJwt = await _storage.read(key: 'jwt');
     if (existingJwt != null && !Jwt.isExpired(existingJwt)) {
       return existingJwt;
@@ -44,6 +53,8 @@ class AuthService {
 
   Future<CallOptions> optionsWithAuth() async {
     final jwt = await getOrCreateJwt();
+
+    logger.d('-----------debug options witn auth - jwt = ' + jwt);
     return CallOptions(metadata: {'authorization': 'Bearer $jwt'});
   }
 }

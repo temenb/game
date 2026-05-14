@@ -14,6 +14,9 @@ class ProfileService {
   ProfileService(this.gatewayClient, this.authService);
 
   Future<Profile> viewProfile() async {
+
+    logger.d('-----------------------------------------debug profile service');
+
     final options = await authService.optionsWithAuth();
     final response = await gatewayClient.viewMyProfile(
       $0.Empty(),
