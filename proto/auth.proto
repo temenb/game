@@ -6,18 +6,18 @@ import "common/empty.proto";
 package auth;
 
 service Auth {
-  rpc Health(common.empty.Empty) returns (common.health.HealthReport);
-  rpc Status(common.empty.Empty) returns (common.health.StatusInfo);
-  rpc Livez(common.empty.Empty) returns (common.health.LiveStatus);
-  rpc Readyz(common.empty.Empty) returns (common.health.ReadyStatus);
+  rpc Health (common.empty.Empty) returns (common.health.HealthReport);
+  rpc Status (common.empty.Empty) returns (common.health.StatusInfo);
+  rpc Livez (common.empty.Empty) returns (common.health.LiveStatus);
+  rpc Readyz (common.empty.Empty) returns (common.health.ReadyStatus);
 
   rpc Register (RegisterRequest) returns (AuthObject);
   rpc Login (LoginRequest) returns (AuthObject);
   rpc Logout (LogoutRequest) returns (LogoutResponse);
   rpc RefreshTokens (RefreshTokensRequest) returns (AuthObject);
-  rpc ForgotPassword(ForgotPasswordRequest) returns (common.empty.Empty);
-  rpc ResetPassword(ResetPasswordRequest) returns (AuthObject);
-  rpc AnonymousSignIn(AnonymousSignInRequest) returns (AuthObject);
+  rpc ForgotPassword (ForgotPasswordRequest) returns (common.empty.Empty);
+  rpc ResetPassword (ResetPasswordRequest) returns (AuthObject);
+  rpc AnonymousSignIn (AnonymousSignInRequest) returns (AuthObject);
 }
 
 message RegisterRequest {

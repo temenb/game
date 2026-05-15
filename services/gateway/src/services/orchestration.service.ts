@@ -12,6 +12,3 @@ export const livez = async () =>
 
 export const readyz = async () =>
   await OrchestrationClient.readyz();
-
-export const viewMyProfile = async (metadata: grpc.Metadata) =>
-  await OrchestrationClient.viewMyProfile(metadata);

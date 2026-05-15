@@ -7,21 +7,23 @@ import "common/empty.proto";
 package battle;
 
 service Battle {
-  rpc Health(common.empty.Empty) returns (common.health.HealthReport);
-  rpc Status(common.empty.Empty) returns (common.health.StatusInfo);
-  rpc Livez(common.empty.Empty) returns (common.health.LiveStatus);
-  rpc Readyz(common.empty.Empty) returns (common.health.ReadyStatus);
+  rpc Health (common.empty.Empty) returns (common.health.HealthReport);
+  rpc Status (common.empty.Empty) returns (common.health.StatusInfo);
+  rpc Livez (common.empty.Empty) returns (common.health.LiveStatus);
+  rpc Readyz (common.empty.Empty) returns (common.health.ReadyStatus);
 
 //  rpc NewBattle (common.empty.Empty) returns (BattleObject);
 //  rpc MakeMove (MakeMoveRequest) returns (BattleObject);
   rpc GetBattle (GetBattleRequest) returns (BattleObject);
 }
 
-message MakeMoveRequest {
-  string battleId = 1;
-  int32 colIdx = 2;
-  int32 rowIdx = 3;
+message ClientEvent {
+  string playerId = 1;
+  string battleId = 2;
+  int32 cellIndex = 3;
+  string moveType = 4;
 }
+
 
 message GetBattleRequest {
   string battleId = 1;

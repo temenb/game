@@ -13,11 +13,11 @@ class BattleService {
   BattleService(this.gatewayClient, this.authService);
 
   Future<Battle> viewBattle() async {
-    // final options = await authService.optionsWithAuth();
-    // final response = await gatewayClient.viewMyBattle(
-    //   $0.Empty(),
-    //   options: options,
-    // );
+    final options = await authService.optionsWithAuth();
+    final response = await gatewayClient.viewMyBattle(
+      $0.Empty(),
+      options: options,
+    );
     return Battle(id: 'response.id', name: 'response.nickname', email: '');
   }
 }

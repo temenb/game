@@ -7,10 +7,8 @@ import "profile.proto";
 package orchestration;
 
 service Orchestration {
-  rpc Health(common.empty.Empty) returns (common.health.HealthReport);
-  rpc Status(common.empty.Empty) returns (common.health.StatusInfo);
-  rpc Livez(common.empty.Empty) returns (common.health.LiveStatus);
-  rpc Readyz(common.empty.Empty) returns (common.health.ReadyStatus);
-
-  rpc ViewMyProfile(common.empty.Empty) returns (profile.ProfileObject);
+  rpc Health (common.empty.Empty) returns (common.health.HealthReport);
+  rpc Status (common.empty.Empty) returns (common.health.StatusInfo);
+  rpc Livez (common.empty.Empty) returns (common.health.LiveStatus);
+  rpc Readyz (common.empty.Empty) returns (common.health.ReadyStatus);
 }

@@ -19,8 +19,11 @@ class AuthService {
     await getOrCreateJwt();
   }
 
+  Future<void> clearJwt() async {
+    await _storage.delete(key: 'jwt');
+  }
+
   Future<String> getOrCreateJwt() async {
-    // await _storage.deleteAll();
 
     final existingJwt = await _storage.read(key: 'jwt');
     if (existingJwt != null && !Jwt.isExpired(existingJwt)) {
@@ -54,7 +57,7 @@ class AuthService {
   Future<CallOptions> optionsWithAuth() async {
     final jwt = await getOrCreateJwt();
 
-    logger.d('-----------debug options witn auth - jwt = ' + jwt);
+    logger.d('optionsWithAuth - jwt = ' + jwt);
     return CallOptions(metadata: {'authorization': 'Bearer $jwt'});
   }
 }

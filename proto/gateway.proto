@@ -9,16 +9,18 @@ import "battle.proto";
 package gateway;
 
 service Gateway {
-  rpc Health(common.empty.Empty) returns (common.health.HealthReport);
-  rpc Status(common.empty.Empty) returns (common.health.StatusInfo);
-  rpc Livez(common.empty.Empty) returns (common.health.LiveStatus);
-  rpc Readyz(common.empty.Empty) returns (common.health.ReadyStatus);
+  rpc Health (common.empty.Empty) returns (common.health.HealthReport);
+  rpc Status (common.empty.Empty) returns (common.health.StatusInfo);
+  rpc Livez (common.empty.Empty) returns (common.health.LiveStatus);
+  rpc Readyz (common.empty.Empty) returns (common.health.ReadyStatus);
 
-  rpc AnonymousSignIn(auth.AnonymousSignInRequest) returns (auth.AuthObject);
+
+  rpc AnonymousSignIn (auth.AnonymousSignInRequest) returns (auth.AuthObject);
   rpc RefreshTokens (auth.RefreshTokensRequest) returns (auth.AuthObject);
-  rpc ViewMyProfile(common.empty.Empty) returns (profile.ProfileObject);
 
 
-  rpc NewBattle (common.empty.Empty) returns (common.empty.Empty);
-  rpc MakeMove (battle.MakeMoveRequest) returns (common.empty.Empty);
+  rpc GetMyProfile (common.empty.Empty) returns (profile.ProfileObject);
+
+
+  rpc BattleChannel (stream battle.ClientEvent) returns (stream battle.BattleObject);
 }

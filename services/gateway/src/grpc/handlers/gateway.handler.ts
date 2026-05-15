@@ -5,6 +5,7 @@ import * as BattleGrpc from '../generated/battle';
 import * as ProfileGrpc from '../generated/profile';
 import * as AuthService from '../../services/auth.service';
 import * as EngineService from '../../services/engine.service';
+import * as ProfileService from "../../services/profile.service";
 import * as OrchestrationService from '../../services/orchestration.service';
 import {callbackError} from './callback.error';
 import logger from "@shared/logger";
@@ -43,13 +44,13 @@ export const refreshTokens = async (
   }
 };
 
-export const viewMyProfile = async (
+export const getMyProfile = async (
   call: grpc.ServerUnaryCall<EmptyGrpc.Empty, ProfileGrpc.ProfileObject>,
   callback: grpc.sendUnaryData<ProfileGrpc.ProfileObject>
 ) => {
   try {
     const metadata = forwardAuthMetadata(call);
-    const result = await OrchestrationService.viewMyProfile(metadata);
+    const result = await ProfileService.getMyProfile(metadata);
     callback(null, result);
   } catch (err: any) {
     logger.log(err);
@@ -60,7 +61,7 @@ export const viewMyProfile = async (
   }
 };
 
-export const newBattle = async (
+export const getMyBattle = async (
   call: grpc.ServerUnaryCall<EmptyGrpc.Empty, BattleGrpc.BattleObject>,
   callback: grpc.sendUnaryData<EmptyGrpc.Empty>
 ) => {

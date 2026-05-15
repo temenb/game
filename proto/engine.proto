@@ -7,12 +7,12 @@ import "battle.proto";
 package engine;
 
 service Engine {
-  rpc Health(common.empty.Empty) returns (common.health.HealthReport);
-  rpc Status(common.empty.Empty) returns (common.health.StatusInfo);
-  rpc Livez(common.empty.Empty) returns (common.health.LiveStatus);
-  rpc Readyz(common.empty.Empty) returns (common.health.ReadyStatus);
+  rpc Health (common.empty.Empty) returns (common.health.HealthReport);
+  rpc Status (common.empty.Empty) returns (common.health.StatusInfo);
+  rpc Livez (common.empty.Empty) returns (common.health.LiveStatus);
+  rpc Readyz (common.empty.Empty) returns (common.health.ReadyStatus);
 
-  rpc NewBattle (common.empty.Empty) returns (common.empty.Empty);
+  rpc GetMyBattle (common.empty.Empty) returns (common.empty.Empty);
   rpc MakeMove (battle.MakeMoveRequest) returns (common.empty.Empty);
 }
 

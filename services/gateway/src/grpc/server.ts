@@ -10,7 +10,7 @@ server.addService(GatewayService, {
   anonymousSignIn: gatewayHandler.anonymousSignIn,
   refreshTokens: gatewayHandler.refreshTokens,
 
-  viewMyProfile: gatewayHandler.viewMyProfile,
+  getMyProfile: gatewayHandler.getMyProfile,
 
   newBattle: gatewayHandler.newBattle,
   makeMove: gatewayHandler.makeMove,

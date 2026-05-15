@@ -10,7 +10,7 @@ server.addService(OrchestrationService, {
   status: healthHandler.status,
   livez: healthHandler.livez,
   readyz: healthHandler.readyz,
-  viewMyProfile: orchestrationHandler.viewMyProfile,
+  // viewMyProfile: orchestrationHandler.viewMyProfile,
 });
 
 export default server;
