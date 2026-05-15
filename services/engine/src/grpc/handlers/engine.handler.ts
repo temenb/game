@@ -9,31 +9,31 @@ import getUserIdFromMetadata from "../../lib/getUserIdFromMetadata";
 import {forwardAuthMetadata} from "../../lib/authMetadata";
 
 
-export const newBattle = async (
-  call: grpc.ServerUnaryCall<EmptyGrpc.Empty, BattleGrpc.BattleObject>,
-  callback: grpc.sendUnaryData<EmptyGrpc.Empty>
-) => {
-  try {
-    const userId = getUserIdFromMetadata(call);
-    battleService.newBattle(userId);
-    callback(null, {});
-  } catch (err: any) {
-    logger.log(err);
-    callbackError(callback, err);
-  }
-};
-
-export const makeMove = async (
-  call: grpc.ServerUnaryCall<BattleGrpc.MakeMoveRequest, ProfileGrpc.ProfileObject>,
-  callback: grpc.sendUnaryData<EmptyGrpc.Empty>
-) => {
-  try {
-    const userId = getUserIdFromMetadata(call);
-    const {battleId, colIdx, rowIdx} = call.request;
-    battleService.makeMove(userId, battleId, colIdx, rowIdx);
-    callback(null, {});
-  } catch (err: any) {
-    logger.log(err);
-    callbackError(callback, err);
-  }
-};
+// export const newBattle = async (
+//   call: grpc.ServerUnaryCall<EmptyGrpc.Empty, BattleGrpc.BattleObject>,
+//   callback: grpc.sendUnaryData<EmptyGrpc.Empty>
+// ) => {
+//   try {
+//     const userId = getUserIdFromMetadata(call);
+//     battleService.newBattle(userId);
+//     callback(null, {});
+//   } catch (err: any) {
+//     logger.log(err);
+//     callbackError(callback, err);
+//   }
+// };
+//
+// export const makeMove = async (
+//   call: grpc.ServerUnaryCall<BattleGrpc.MakeMoveRequest, ProfileGrpc.ProfileObject>,
+//   callback: grpc.sendUnaryData<EmptyGrpc.Empty>
+// ) => {
+//   try {
+//     const userId = getUserIdFromMetadata(call);
+//     const {battleId, colIdx, rowIdx} = call.request;
+//     battleService.makeMove(userId, battleId, colIdx, rowIdx);
+//     callback(null, {});
+//   } catch (err: any) {
+//     logger.log(err);
+//     callbackError(callback, err);
+//   }
+// };

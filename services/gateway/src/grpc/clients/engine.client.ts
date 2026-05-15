@@ -29,14 +29,3 @@ export const readyz = (): Promise<HealthGrpc.ReadyStatus | null> => {
   const grpcRequest: EmptyGrpc.Empty = {};
   return engineManager.call((client, cb) => client.readyz(grpcRequest, cb));
 };
-
-export const newBattle = (metadata: grpc.Metadata): Promise<EmptyGrpc.Empty | null> => {
-  const grpcRequest: EmptyGrpc.Empty = {};
-  return engineManager.call((client, cb) => client.newBattle(grpcRequest, metadata, cb));
-};
-
-export const makeMove = (metadata: grpc.Metadata, battleId: string, colIdx: number, rowIdx: number): Promise<EmptyGrpc.Empty | null> => {
-  const grpcRequest: BattleGrpc.MakeMoveRequest = {battleId, colIdx, rowIdx};
-  return engineManager.call((client, cb) => client.makeMove(grpcRequest, metadata, cb));
-};
-

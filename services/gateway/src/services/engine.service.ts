@@ -12,9 +12,3 @@ export const livez = async () =>
 
 export const readyz = async () =>
   await EngineClient.readyz();
-
-export const makeMove = async (metadata: grpc.Metadata, battleId: string, colIdx: number, rowIdx: number) =>
-  EngineClient.makeMove(metadata, battleId, colIdx, rowIdx);
-
-export const newBattle = async (metadata: grpc.Metadata) =>
-  EngineClient.newBattle(metadata);

@@ -3,8 +3,6 @@ syntax = "proto3";
 import "auth.proto";
 import "common/health.proto";
 import "common/empty.proto";
-import "profile.proto";
-import "battle.proto";
 
 package gateway;
 
@@ -17,10 +15,4 @@ service Gateway {
 
   rpc AnonymousSignIn (auth.AnonymousSignInRequest) returns (auth.AuthObject);
   rpc RefreshTokens (auth.RefreshTokensRequest) returns (auth.AuthObject);
-
-
-  rpc GetMyProfile (common.empty.Empty) returns (profile.ProfileObject);
-
-
-  rpc BattleChannel (stream battle.ClientEvent) returns (stream battle.BattleObject);
 }

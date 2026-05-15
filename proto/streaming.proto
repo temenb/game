@@ -3,6 +3,7 @@ syntax = "proto3";
 import "common/health.proto";
 import "common/empty.proto";
 import "battle.proto";
+import "profile.proto";
 
 package streaming;
 
@@ -12,5 +13,10 @@ service Streaming {
   rpc Livez (common.empty.Empty) returns (common.health.LiveStatus);
   rpc Readyz (common.empty.Empty) returns (common.health.ReadyStatus);
 
-  rpc GetBattle (battle.GetBattleRequest) returns (battle.BattleObject);
+
+
+  rpc GetMyProfile (common.empty.Empty) returns (profile.ProfileObject);
+
+
+  rpc BattleChannel (stream battle.ClientEvent) returns (stream battle.BattleObject);
 }

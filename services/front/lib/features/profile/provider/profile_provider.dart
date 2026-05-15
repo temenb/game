@@ -5,5 +5,5 @@ import '../models/profile.dart';
 
 final profileProvider = FutureProvider<Profile>((ref) async {
   final service = ref.read(profileServiceProvider); // достаём сервис
-  return service.viewProfile(); // например, текущий userId
+  return service.getProfile(); // например, текущий userId
 });

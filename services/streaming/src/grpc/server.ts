@@ -1,6 +1,7 @@
 import {StreamingService} from './generated/streaming';
 import * as grpc from '@grpc/grpc-js';
-// import * as BattleHandler from "./handlers/battle.handler";
+import * as profileHandler from "./handlers/profile.handler";
+import * as battleHandler from "./handlers/battle.handler";
 import * as healthHandler from "./handlers/health.handler";
 
 const server = new grpc.Server();
@@ -12,7 +13,9 @@ server.addService(StreamingService, {
   livez: healthHandler.livez,
   readyz: healthHandler.readyz,
 
-  // getBattle: battleHandler
+  getMyProfile: profileHandler.getMyProfile,
+
+  // getMyBattle: battleHandler.getMyBattle,
 });
 
 export default server;

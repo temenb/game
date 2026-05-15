@@ -14,7 +14,7 @@ class BattleService {
 
   Future<Battle> viewBattle() async {
     final options = await authService.optionsWithAuth();
-    final response = await gatewayClient.viewMyBattle(
+    final response = await gatewayClient.getMyBattle(
       $0.Empty(),
       options: options,
     );

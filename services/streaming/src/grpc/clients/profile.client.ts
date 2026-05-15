@@ -4,6 +4,7 @@ import * as HealthGrpc from '../generated/common/health';
 import * as EmptyGrpc from '../generated/common/empty';
 import config from '../../config/config';
 import {GrpcClientManager} from '@shared/grpc-client-manager';
+import getUserIdFromMetadata from "../../lib/getUserIdFromMetadata";
 
 const profileManager = new GrpcClientManager<ProfileGrpc.ProfileClient>(() => {
   return new ProfileGrpc.ProfileClient(config.serviceProfileUrl, grpc.credentials.createInsecure());
@@ -29,3 +30,7 @@ export const readyz = (): Promise<HealthGrpc.ReadyStatus | null> => {
   return profileManager.call((client, cb) => client.readyz(grpcRequest, cb));
 };
 
+export const getMyProfile = (userId: string): Promise<ProfileGrpc.ProfileObject | null> => {
+  const grpcRequest: ProfileGrpc.UserIdRequest = {userId};
+  return profileManager.call((client, cb) => client.getProfileByUser(grpcRequest, cb));
+};

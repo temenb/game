@@ -13,6 +13,3 @@ export const livez = async () =>
 
 export const readyz = async () =>
   await ProfileClient.readyz();
-
-export const getMyProfile = async (metadata: grpc.Metadata) =>
-  await ProfileClient.getMyProfile(metadata);

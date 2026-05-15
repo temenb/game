@@ -9,7 +9,7 @@ const profileManager = new GrpcClientManager<ProfileGrpc.ProfileClient>(() => {
   return new ProfileGrpc.ProfileClient(config.serviceProfileUrl, grpc.credentials.createInsecure());
 });
 
-export const viewProfile = (userId: string): Promise<ProfileGrpc.ProfileObject | null> => {
+export const getProfile = (userId: string): Promise<ProfileGrpc.ProfileObject | null> => {
   const grpcRequest: ProfileGrpc.UserIdRequest = {userId};
   return profileManager.call((client, cb) => client.getProfileByUser(grpcRequest, cb));
 };

@@ -12,7 +12,7 @@ class BattleScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: const Text("Battle")),
       body: GridView.builder(
-        margin: center,
+        // margin: center,
         padding: const EdgeInsets.all(16),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3, // сетка 3x3
