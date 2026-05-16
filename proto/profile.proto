@@ -2,6 +2,7 @@ syntax = "proto3";
 
 import "common/health.proto";
 import "common/empty.proto";
+import "auth.proto";
 
 package profile;
 
@@ -11,12 +12,8 @@ service Profile {
   rpc Livez (common.empty.Empty) returns (common.health.LiveStatus);
   rpc Readyz (common.empty.Empty) returns (common.health.ReadyStatus);
 
-  rpc UpsertProfile (UserIdRequest) returns (ProfileObject);
-  rpc GetProfileByUser (UserIdRequest) returns (ProfileObject);
-}
-
-message UserIdRequest {
-  string user_id = 1;
+  rpc GetProfileByUser (auth.UserIdRequest) returns (ProfileObject);
+  rpc UpsertProfile (auth.UserIdRequest) returns (ProfileObject);
 }
 
 message ProfileObject {

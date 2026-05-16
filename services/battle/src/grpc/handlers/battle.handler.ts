@@ -1,12 +1,71 @@
 import * as grpc from '@grpc/grpc-js';
 import * as BattleGrpc from '../generated/battle';
-import {CellValue as GrpcCellValue} from '../generated/battle';
+import {
+  BattleStatus as GrpcBattleStatus,
+  BattleCellValue as GrpcBattleCellValue,
+} from '../generated/battle';
 import * as BattleService from '../../services/battle.service';
+import {Battle, BattleStatus, BattleCellValue} from "@prisma/client";
 import {callbackError} from './callback.error';
 import logger from "@shared/logger";
+import * as HealthGrpc from "../generated/common/health";
+
+
+function toBattleStatus(status: BattleStatus): GrpcBattleStatus {
+  switch (status) {
+    case BattleStatus.Active: return GrpcBattleStatus.ACTIVE;
+    case BattleStatus.Finished: return GrpcBattleStatus.FINISHED;
+    default: throw new Error(`Unknown BattleStatus: ${status}`);
+  }
+}
+
+function toBattleCellValue(cell: BattleCellValue): GrpcBattleCellValue {
+  switch (cell) {
+    case BattleCellValue.X: return GrpcBattleCellValue.CELL_X;
+    case BattleCellValue.O: return GrpcBattleCellValue.CELL_O;
+    case BattleCellValue.EMPTY: return GrpcBattleCellValue.CELL_EMPTY;
+    default: throw new Error(`Unknown CellValue: ${cell}`);
+  }
+}
+
+function convertBattleToGrpc(battle: Battle) {
+  const grpcCells: GrpcBattleCellValue[] = (battle.cells).map(toBattleCellValue);
+  const players: string[] = battle.players;
+
+  return {
+    id: battle.id,
+    cells: grpcCells,
+    players: players,
+    status: toBattleStatus(battle.status),
+    winner: battle.winner?? "",
+    // createdAt: result.createdAt,
+    // updatedAt: result.updatedAt,
+  };
+}
+
+export async function upsertBattle(
+  call: grpc.ServerUnaryCall<BattleGrpc.UpsertBattleRequest, BattleGrpc.BattleObject>,
+  callback: grpc.sendUnaryData<BattleGrpc.BattleObject>
+) {
+    const {userId} = call.request;
+
+    try {
+      const battle = await BattleService.upsertBattle(userId);
+
+      if (!battle) {
+        throw new Error("Battle not found");
+      }
+
+      callback(null, convertBattleToGrpc(battle));
+
+    } catch (err: any) {
+      logger.log(err);
+      callbackError(callback, err);
+    }
+}
 
 export const getBattle = async (
-  call: grpc.ServerUnaryCall<BattleGrpc.GetBattleRequest, BattleGrpc.BattleObject>,
+  call: grpc.ServerUnaryCall<BattleGrpc.BattleIdRequest, BattleGrpc.BattleObject>,
   callback: grpc.sendUnaryData<BattleGrpc.BattleObject>
 ) => {
   const {battleId} = call.request;
@@ -18,28 +77,12 @@ export const getBattle = async (
       throw new Error("Battle not found");
     }
 
-    const grpcCells: GrpcCellValue[] = (result.cells as string[]).map(toGrpcCellValue);
-
-    callback(null, {
-      id: result.id,
-      cells: grpcCells,
-      // createdAt: result.createdAt,
-      // updatedAt: result.updatedAt,
-    });
+    callback(null, convertBattleToGrpc(result));
 
   } catch (err: any) {
     logger.log(err);
     callbackError(callback, err);
   }
 };
-
-function toGrpcCellValue(c: string): GrpcCellValue {
-  switch (c) {
-    case "X": return GrpcCellValue.CELL_X;
-    case "O": return GrpcCellValue.CELL_O;
-    case "EMPTY": return GrpcCellValue.CELL_EMPTY;
-    default: throw new Error(`Unknown CellValue: ${c}`);
-  }
-}
 
 

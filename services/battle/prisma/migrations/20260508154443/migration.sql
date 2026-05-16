@@ -1,5 +1,0 @@
--- AlterEnum
-ALTER TYPE "Status" ADD VALUE 'Abandoned';
-
--- AlterTable
-ALTER TABLE "Battle" ADD COLUMN     "lastMoveAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;

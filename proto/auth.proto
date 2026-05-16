@@ -25,6 +25,10 @@ message RegisterRequest {
   string password = 2;
 }
 
+message UserIdRequest {
+  string user_id = 1;
+}
+
 message AuthObject {
   string access_token = 1;
   string refresh_token = 2;

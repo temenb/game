@@ -2,6 +2,7 @@ syntax = "proto3";
 
 import "common/health.proto";
 import "common/empty.proto";
+import "auth.proto";
 //import "google/protobuf/timestamp.proto";
 
 package battle;
@@ -12,32 +13,36 @@ service Battle {
   rpc Livez (common.empty.Empty) returns (common.health.LiveStatus);
   rpc Readyz (common.empty.Empty) returns (common.health.ReadyStatus);
 
-//  rpc NewBattle (common.empty.Empty) returns (BattleObject);
-//  rpc MakeMove (MakeMoveRequest) returns (BattleObject);
-  rpc GetBattle (GetBattleRequest) returns (BattleObject);
+  rpc GetBattleByUser (auth.UserIdRequest) returns (BattleObject);
+  rpc GetBattle (BattleIdRequest) returns (BattleObject);
+  rpc UpsertBattle (UpsertBattleRequest) returns (BattleObject);
 }
 
-message ClientEvent {
-  string playerId = 1;
-  string battleId = 2;
-  int32 cellIndex = 3;
-  string moveType = 4;
+message UpsertBattleRequest {
+    string userId = 1;
 }
 
-
-message GetBattleRequest {
+message BattleIdRequest {
   string battleId = 1;
 }
 
-enum CellValue {
+enum BattleCellValue {
   CELL_EMPTY = 0;
   CELL_X     = 1;
   CELL_O     = 2;
 }
 
+enum BattleStatus {
+  ACTIVE   = 0;
+  FINISHED = 1;
+}
+
 message BattleObject {
-  string id = 1;
-  repeated CellValue cells = 2;
-//  google.protobuf.Timestamp createdAt = 3;
-//  google.protobuf.Timestamp updatedAt = 4;
+  string                   id         = 1;
+  repeated BattleCellValue cells      = 2;
+  repeated string          players    = 3;
+  BattleStatus             status     = 4;
+  string                   winner     = 5;
+//  google.protobuf.Timestamp createdAt = 6;
+//  google.protobuf.Timestamp updatedAt = 7;
 }

@@ -17,3 +17,8 @@ service Engine {
 }
 
 
+message BattleMoveRequest {
+  string battleId = 2;
+  int32 cellIndex = 3;
+  string moveType = 4;
+}

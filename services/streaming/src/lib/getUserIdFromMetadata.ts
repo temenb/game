@@ -6,7 +6,7 @@ import logger from "@shared/logger";
 const JWT_SECRET = config.jwtAccessSecret;
 
 export const getUserIdFromMetadata = (
-  call: grpc.ServerUnaryCall<any, any>
+  call: grpc.ServerUnaryCall<any, any> | grpc.ServerDuplexStream<any, any>
 ): string => {
 
   logger.log('getUserIdFromMetadata');

@@ -1,7 +1,6 @@
 import * as grpc from '@grpc/grpc-js';
-import logger from '@shared/logger';
 
-export function extractAuthHeader(call: grpc.ServerUnaryCall<any, any>): string {
+export function extractAuthHeader(call: grpc.ServerUnaryCall<any, any> | grpc.ServerDuplexStream<any, any>): string {
   const authHeader = call.metadata.get('authorization')[0] as string;
   if (!authHeader?.startsWith('Bearer ')) {
     throw new Error('Missing or invalid Authorization header');
@@ -9,7 +8,7 @@ export function extractAuthHeader(call: grpc.ServerUnaryCall<any, any>): string 
   return authHeader;
 }
 
-export function forwardAuthMetadata(call: grpc.ServerUnaryCall<any, any>): grpc.Metadata {
+export function forwardAuthMetadata(call: grpc.ServerUnaryCall<any, any> | grpc.ServerDuplexStream<any, any>): grpc.Metadata {
   const authHeader = extractAuthHeader(call);
   const metadata = new grpc.Metadata();
   // logger.log(authHeader);

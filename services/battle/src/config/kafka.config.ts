@@ -1,4 +1,4 @@
-import {battleCreated, battleUpdated} from "../lib/consumers";
+import {battleUpdated} from "../lib/consumers";
 
 export const kafkaConfig = {
   brokers: (process.env.KAFKA_BROKERS?.split(',') ?? ['kafka:9092']),
@@ -6,11 +6,11 @@ export const kafkaConfig = {
   groupId: process.env.KAFKA_GROUP_ID || 'battle-service',
 };
 
+export const kafkaProducersConfig = {
+  topicBattleNew: process.env.KAFKA_TOPIC_BATTLE_NEW || 'battle.new',
+}
+
 export const kafkaConsumersConfig = {
-  battleNew: {
-    topic: process.env.KAFKA_TOPIC_NEW_BATTLE || 'battle.new',
-    handler: battleCreated
-  },
   battleUpdated: {
     topic: process.env.KAFKA_TOPIC_BATTLE_UPDATED || 'battle.updated',
     handler: battleUpdated

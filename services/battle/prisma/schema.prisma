@@ -8,26 +8,25 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum CellValue {
+enum BattleCellValue {
   X
   O
   EMPTY
 }
 
-enum Status {
-  New
+enum BattleStatus {
   Active
   Finished
-  Abandoned
 }
 
 model Battle {
-  id         String   @id @default(uuid())
-  players    String[]
-  cells      CellValue[]
-  status     Status
-  Winner     String?
-  lastMoveAt DateTime @default(now())
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id           String   @id @default(uuid())
+  players      String[]
+  playersCount Int
+  cells        BattleCellValue[]
+  status       BattleStatus
+  winner       String?
+  lastMoveAt   DateTime @default(now())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }

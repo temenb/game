@@ -4,6 +4,7 @@ import "common/health.proto";
 import "common/empty.proto";
 import "battle.proto";
 import "profile.proto";
+import "engine.proto";
 
 package streaming;
 
@@ -18,5 +19,12 @@ service Streaming {
   rpc GetMyProfile (common.empty.Empty) returns (profile.ProfileObject);
 
 
-  rpc BattleChannel (stream battle.ClientEvent) returns (stream battle.BattleObject);
+  rpc BattleChannel (stream ClientRequest) returns (stream battle.BattleObject);
+}
+
+message ClientRequest {
+  oneof event {
+    battle.UpsertBattleRequest   join = 1;
+    engine.BattleMoveRequest move = 2;
+  }
 }

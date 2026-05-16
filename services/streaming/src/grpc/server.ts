@@ -15,7 +15,8 @@ server.addService(StreamingService, {
 
   getMyProfile: profileHandler.getMyProfile,
 
-  // getMyBattle: battleHandler.getMyBattle,
+  getBattle: battleHandler.getBattle,
+  battleChannel: battleHandler.battleChannel,
 });
 
 export default server;
