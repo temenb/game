@@ -25,50 +25,35 @@ export async function battleChannel(
       const battle = await battleService.upsertBattle(userId);
 
       if (!battle) {
-        throw new Error("Battle not found");
+        call.emit("error", "Battle not found");
+        return;
       }
 
+      if (!activeBattleStreams.has(battle.id)) {
+        activeBattleStreams.set(battle.id, new Set());
+      }
+      activeBattleStreams.get(battle.id)!.add(call);
       call.write(battle);
     }
 
     if (event.move) {
       if (userId != event.move.userId) {
-        throw new Error("Unknown error");
+        call.emit("error", "Unknown error");
       }
       engineService.makeMove(event.move);
     }
   });
 
-  call.on('end', () => {
-    call.end();
-  });
-
-  // const timer = setTimeout(async () => {
-  //   const finished = await finishBattle("battleId");
-  //   call.write(finished);
-  //   call.end();
-  // }, 60000);
-
-  call.on('end', () => {
-    // clearTimeout(timer);
+  call.on("end", () => {
+    // удаляем стрим из активных
+    for (const [battleId, streams] of activeBattleStreams.entries()) {
+      streams.delete(call);
+      if (streams.size === 0) {
+        activeBattleStreams.delete(battleId);
+      }
+    }
     call.end();
   });
 }
 
 
-// export const getBattle = async (
-//   call: grpc.ServerUnaryCall<EmptyGrpc.Empty, ProfileGrpc.ProfileObject>,
-//   callback: grpc.sendUnaryData<ProfileGrpc.ProfileObject>
-// ) => {
-//   try {
-//     const {battleId} = call.request;
-//
-//     const response = await battleService.getBattle(battleId);
-//
-//     callback(null, response);
-//
-//   } catch (err: any) {
-//     logger.log(err);
-//     callbackError(callback, err);
-//   }
-// };
