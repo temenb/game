@@ -4,10 +4,17 @@ import {StoreRegistry, stores} from "./store-registry";
 import {BattleCellValue, BattleObject, BattleStatus} from "../grpc/generated/battle";
 import {BattleMoveRequest} from "../grpc/generated/engine";
 import {BattleStateStore} from "../stores/battleStateStore";
+import logger from '@shared/logger';
 
-const battleStore = StoreRegistry.getStore<BattleStateStore>(stores.BattleStateStore.key);
-if (!battleStore) {
-  throw new Error("BattleStateStore не найден");
+export function battleStore(): BattleStateStore {
+  // убедимся, что сторы инициализированы
+  const battleStore = StoreRegistry.getStore<BattleStateStore>(stores.BattleStateStore.key);
+
+  if (!battleStore) {
+    throw new Error("BattleStateStore not found");
+  }
+
+  return battleStore;
 }
 
 export const battleNew = async (battleId: string, players: string[]) => {
@@ -22,7 +29,7 @@ export const battleNew = async (battleId: string, players: string[]) => {
     // updatedAt: new Date().toISOString(),
   };
 
-  battleStore.set(battle);
+  battleStore().set(battle);
 
   await enqueueEventTx(kafkaProducersConfig.topicBattleUpdated, battle);
 
@@ -38,7 +45,7 @@ function getSymbolForUser(battle: BattleObject, userId: string): BattleCellValue
 
 export const battleUpdated = async (move: BattleMoveRequest) => {
 
-  const battle = battleStore.get(move.battleId);
+  const battle = battleStore().get(move.battleId);
 
   if (!battle) {
     throw new Error(`Battle ${move.battleId} not found`);

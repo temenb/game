@@ -1,9 +1,9 @@
 services:
   gateway:
-    container_name: game-gateway
     build:
       context: .
       dockerfile: services/gateway/Dockerfile
+    container_name: game-gateway
     env_file:
       - services/gateway/.env
     ports:
@@ -16,10 +16,10 @@ services:
     command: pnpm dlx turbo run dev --parallel
 
   auth:
-    container_name: game-auth
     build:
       context: .
       dockerfile: services/auth/Dockerfile
+    container_name: game-auth
     env_file:
       - services/auth/.env
     environment:
@@ -39,10 +39,10 @@ services:
     command: pnpm dlx turbo run dev --parallel
 
   orchestration:
-    container_name: game-orchestration
     build:
       context: .
       dockerfile: services/orchestration/Dockerfile
+    container_name: game-orchestration
     env_file:
       - services/orchestration/.env
     #    ports:
@@ -55,10 +55,10 @@ services:
     command: pnpm dlx turbo run dev --parallel
 
   battle:
-    container_name: game-battle
     build:
       context: .
       dockerfile: services/battle/Dockerfile
+    container_name: game-battle
     env_file:
       - services/battle/.env
     #    ports:
@@ -71,10 +71,10 @@ services:
     command: pnpm dlx turbo run dev --parallel
 
   streaming:
-    container_name: game-streaming
     build:
       context: .
       dockerfile: services/streaming/Dockerfile
+    container_name: game-streaming
     env_file:
       - services/streaming/.env
     ports:
@@ -87,10 +87,10 @@ services:
     command: pnpm dlx turbo run dev --parallel
 
   profile:
-    container_name: game-profile
     build:
       context: .
       dockerfile: services/profile/Dockerfile
+    container_name: game-profile
     env_file:
       - services/profile/.env
     #    ports:
@@ -108,10 +108,10 @@ services:
     command: pnpm dlx turbo run dev --parallel
 
   engine:
-    container_name: game-engine
     build:
       context: .
       dockerfile: services/engine/Dockerfile
+    container_name: game-engine
     env_file:
       - services/engine/.env
   #    ports:
@@ -122,12 +122,14 @@ services:
       - ./services/engine/src:/usr/src/app/services/engine/src/
       - ./services/engine/package.json:/usr/src/app/services/engine/package.json
     command: pnpm dlx turbo run dev --parallel
+    depends_on:
+      - redis
 
   fallout:
-    container_name: game-fallout
     build:
       context: .
       dockerfile: services/fallout/Dockerfile
+    container_name: game-fallout
     env_file:
       - services/fallout/.env
     #    ports:
@@ -140,8 +142,8 @@ services:
     command: pnpm dlx turbo run dev --parallel
 
   kafka-ui:
-    container_name: game-kafka-ui
     image: provectuslabs/kafka-ui:latest
+    container_name: game-kafka-ui
     ports:
       - "8080:8080"
     environment:
@@ -156,8 +158,8 @@ services:
 
 
   kafka:
-    container_name: game-kafka
     image: apache/kafka:4.1.1
+    container_name: game-kafka
     ports:
       - "9092:9092"
     environment:
@@ -183,8 +185,8 @@ services:
       start_period: 20s
 
   postgres:
-    container_name: game-postgres
     image: postgres:17.6
+    container_name: game-postgres
     restart: always
     environment:
       POSTGRES_USER: postgres
@@ -201,9 +203,19 @@ services:
       retries: 5
       start_period: 10s
 
+  redis:
+    image: redis:7.2
+    container_name: game-redis
+    restart: always
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
 #  mongo:
-#    container_name: game-mongo
 #    image: mongo:8
+#    container_name: game-mongo
 #    restart: always
 #    ports:
 #      - "27017:27017"

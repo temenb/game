@@ -38,11 +38,14 @@ let battleStore: BattleStateStore;
 
 async function startRedis() {
   await initRedis();
+  logger.log('startRedis');
   await StoreRegistry.init();
 }
 
 
 async function bootstrap() {
+
+  logger.log('bootstrap');
   try {
     await Promise.all([startGrpc(), startPgBoss(), startRedis()]);
     logger.info('🚀 Engine успешно запущен: gRPC');

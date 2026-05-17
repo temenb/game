@@ -1,14 +1,17 @@
 import Redis from "ioredis";
+import redisConfig from "../config/redis.config";
+import {string} from "fast-glob/out/utils";
 
 let redis: Redis | null = null;
 
 export async function initRedis(
-  host: string = process.env.REDIS_HOST || "localhost",
-  port: number = Number(process.env.REDIS_PORT) || 6379
+  host: string = redisConfig.redisHost,
+  port: number = redisConfig.redisPort,
+  password: string = redisConfig.redisPassword
 ): Promise<void> {
-  if (redis) return; // уже инициализирован
+  if (redis) return;
 
-  redis = new Redis({ host, port });
+  redis = new Redis({ host, port, password });
 
   return new Promise<void>((resolve, reject) => {
     redis!.on("connect", () => {
