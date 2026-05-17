@@ -24,7 +24,7 @@ service Streaming {
 
 message ClientRequest {
   oneof event {
-    battle.UpsertBattleRequest   join = 1;
+    common.empty.Empty       join = 1;
     engine.BattleMoveRequest move = 2;
   }
 }

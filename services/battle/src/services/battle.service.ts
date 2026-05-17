@@ -11,16 +11,16 @@ export async function getBattle(battleId: string): Promise<Battle | null> {
   return battle;
 }
 
-export async function upsertBattle(userId: string): Promise<Battle | null> {
-  const existingByBattle = await prisma.battle.findFirst({
+export async function upsertBattle(userId: string): Promise<Battle> {
+  const existingMyBattle = await prisma.battle.findFirst({
     where: {
       players: { has: userId },
       status: { not: BattleStatus.Finished }
     }
   });
 
-  if (existingByBattle) {
-    return existingByBattle;
+  if (existingMyBattle) {
+    return existingMyBattle;
   }
 
   const existingSomebodiesBattle = await prisma.battle.findFirst({
@@ -54,6 +54,10 @@ export async function upsertBattle(userId: string): Promise<Battle | null> {
       const battle = await tx.battle.findUnique({
         where: { id: existingSomebodiesBattle.id },
       });
+
+      if (!battle) {
+        throw new Error("Unknown error");
+      }
 
       await enqueueEventTx(kafkaProducersConfig.topicBattleNew, battle as Object, tx);
 

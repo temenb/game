@@ -13,12 +13,12 @@ service Engine {
   rpc Readyz (common.empty.Empty) returns (common.health.ReadyStatus);
 
 //  rpc GetMyBattle (common.empty.Empty) returns (common.empty.Empty);
-//  rpc MakeMove (battle.MakeMoveRequest) returns (common.empty.Empty);
+  rpc MakeMove (BattleMoveRequest) returns (common.empty.Empty);
 }
 
 
 message BattleMoveRequest {
-  string battleId = 2;
+  string battleId = 1;
+  string userId   = 2;
   int32 cellIndex = 3;
-  string moveType = 4;
 }

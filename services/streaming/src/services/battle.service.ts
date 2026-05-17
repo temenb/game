@@ -13,5 +13,5 @@ export const livez = async () =>
 export const readyz = async () =>
   await BattleClient.readyz();
 
-export const getBattleByUser = async (userId: string) =>
-  await BattleClient.getBattleByUser(userId);
+export const upsertBattle = async (userId: string) =>
+  await BattleClient.upsertBattle(userId);

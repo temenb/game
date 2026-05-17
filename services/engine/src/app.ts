@@ -3,6 +3,9 @@ import * as grpc from '@grpc/grpc-js';
 import logger from '@shared/logger';
 import {initBoss, startWorker} from "@shared/pg-boss";
 import {kafkaConfig, kafkaProducersConfig} from "./config/kafka.config";
+import {initRedis, shutdownRedis, getRedis} from "./lib/redis-client";
+import {BattleStateStore} from "./stores/battleStateStore";
+import {StoreRegistry} from "./services/store-registry";
 
 const GRPC_PORT = process.env.GRPC_PORT ?? '50051';
 
@@ -23,26 +26,6 @@ async function startGrpc() {
   });
 }
 
-// async function startPgBoss() {
-//   const configs = Object.values(kafkaProducersConfig);
-//
-//   logger.log(configs);
-//   // startWorker(kafkaConfig, 'battle.makeMove');
-//   startWorker(kafkaConfig, 'battle.new');
-//   return Promise.resolve(0);
-//   // return Promise.all(
-//   //   configs.map(async (topicConfig) => {
-//   //     logger.log('init - ' + topicConfig);
-//   //
-//   //     await initBoss(async () => {
-//   //       logger.log('init - ' + topicConfig + '!!');
-//   //
-//   //       await startWorker(kafkaConfig, topicConfig);
-//   //     });
-//   //   })
-//   // );
-// }
-
 async function startPgBoss() {
   await initBoss(async () => {
     for (const topicConfig of Object.values(kafkaProducersConfig)) {
@@ -51,19 +34,28 @@ async function startPgBoss() {
   });
 }
 
+let battleStore: BattleStateStore;
+
+async function startRedis() {
+  await initRedis();
+  await StoreRegistry.init();
+}
+
 
 async function bootstrap() {
   try {
-    await Promise.all([startGrpc(), startPgBoss()]);
+    await Promise.all([startGrpc(), startPgBoss(), startRedis()]);
     logger.info('🚀 Engine успешно запущен: gRPC');
   } catch (err) {
     logger.error('💥 Ошибка запуска Engine:', err);
     process.exit(1);
   }
 
-  process.on('SIGINT', () => {
+  process.on('SIGINT', async () => {
     logger.info('🛑 Завершение работы...');
     grpcServer.forceShutdown();
+    await StoreRegistry.shutdown();
+    await shutdownRedis();
     process.exit(0);
   });
 }

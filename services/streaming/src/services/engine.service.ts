@@ -1,4 +1,5 @@
 import * as EngineClient from "../grpc/clients/engine.client";
+import * as EngineGrpc from '../grpc/generated/engine';
 
 export const health = async () =>
   await EngineClient.health();
@@ -11,4 +12,7 @@ export const livez = async () =>
 
 export const readyz = async () =>
   await EngineClient.readyz();
+
+export const makeMove = async (battleId: string, userId: string, cellIndex: number) =>
+  await EngineClient.makeMove(battleId, userId, cellIndex);
 

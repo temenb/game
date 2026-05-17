@@ -36,7 +36,7 @@ export const getBattle = (battleId: string): Promise<BattleGrpc.BattleObject | n
   return battleManager.call((client, cb) => client.getBattle(grpcRequest, cb));
 };
 
-export const getBattleByUser = (userId: string): Promise<BattleGrpc.BattleObject | null> => {
+export const upsertBattle = (userId: string): Promise<BattleGrpc.BattleObject | null> => {
   const grpcRequest: AuthGrpc.UserIdRequest = {userId};
-  return battleManager.call((client, cb) => client.getBattleByUser(grpcRequest, cb));
+  return battleManager.call((client, cb) => client.upsertBattle(grpcRequest, cb));
 };

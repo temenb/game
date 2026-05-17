@@ -15,7 +15,7 @@ server.addService(StreamingService, {
 
   getMyProfile: profileHandler.getMyProfile,
 
-  getBattle: battleHandler.getBattle,
+  // getBattle: battleHandler.getBattle,
   battleChannel: battleHandler.battleChannel,
 });
 

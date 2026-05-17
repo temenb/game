@@ -10,6 +10,7 @@ import * as EmptyGrpc from "../generated/common/empty";
 import {forwardAuthMetadata} from "../../lib/authMetadata";
 import getUserIdFromMetadata from "../../lib/getUserIdFromMetadata";
 import * as profileService from "../../services/profile.service";
+import * as engineService from "../../services/engine.service";
 import * as battleService from "../../services/battle.service";
 
 const activeBattleStreams = new Map<string, Set<grpc.ServerDuplexStream<StreamingGrpc.ClientRequest, BattleGrpc.BattleObject>>>();
@@ -18,57 +19,32 @@ export async function battleChannel(
   call: grpc.ServerDuplexStream<StreamingGrpc.ClientRequest, BattleGrpc.BattleObject>) {
   call.on('data', async (event: StreamingGrpc.ClientRequest) => {
 
-
+    const userId = getUserIdFromMetadata(call);
 
 
 
 
 
     if (event.join) {
-      // создать или найти баттл
-      const battle = await battleService.upsertBattle(event.join.userId);
+      const battle = await battleService.upsertBattle(userId);
+
+      if (!battle) {
+        throw new Error("Battle not found");
+      }
+
       call.write(battle);
     }
 
-    if (event.move) {      // обработать ход
-      const updated = await processMove(event.battleId, event.playerId, event.cellIndex, event.moveType);
-      call.write(updated);
+    if (event.move) {
+      if (userId != event.move.userId) {
+        throw new Error("Unknown error");
+      }
+      engineService.makeMove(event.move.battleId, event.move.userId, event.move.cellIndex);
     }
   });
 
   call.on('end', () => {
     call.end();
-  });
-
-
-
-
-
-
-
-
-
-  if (event.join) {
-
-    const userId = getUserIdFromMetadata(call);
-
-    const metadata = forwardAuthMetadata(call);
-    const response = await profileService.upsertBattle(userId);
-
-      const battle = await upsertBattle(event.playerId);
-
-      if (!activeBattleStreams.has(battle.id)) {
-        activeBattleStreams.set(battle.id, new Set());
-      }
-      activeBattleStreams.get(battle.id)!.add(call);
-      call.write(battle);
-    }
-
-    if (event.move) {
-      // обработать ход
-      const updated = await processMove(event.battleId, event.playerId, event.cellIndex, event.moveType);
-      call.write(updated);
-    }
   });
 
   // const timer = setTimeout(async () => {
@@ -84,19 +60,19 @@ export async function battleChannel(
 }
 
 
-export const getBattle = async (
-  call: grpc.ServerUnaryCall<EmptyGrpc.Empty, ProfileGrpc.ProfileObject>,
-  callback: grpc.sendUnaryData<ProfileGrpc.ProfileObject>
-) => {
-  try {
-    const {battleId} = call.request;
-
-    const response = await battleService.getBattle(battleId);
-
-    callback(null, response);
-
-  } catch (err: any) {
-    logger.log(err);
-    callbackError(callback, err);
-  }
-};
+// export const getBattle = async (
+//   call: grpc.ServerUnaryCall<EmptyGrpc.Empty, ProfileGrpc.ProfileObject>,
+//   callback: grpc.sendUnaryData<ProfileGrpc.ProfileObject>
+// ) => {
+//   try {
+//     const {battleId} = call.request;
+//
+//     const response = await battleService.getBattle(battleId);
+//
+//     callback(null, response);
+//
+//   } catch (err: any) {
+//     logger.log(err);
+//     callbackError(callback, err);
+//   }
+// };
