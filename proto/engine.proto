@@ -20,5 +20,5 @@ service Engine {
 message BattleMoveRequest {
   string battleId = 1;
   string userId   = 2;
-  int32 cellIndex = 3;
+  int32 cellIdx = 3;
 }

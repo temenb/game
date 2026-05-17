@@ -21,10 +21,6 @@ export async function battleChannel(
 
     const userId = getUserIdFromMetadata(call);
 
-
-
-
-
     if (event.join) {
       const battle = await battleService.upsertBattle(userId);
 
@@ -39,7 +35,7 @@ export async function battleChannel(
       if (userId != event.move.userId) {
         throw new Error("Unknown error");
       }
-      engineService.makeMove(event.move.battleId, event.move.userId, event.move.cellIndex);
+      engineService.makeMove(event.move);
     }
   });
 

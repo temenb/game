@@ -29,9 +29,7 @@ export const readyz = (): Promise<HealthGrpc.ReadyStatus | null> => {
   return engineManager.call((client, cb) => client.readyz(grpcRequest, cb));
 };
 
-export const makeMove = (battleId: string, userId: string, cellIndex: number): Promise<EmptyGrpc.Empty | null> => {
-  const grpcRequest: EngineGrpc.BattleMoveRequest = {battleId, userId, cellIndex};
-
-  return engineManager.call((client, cb) => client.makeMove(grpcRequest, cb));
+export const makeMove = (move: EngineGrpc.BattleMoveRequest): Promise<EmptyGrpc.Empty | null> => {
+  return engineManager.call((client, cb) => client.makeMove(move, cb));
 };
 

@@ -13,6 +13,6 @@ export const livez = async () =>
 export const readyz = async () =>
   await EngineClient.readyz();
 
-export const makeMove = async (battleId: string, userId: string, cellIndex: number) =>
-  await EngineClient.makeMove(battleId, userId, cellIndex);
+export const makeMove = async (move: EngineGrpc.BattleMoveRequest) =>
+  await EngineClient.makeMove(move);
 
