@@ -182,11 +182,10 @@ kafka-user-created-list:
 
 
 
-#test:
-#	@echo "🧪 Запуск тестов"
-#	$(NODE_BIN)/jest
-#
-## 🛠️ Установка зависимостей
-#test:
-#	@echo "🧪 Запуск тестов"
-#	npx turbo run test
+test:
+	@echo "🧪 Запуск тестов"
+
+	@for service in $(NODE_SERVICES); do \
+		echo '🚀 Test' $$service service && \
+		docker compose exec -T -w /usr/src/app/services/$$service $$service pnpm test; \
+    done
