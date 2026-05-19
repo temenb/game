@@ -20,4 +20,5 @@ export const getUserId = (req: Request): string => {
 
   return payload.sub;
 };
+
 export default getUserId;

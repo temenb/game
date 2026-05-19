@@ -5,7 +5,6 @@ import * as EmptyGrpc from '../generated/common/empty';
 import * as AuthGrpc from '../generated/auth';
 import config from '../../config/config';
 import {GrpcClientManager} from '@shared/grpc-client-manager';
-import getUserIdFromMetadata from "../../lib/getUserIdFromMetadata";
 
 const battleManager = new GrpcClientManager<BattleGrpc.BattleClient>(() => {
   return new BattleGrpc.BattleClient(config.serviceBattleUrl, grpc.credentials.createInsecure());
@@ -37,6 +36,6 @@ export const getBattle = (battleId: string): Promise<BattleGrpc.BattleObject | n
 };
 
 export const upsertBattle = (userId: string): Promise<BattleGrpc.BattleObject | null> => {
-  const grpcRequest: AuthGrpc.UserIdRequest = {userId};
-  return battleManager.call((client, cb) => client.upsertBattle(grpcRequest, cb));
+  const grpcRequest: AuthGrpc.UserIdRequest = { userId };
+  return battleManager.call<BattleGrpc.BattleObject | null>((client, cb) => client.upsertBattle(grpcRequest, cb));
 };

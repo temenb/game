@@ -5,7 +5,7 @@ import * as EmptyGrpc from '../generated/common/empty';
 import config from '../../config/config';
 import {GrpcClientManager} from '@shared/grpc-client-manager';
 
-const streamingManager = new GrpcClientManager<StreamingGrpc.StreamingClient>(() => {
+export const streamingManager = new GrpcClientManager<StreamingGrpc.StreamingClient>(() => {
   return new StreamingGrpc.StreamingClient(config.serviceStreamingUrl, grpc.credentials.createInsecure());
 });
 

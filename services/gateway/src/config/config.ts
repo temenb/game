@@ -1,6 +1,6 @@
 export const config = {
-  grpcPort: process.env.GRPC_PORT || 50051,
-  httpPort: process.env.HTTP_PORT || 9090,
+  grpcPort: Number(process.env.GRPC_PORT) || 50051,
+  httpPort: Number(process.env.HTTP_PORT) || 9090,
   serviceAuthUrl: process.env.SERVICE_AUTH_URL || 'auth:50051',
   serviceProfileUrl: process.env.SERVICE_PROFILE_URL || 'profile:50051',
   serviceOrchestrationUrl: process.env.SERVICE_ORCHESTRATION_URL || 'orchestration:50051',
