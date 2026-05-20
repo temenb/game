@@ -42,12 +42,17 @@ install:
 	@docker compose down > /dev/null 2>&1
 	@echo "✅ Инициализация завершена!"
 
-prisma-migrate:
+migrate:
 	@echo '🚀 Apply migrations...'
-	@for service in $(PRISMA_SERVICES); do \
-		echo "▶️  Running migrations for $$service..."; \
-		docker compose exec -T -w /usr/src/app/$(SERVICE_DIR)/$$service $$service npx prisma migrate dev --schema=prisma/schema.prisma; \
-	done
+	@if [ -n "$(service)" ]; then \
+  		echo "▶️  Running migrations for $(service)..."; \
+		docker compose exec -T -w /usr/src/app/$(SERVICE_DIR)/$(service) $(service) npx prisma migrate dev --schema=prisma/schema.prisma; \
+	else \
+		for s in $(PRISMA_SERVICES); do \
+			echo "▶️  Running migrations for $$s..."; \
+			docker compose exec -T -w /usr/src/app/$(SERVICE_DIR)/$$s $$s npx prisma migrate dev --schema=prisma/schema.prisma; \
+		done \
+	fi
 
 prisma-generate:
 	@echo '🚀 Generating Prisma clients...'
@@ -55,7 +60,7 @@ prisma-generate:
 		echo '🚀 Generating' $$service 'Prisma client...' && \
 		docker cp ./$(SERVICE_DIR)/$$service/prisma game-$$service:/usr/src/app/$(SERVICE_DIR)/$$service; \
 		docker compose exec -T -w /usr/src/app/services/$$service $$service npx prisma generate; \
-    done
+	done
 
 reset:
 	docker stop $$(docker ps -aq) || true
@@ -72,7 +77,7 @@ seed:
 	@echo "🌱 Запуск сидов"
 	@for service in $(PRISMA_SERVICES); do \
 		docker compose exec -T -w /usr/src/app/services/$$service $$service npx ts-node src/seed/seed.ts; \
-    done
+	done
 
 git-commit-and-push-all:
 	@echo "🚀 Commit all repos..."
@@ -82,31 +87,31 @@ git-commit-and-push-all:
 
 git-commit-all:
 	@for dir in $(GIT_SERVICES); do \
-        echo "\033[1;33m[*] Checking $$dir...\033[0m"; \
-        SERVICE_PATH="$(SERVICE_DIR)/$$dir"; \
-        if [ ! -e "$$SERVICE_PATH/.git" ]; then \
-            echo "\033[0;31m[!] Skipping $$dir — not a git repo\033[0m"; \
-            continue; \
-        fi; \
-        cd "$$SERVICE_PATH"; \
-        if git diff --quiet; then \
-            echo "\033[1;33m[-] No changes in $$dir\033[0m"; \
-        else \
-            git add . && \
-            git commit -am "$(COMMIT_MSG)" && \
-            echo "\033[0;32m[✓] Committed changes in $$dir\033[0m"; \
-        fi; \
-        cd - > /dev/null; \
-    done
+		echo "\033[1;33m[*] Checking $$dir...\033[0m"; \
+		SERVICE_PATH="$(SERVICE_DIR)/$$dir"; \
+		if [ ! -e "$$SERVICE_PATH/.git" ]; then \
+			echo "\033[0;31m[!] Skipping $$dir — not a git repo\033[0m"; \
+			continue; \
+		fi; \
+		cd "$$SERVICE_PATH"; \
+		if git diff --quiet; then \
+			echo "\033[1;33m[-] No changes in $$dir\033[0m"; \
+		else \
+			git add . && \
+			git commit -am "$(COMMIT_MSG)" && \
+			echo "\033[0;32m[✓] Committed changes in $$dir\033[0m"; \
+		fi; \
+		cd - > /dev/null; \
+	done
 
 	@echo "\033[1;33m[*] Checking monorepo...\033[0m"; \
-    if git diff --quiet; then \
-        echo "\033[1;33m[-] No changes in monorepo\033[0m"; \
-    else \
-        git add . && \
-        git commit -am "$(COMMIT_MSG)" && \
-        echo "\033[0;32m[✓] Committed changes in monorepo\033[0m"; \
-    fi;
+	if git diff --quiet; then \
+		echo "\033[1;33m[-] No changes in monorepo\033[0m"; \
+	else \
+		git add . && \
+		git commit -am "$(COMMIT_MSG)" && \
+		echo "\033[0;32m[✓] Committed changes in monorepo\033[0m"; \
+	fi;
 
 
 git-push-all:
@@ -188,4 +193,15 @@ test:
 	@for service in $(NODE_SERVICES); do \
 		echo '🚀 Test' $$service service && \
 		docker compose exec -T -w /usr/src/app/services/$$service $$service pnpm test; \
-    done
+	done
+
+tmux:
+	tmux new-session -d -s logs
+	tmux send-keys -t logs:0 'docker compose logs -f gateway | lnav -t ' C-m
+	tmux split-window -h -t logs:0
+	tmux send-keys -t logs:0.1 'docker compose logs -f streaming | lnav -t ' C-m
+	tmux split-window -v -t logs:0.1
+	tmux send-keys -t logs:0.2 'docker compose logs -f battle | lnav -t ' C-m
+	tmux split-window -v -t logs:0.0
+	tmux select-pane -t logs:0.3
+	tmux attach -t logs

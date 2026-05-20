@@ -22,6 +22,7 @@ async function startGrpc() {
   });
 }
 
+
 async function bootstrap() {
   try {
     await Promise.all([startGrpc()]);
