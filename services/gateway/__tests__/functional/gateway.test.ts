@@ -38,7 +38,7 @@ describe("Gateway Service", () => {
     gatewayClient.close();
   });
 
-  test("Golden Hammer", async () => {
+  test("Game story functional", async () => {
 
     const deviceId1 = `device-${Math.random().toString(36).substring(2, 8)}`;
     const deviceId2 = `device-${Math.random().toString(36).substring(2, 8)}`;
