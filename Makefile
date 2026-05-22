@@ -16,7 +16,8 @@ up:
 
 install:
 	@echo "🔧 Инициализация проекта"
-	git submodule update --init --recursive
+	@echo "🔧 Клонирование подмодулей"
+	@git submodule update --init --recursive > /dev/null 2>&1
 	@echo "📦 Проверка .env файлов для всех сервисов..."
 	@for service in $(NODE_SERVICES) $(FLUTTER_SERVICES); do \
 		ENV_PATH="$(SERVICE_DIR)/$$service/.env"; \
@@ -26,6 +27,10 @@ install:
 			cp "$$ENV_EXAMPLE_PATH" "$$ENV_PATH"; \
 		fi; \
 	done
+	if [ ! -f "docker-compose.yml" ] && [ -f "docker-compose.example.yml" ]; then \
+		echo "[env] Копирую .env.example для $$service"; \
+		cp "$$ENV_EXAMPLE_PATH" "$$ENV_PATH"; \
+	fi;
 	@echo "📦 Установка зависимостей в корне монорепо..."
 	@pnpm install > /dev/null 2>&1
 	@echo "📦 Установка зависимостей для всех сервисов..."
