@@ -150,7 +150,7 @@ git-push-all:
 		echo "\033[0;32m[✓] Pushed monorepo\033[0m"; \
 	else \
 		echo "\033[0;31m[✗] Failed to push monorepo\033[0m"; \
-	fi; \
+	fi;
 	@if [ "$(bip)" != "no" ]; then \
 		$(MAKE) bip; \
 	fi
