@@ -21,14 +21,14 @@ install:
 	@echo "📦 Проверка .env файлов для всех сервисов..."
 	@for service in $(NODE_SERVICES) $(FLUTTER_SERVICES); do \
 		ENV_PATH="$(SERVICE_DIR)/$$service/.env"; \
-		ENV_EXAMPLE_PATH="$(SERVICE_DIR)/$$service/.env.example"; \
+		ENV_EXAMPLE_PATH="$(SERVICE_DIR)/$$service/.env.dist"; \
 		if [ ! -f "$$ENV_PATH" ] && [ -f "$$ENV_EXAMPLE_PATH" ]; then \
 			echo "[env] Копирую .env.example для $$service"; \
 			cp "$$ENV_EXAMPLE_PATH" "$$ENV_PATH"; \
 		fi; \
 	done
-	@if [ ! -f "$(SERVICE_DIR)/docker-compose.yml" ] && [ -f "$(SERVICE_DIR)/docker-compose.example.yml" ]; then \
-        echo "[env] Копирую docker-compose.example.yml для $$service"; \
+	@if [ ! -f "$(SERVICE_DIR)/docker-compose.yml" ] && [ -f "$(SERVICE_DIR)/docker-compose.yml.dist" ]; then \
+        echo "[env] Копирую docker-compose.yml.dist для $$service"; \
         cp "$(SERVICE_DIR)/docker-compose.example.yml" "$(SERVICE_DIR)/docker-compose.yml"; \
     fi
 	@echo "📦 Установка зависимостей в корне монорепо..."
