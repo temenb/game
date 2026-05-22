@@ -27,9 +27,9 @@ install:
 			cp "$$ENV_EXAMPLE_PATH" "$$ENV_PATH"; \
 		fi; \
 	done
-	if [ ! -f "docker-compose.yml" ] && [ -f "docker-compose.example.yml" ]; then \
+	if [ ! -f "$(SERVICE_DIR)/docker-compose.yml" ] && [ -f "$(SERVICE_DIR)/docker-compose.example.yml" ]; then \
 		echo "[env] Копирую .env.example для $$service"; \
-		cp "$$ENV_EXAMPLE_PATH" "$$ENV_PATH"; \
+		cp "$(SERVICE_DIR)/docker-compose.example.yml" "$(SERVICE_DIR)/docker-compose.yml"; \
 	fi;
 	@echo "📦 Установка зависимостей в корне монорепо..."
 	@pnpm install > /dev/null 2>&1
