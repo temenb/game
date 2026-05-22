@@ -16,6 +16,7 @@ up:
 
 install:
 	@echo "🔧 Инициализация проекта"
+	git submodule update --init --recursive
 	@echo "📦 Проверка .env файлов для всех сервисов..."
 	@for service in $(NODE_SERVICES) $(FLUTTER_SERVICES); do \
 		ENV_PATH="$(SERVICE_DIR)/$$service/.env"; \
