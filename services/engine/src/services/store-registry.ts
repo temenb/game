@@ -15,8 +15,6 @@ export class StoreRegistry {
   static async init(): Promise<void> {
     const redis = getRedis();
 
-
-
     logger.log('StoreClass');
 
     for (const { class: StoreClass, key } of Object.values(stores)) {

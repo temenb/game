@@ -1,9 +1,14 @@
-import {kafkaProducersConfig} from "../config/kafka.config";
-import {enqueueEventTx} from "../lib/pgBoss";
+import {kafkaConfig, kafkaProducersConfig} from "../config/kafka.config";
 import {StoreRegistry, stores} from "./store-registry";
 import {BattleCellValue, BattleObject, BattleStatus} from "../grpc/generated/battle";
 import {BattleMoveRequest} from "../grpc/generated/engine";
 import {BattleStateStore} from "../stores/battleStateStore";
+import {enqueueEvent} from "@shared/pg-boss/src/enqueueEvent";
+import logger from "@shared/logger";
+import {pgBossKafkaEventPrefix} from "@shared/pg-boss";
+import {createProducer} from "@shared/kafka";
+// import logger from "@shared/logger";
+// import {boss, pgBossKafkaEventPrefix} from "@shared/pg-boss";
 
 export function battleStore(): BattleStateStore {
   // убедимся, что сторы инициализированы
@@ -30,7 +35,21 @@ export const battleNew = async (battleId: string, players: string[]) => {
 
   await battleStore().set(battle);
 
-  await enqueueEventTx(kafkaProducersConfig.topicBattleUpdated, battle);
+  // try {
+  //
+  //   logger.log('boss().work()!!!!!!!!!!!!!!!!!')
+  //   const producer = await createProducer(kafkaConfig);
+  //
+  //   await producer.send(kafkaProducersConfig.topicBattleUpdated, battle);
+  //   logger.log('pgBoss ' + kafkaProducersConfig.topicBattleUpdated + ' event successfully done');
+  //
+  //   return true;
+  // } catch (err) {
+  //   logger.error('Kafka send failed:', err);
+  //   throw err;
+  // }
+
+  await enqueueEvent(kafkaProducersConfig.topicBattleUpdated, battle);
 
 };
 
@@ -108,5 +127,5 @@ export const makeMove = async (move: BattleMoveRequest) => {
     await battleStore().set(battle);
   }
 
-  await enqueueEventTx(kafkaProducersConfig.topicBattleUpdated, battle);
+  await enqueueEvent(kafkaProducersConfig.topicBattleUpdated, battle);
 };

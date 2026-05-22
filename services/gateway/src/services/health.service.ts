@@ -3,7 +3,6 @@ import * as authClient from '../grpc/clients/auth.client';
 import * as profileClient from '../grpc/clients/profile.client';
 import * as orchestrationClient from '../grpc/clients/orchestration.client';
 import * as engineClient from '../grpc/clients/engine.client';
-import * as falloutClient from '../grpc/clients/fallout.client';
 import * as battleClient from '../grpc/clients/battle.client';
 import * as streamingClient from '../grpc/clients/streaming.client';
 // import * as mailerClient from '../grpc/clients/mailer.client';
@@ -15,7 +14,6 @@ const startedAt = Date.now();
 //   auth: authClient,
 //   profile: profileClient,
 //   // engine: engineClient,
-//   // fallout: falloutClient,
 //   // mailer: mailerClient,
 // };
 //
@@ -40,7 +38,6 @@ async function getServicesHealth() {
     profile,
     orchestration,
     engine,
-    fallout,
     battle,
     streaming,
     // mailer,
@@ -49,7 +46,6 @@ async function getServicesHealth() {
     profileClient.health(),
     orchestrationClient.health(),
     engineClient.health(),
-    falloutClient.health(),
     battleClient.health(),
     streamingClient.health(),
     // mailerClient.health(),
@@ -60,7 +56,6 @@ async function getServicesHealth() {
     profile,
     orchestration,
     engine,
-    fallout,
     battle,
     streaming,
     // mailer,

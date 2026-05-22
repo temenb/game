@@ -1,10 +1,10 @@
 import grpcServer from './grpc/server';
 import * as grpc from '@grpc/grpc-js';
 import logger from '@shared/logger';
+import kafkaConfig, {kafkaConsumersConfig, kafkaProducersConfig} from "./config/kafka.config";
+import {createConsumer} from '@shared/kafka';
 import {initBoss, startWorker} from "@shared/pg-boss";
-import {kafkaConfig, kafkaProducersConfig} from "./config/kafka.config";
-import {initRedis, shutdownRedis, getRedis} from "./lib/redis-client";
-import {BattleStateStore} from "./stores/battleStateStore";
+import {initRedis} from "./lib/redis-client";
 import {StoreRegistry} from "./services/store-registry";
 
 const GRPC_PORT = process.env.GRPC_PORT ?? '50051';
@@ -34,7 +34,15 @@ async function startPgBoss() {
   });
 }
 
-let battleStore: BattleStateStore;
+async function createKafkaConsumers() {
+  const configs = Object.values(kafkaConsumersConfig);
+
+  await Promise.all(
+    configs.map(async ({ topic, handler }) => {
+      await createConsumer(kafkaConfig, { topic, handler });
+    })
+  );
+}
 
 async function startRedis() {
   await initRedis();
@@ -42,25 +50,21 @@ async function startRedis() {
   await StoreRegistry.init();
 }
 
-
 async function bootstrap() {
-
-  logger.log('bootstrap');
   try {
-    await Promise.all([startGrpc(), startPgBoss(), startRedis()]);
-    logger.info('🚀 Engine успешно запущен: gRPC');
+    await Promise.all([startGrpc(), startPgBoss(), createKafkaConsumers(), startRedis()]);
   } catch (err) {
-    logger.error('💥 Ошибка запуска Engine:', err);
+    logger.error('💥 Ошибка запуска Profile:', err);
     process.exit(1);
   }
 
-  process.on('SIGINT', async () => {
+  process.on('SIGINT', () => {
     logger.info('🛑 Завершение работы...');
     grpcServer.forceShutdown();
-    await StoreRegistry.shutdown();
-    await shutdownRedis();
     process.exit(0);
   });
+
 }
 
 bootstrap();
+

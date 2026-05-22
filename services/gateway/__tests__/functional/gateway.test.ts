@@ -76,8 +76,6 @@ describe("Gateway Service", () => {
 
     const metadata1 = new grpc.Metadata();
     metadata1.add("authorization", `Bearer ${auth1.accessToken}`);
-    const metadata2 = new grpc.Metadata();
-    metadata2.add("authorization", `Bearer ${auth2.accessToken}`);
 
     const stream1 = streamingClient.battleChannel(metadata1);
 
@@ -85,27 +83,70 @@ describe("Gateway Service", () => {
 
     await new Promise(resolve => setTimeout(resolve, 1000));
     stream1.on("data", (battleObject: BattleGrpc.BattleObject) => {
-      console.log("Got battle update:", battleObject);
+      // console.log("Got battle update:", battleObject);
     });
 
     await new Promise(resolve => setTimeout(resolve, 1000));
     stream1.on("error", (err: grpc.ServiceError) => {
-      console.error("Battle stream error:", err);
+      // console.error("Battle stream error:", err);
     });
 
     await new Promise(resolve => setTimeout(resolve, 1000));
     stream1.on("end", () => {
-      console.log("Battle stream ended");
+      // console.log("Battle stream ended");
     });
 
     await new Promise(resolve => setTimeout(resolve, 1000));
     stream1.end();
     await new Promise(resolve => setTimeout(resolve, 1000));
 
-//    const stream2 = streamingManager.call((client, cb) => client.battleChannel(metadata2));
 
 
-  // });
+
+
+
+
+    const metadata2 = new grpc.Metadata();
+    metadata2.add("authorization", `Bearer ${auth2.accessToken}`);
+
+    const stream2 = streamingClient.battleChannel(metadata2);
+
+    stream2.write({ join: {} });
+
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    stream2.on("data", (battleObject: BattleGrpc.BattleObject) => {
+      // console.log("Got battle update:", battleObject);
+    });
+
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    stream2.on("error", (err: grpc.ServiceError) => {
+      // console.error("Battle stream error:", err);
+    });
+
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    stream2.on("end", () => {
+      // console.log("Battle stream ended");
+    });
+
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    stream2.end();
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // });
   }, 20000);
 
 });

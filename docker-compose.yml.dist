@@ -11,10 +11,13 @@ services:
       - "9090:9090"
     volumes:
       - ./shared:/usr/src/app/shared
+      - ./services/gateway/jest.config.js:/usr/src/app/services/gateway/jest.config.js
       - ./services/gateway/src:/usr/src/app/services/gateway/src/
       - ./services/gateway/__tests__:/usr/src/app/services/gateway/__tests__/
       - ./services/gateway/package.json:/usr/src/app/services/gateway/package.json
     command: pnpm dlx turbo run dev --parallel
+    networks:
+      - backend
 
   auth:
     build:
@@ -39,6 +42,8 @@ services:
       postgres:
         condition: service_healthy
     command: pnpm dlx turbo run dev --parallel
+    networks:
+      - backend
 
   orchestration:
     build:
@@ -56,6 +61,8 @@ services:
       - ./services/orchestration/__tests__:/usr/src/app/services/orchestration/__tests__/
       - ./services/orchestration/package.json:/usr/src/app/services/orchestration/package.json
     command: pnpm dlx turbo run dev --parallel
+    networks:
+      - backend
 
   battle:
     build:
@@ -73,6 +80,8 @@ services:
       - ./services/battle/__tests__:/usr/src/app/services/battle/__tests__/
       - ./services/battle/package.json:/usr/src/app/services/battle/package.json
     command: pnpm dlx turbo run dev --parallel
+    networks:
+      - backend
 
   streaming:
     build:
@@ -90,6 +99,8 @@ services:
       - ./services/streaming/__tests__:/usr/src/app/services/streaming/__tests__/
       - ./services/streaming/package.json:/usr/src/app/services/streaming/package.json
     command: pnpm dlx turbo run dev --parallel
+    networks:
+      - backend
 
   profile:
     build:
@@ -106,12 +117,14 @@ services:
       - ./services/profile/src:/usr/src/app/services/profile/src/
       - ./services/profile/__tests__:/usr/src/app/services/profile/__tests__/
       - ./services/profile/package.json:/usr/src/app/services/profile/package.json
+    command: pnpm dlx turbo run dev --parallel
+    networks:
+      - backend
     depends_on:
       kafka:
         condition: service_healthy
       postgres:
         condition: service_healthy
-    command: pnpm dlx turbo run dev --parallel
 
   engine:
     build:
@@ -129,25 +142,10 @@ services:
       - ./services/engine/__tests__:/usr/src/app/services/engine/__tests__/
       - ./services/engine/package.json:/usr/src/app/services/engine/package.json
     command: pnpm dlx turbo run dev --parallel
+    networks:
+      - backend
     depends_on:
       - redis
-
-  fallout:
-    build:
-      context: .
-      dockerfile: services/fallout/Dockerfile
-    container_name: game-fallout
-    env_file:
-      - services/fallout/.env
-    #    ports:
-    #      - "50051:50051"
-    volumes:
-      - ./shared:/usr/src/app/shared
-      - ./services/fallout/prisma:/usr/src/app/services/fallout/prisma
-      - ./services/fallout/src:/usr/src/app/services/fallout/src/
-      - ./services/fallout/__tests__:/usr/src/app/services/fallout/__tests__/
-      - ./services/fallout/package.json:/usr/src/app/services/fallout/package.json
-    command: pnpm dlx turbo run dev --parallel
 
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
@@ -157,6 +155,8 @@ services:
     environment:
       KAFKA_CLUSTERS_0_NAME: local
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+    networks:
+      - backend
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep '\"status\":\"UP\"' || exit 1"]
       interval: 10s
@@ -185,6 +185,8 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
     volumes:
       - kafka_data:/var/lib/kafka/data
+    networks:
+      - backend
     healthcheck:
       test: ["CMD-SHELL", "/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list >/dev/null 2>&1 || exit 1"]
       interval: 10s
@@ -204,6 +206,8 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backend
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
@@ -214,6 +218,8 @@ services:
   redis:
     image: redis:7.2
     container_name: game-redis
+    networks:
+      - backend
     restart: always
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
@@ -233,6 +239,8 @@ services:
 #      MONGO_INITDB_DATABASE: game
 #    volumes:
 #      - mongo_data:/data/db
+#    networks:
+#      - backend
 #    healthcheck:
 #      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
 #      interval: 10s
@@ -254,6 +262,8 @@ services:
 #      MP_MAX_MESSAGES: 5000
 #    volumes:
 #      - /data
+#    networks:
+#      - backend
 #    restart: always
 #    healthcheck:
 #      test: ["CMD", "redis-cli", "ping"]
@@ -265,3 +275,7 @@ volumes:
   postgres_data:
   kafka_data:
   mongo_data:
+
+networks:
+  backend:
+    driver: bridge

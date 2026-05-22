@@ -1,18 +1,14 @@
 import * as BattleService from "../services/battle.service";
 import logger from "@shared/logger";
 
-export async function battleNew(messages: any): Promise<void> {
-  console.log('message=', messages);
-  for (const raw of messages) {
+export async function battleStarted(topic: string, partition: number, message: any): Promise<void> {
     try {
-      const payload = JSON.parse(raw.value);
-      await BattleService.battleNew(payload.id, payload.players);
+      await BattleService.battleNew(message.id, message.players);
     } catch (error) {
       logger.error(`[Kafka] Failed to process message`, {
-        rawValue: raw.value,
+        rawValue: message,
         error,
       });
     }
-  }
 }
 

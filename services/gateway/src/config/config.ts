@@ -6,7 +6,6 @@ export const config = {
   serviceOrchestrationUrl: process.env.SERVICE_ORCHESTRATION_URL || 'orchestration:50051',
   serviceBattleUrl: process.env.SERVICE_BATTLE_URL || 'battle:50051',
   serviceEngineUrl: process.env.SERVICE_ENGINE_URL || 'engine:50051',
-  serviceFalloutUrl: process.env.SERVICE_FALLOUT_URL || 'fallout:50051',
   serviceStreamingUrl: process.env.SERVICE_STREAMING_URL || 'streaming:50051',
   rabbitHost: process.env.RABBIT_HOST || 'rabbit',
   rabbitUser: process.env.RABBIT_USER || 'user',

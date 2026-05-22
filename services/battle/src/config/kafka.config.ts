@@ -7,14 +7,14 @@ export const kafkaConfig = {
 };
 
 export const kafkaProducersConfig = {
-  topicBattleNew: process.env.KAFKA_TOPIC_BATTLE_NEW || 'battle.new',
-}
+  topicBattleStarted: process.env.KAFKA_TOPIC_BATTLE_STARTED || 'battle.started',
+};
 
 export const kafkaConsumersConfig = {
   battleUpdated: {
     topic: process.env.KAFKA_TOPIC_BATTLE_UPDATED || 'battle.updated',
     handler: battleUpdated
   },
-}
+};
 
 export default kafkaConfig;

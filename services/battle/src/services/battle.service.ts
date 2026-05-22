@@ -2,6 +2,7 @@ import {prisma} from '../lib/prisma';
 import {Battle, BattleStatus} from "@prisma/client";
 import {enqueueEventTx} from "@shared/pg-boss/src/enqueueEvent";
 import {kafkaProducersConfig} from "../config/kafka.config";
+import logger from "@shared/logger";
 
 export class NotFoundError extends Error {
   constructor(message: string) {
@@ -100,23 +101,21 @@ export async function upsertBattle(userId: string): Promise<Battle> {
         throw new NotFoundError("Unknown error");
       }
 
-      await enqueueEventTx(kafkaProducersConfig.topicBattleNew, battle as object, tx);
+      logger.log('battle started');
+      logger.log(battle);
+      await enqueueEventTx(kafkaProducersConfig.topicBattleStarted, battle as object, tx);
 
       return battle;
     });
   }
 
   // Если ничего не нашли — создаём новый баттл
-  const newBattle = await prisma.battle.create({
+  return await prisma.battle.create({
     data: {
       players: [userId],
       playersCount: 1,
       status: BattleStatus.Active,
     },
   });
-
-  await enqueueEventTx(kafkaProducersConfig.topicBattleNew, newBattle as object, prisma);
-
-  return newBattle;
 }
 

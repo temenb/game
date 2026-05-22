@@ -41,6 +41,10 @@ install:
 	@echo "🛑 Остановка docker compose (выключаем все сервисы)..."
 	@docker compose down > /dev/null 2>&1
 	@echo "✅ Инициализация завершена!"
+	@make bip
+
+bip:
+	@paplay /usr/share/sounds/freedesktop/stereo/complete.oga
 
 migrate:
 	@echo '🚀 Apply migrations...'
@@ -53,6 +57,9 @@ migrate:
 			docker compose exec -T -w /usr/src/app/$(SERVICE_DIR)/$$s $$s npx prisma migrate dev --schema=prisma/schema.prisma; \
 		done \
 	fi
+	@if [ "$(bip)" != "no" ]; then \
+		$(MAKE) bip; \
+	fi
 
 prisma-generate:
 	@echo '🚀 Generating Prisma clients...'
@@ -61,16 +68,18 @@ prisma-generate:
 		docker cp ./$(SERVICE_DIR)/$$service/prisma game-$$service:/usr/src/app/$(SERVICE_DIR)/$$service; \
 		docker compose exec -T -w /usr/src/app/services/$$service $$service npx prisma generate; \
 	done
+	@make bip
 
 reset:
 	docker stop $$(docker ps -aq) || true
 	docker rm $$(docker ps -aq) || true
 	docker volume rm $$(docker volume ls -q) || true
 	docker compose up -d
-	@make prisma-migrate
+	@make migrate bip=no
 	docker stop $$(docker ps -aq) || true
 	docker rm $$(docker ps -aq) || true
 	docker compose up -d
+	@make bip
 
 
 seed:
@@ -78,12 +87,14 @@ seed:
 	@for service in $(PRISMA_SERVICES); do \
 		docker compose exec -T -w /usr/src/app/services/$$service $$service npx ts-node src/seed/seed.ts; \
 	done
+	@make bip
 
 git-commit-and-push-all:
 	@echo "🚀 Commit all repos..."
 	@make git-commit-all
 	@echo "🚀 Push all repos..."
 	@make git-push-all
+	@make bip
 
 git-commit-all:
 	@for dir in $(GIT_SERVICES); do \
@@ -112,6 +123,7 @@ git-commit-all:
 		git commit -am "$(COMMIT_MSG)" && \
 		echo "\033[0;32m[✓] Committed changes in monorepo\033[0m"; \
 	fi;
+	@make bip
 
 
 git-push-all:
@@ -133,6 +145,7 @@ git-push-all:
 	else \
 		echo "\033[0;31m[✗] Failed to push monorepo\033[0m"; \
 	fi; \
+	@make bip
 
 proto-generate:
 	@echo '🚀 Proto generate...'
@@ -168,6 +181,7 @@ proto-generate:
 			$(PROTO_FILES); \
 		echo "\033[1;32m[✓] $$dir done\033[0m"; \
 	done
+	@make bip
 
 
 
@@ -197,11 +211,11 @@ test:
 
 tmux:
 	tmux new-session -d -s logs
-	tmux send-keys -t logs:0 'docker compose logs -f gateway | lnav -t ' C-m
+	tmux send-keys -t logs:0 'docker compose logs -f streaming | lnav -t ' C-m
 	tmux split-window -h -t logs:0
-	tmux send-keys -t logs:0.1 'docker compose logs -f streaming | lnav -t ' C-m
+	tmux send-keys -t logs:0.1 'docker compose logs -f battle | lnav -t ' C-m
 	tmux split-window -v -t logs:0.1
-	tmux send-keys -t logs:0.2 'docker compose logs -f battle | lnav -t ' C-m
+	tmux send-keys -t logs:0.2 'docker compose logs -f engine | lnav -t ' C-m
 	tmux split-window -v -t logs:0.0
-	tmux select-pane -t logs:0.3
+	tmux select-pane -t logs:0.1
 	tmux attach -t logs

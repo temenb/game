@@ -6,8 +6,13 @@ const pgBossKafkaEventPrefix = 'event.';
 
 export async function enqueueEvent(topic: string, data: object): Promise<number | null> {
   const jobName = pgBossKafkaEventPrefix + topic;
-  const jobId = await boss().publish(jobName, data);
+  logger.log('here ' + jobName + '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1');
+  logger.log(boss.toString());
+  const bossObj = boss();
+  logger.log(bossObj);
+  const jobId = await bossObj.send(jobName, data);
 
+  return 1;
   if (!jobId) {
     throw new Error(`Failed to enqueue event: topic`);
   }

@@ -15,9 +15,9 @@ async function createConsumer(config, consumerConfig) {
     // Проверка существования топика
     const metadata = await admin.fetchTopicMetadata();
     const topicExists = metadata.topics.some(t => t.name === consumerConfig.topic);
-    logger_1.default.log('createConsumer config');
+    logger_1.default.log('createConsumer kafka config = ');
     logger_1.default.log(config);
-    logger_1.default.log('createConsumer consumerConfig');
+    logger_1.default.log('kafka.createConsumer consumer config = ');
     logger_1.default.log(consumerConfig);
     if (!topicExists) {
         await admin.createTopics({
