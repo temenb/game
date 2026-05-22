@@ -28,16 +28,16 @@ install:
 	@echo "📦 Установка зависимостей в корне монорепо..."
 	@pnpm install > /dev/null 2>&1
 	@echo "📦 Установка зависимостей для всех сервисов..."
-	@make proto-generate > /dev/null 2>&1
+	@make proto-generate bip=no > /dev/null 2>&1
 	@echo "🚀 Запуск docker compose (поднимаем все сервисы)..."
 	@docker compose up -d > /dev/null 2>&1
 	@echo "⏳ Ожидание запуска контейнеров (10 секунд)..."
 	@sleep 10
 	@echo '🚀 Generating Prisma clients...'
-	@make prisma-generate > /dev/null 2>&1
+	@make prisma-generate bip=no > /dev/null 2>&1
 	@echo '🚀 Apply migrations...'
-	@make prisma-migrate > /dev/null 2>&1
-	@make seed
+	@make prisma-migrate bip=no > /dev/null 2>&1
+	@make seed bip=no
 	@echo "🛑 Остановка docker compose (выключаем все сервисы)..."
 	@docker compose down > /dev/null 2>&1
 	@echo "✅ Инициализация завершена!"
@@ -68,7 +68,9 @@ prisma-generate:
 		docker cp ./$(SERVICE_DIR)/$$service/prisma game-$$service:/usr/src/app/$(SERVICE_DIR)/$$service; \
 		docker compose exec -T -w /usr/src/app/services/$$service $$service npx prisma generate; \
 	done
-	@make bip
+	@if [ "$(bip)" != "no" ]; then \
+		$(MAKE) bip; \
+	fi
 
 reset:
 	docker stop $$(docker ps -aq) || true
@@ -87,13 +89,15 @@ seed:
 	@for service in $(PRISMA_SERVICES); do \
 		docker compose exec -T -w /usr/src/app/services/$$service $$service npx ts-node src/seed/seed.ts; \
 	done
-	@make bip
+	@if [ "$(bip)" != "no" ]; then \
+		$(MAKE) bip; \
+	fi
 
 git-commit-and-push-all:
 	@echo "🚀 Commit all repos..."
-	@make git-commit-all
+	@make git-commit-all bip=no
 	@echo "🚀 Push all repos..."
-	@make git-push-all
+	@make git-push-all bip=no
 	@make bip
 
 git-commit-all:
@@ -123,7 +127,9 @@ git-commit-all:
 		git commit -am "$(COMMIT_MSG)" && \
 		echo "\033[0;32m[✓] Committed changes in monorepo\033[0m"; \
 	fi;
-	@make bip
+	@if [ "$(bip)" != "no" ]; then \
+		$(MAKE) bip; \
+	fi
 
 
 git-push-all:
@@ -145,7 +151,9 @@ git-push-all:
 	else \
 		echo "\033[0;31m[✗] Failed to push monorepo\033[0m"; \
 	fi; \
-	@make bip
+	@if [ "$(bip)" != "no" ]; then \
+		$(MAKE) bip; \
+	fi
 
 proto-generate:
 	@echo '🚀 Proto generate...'
@@ -181,7 +189,9 @@ proto-generate:
 			$(PROTO_FILES); \
 		echo "\033[1;32m[✓] $$dir done\033[0m"; \
 	done
-	@make bip
+	@if [ "$(bip)" != "no" ]; then \
+		$(MAKE) bip; \
+	fi
 
 
 
@@ -208,6 +218,7 @@ test:
 		echo '🚀 Test' $$service service && \
 		docker compose exec -T -w /usr/src/app/services/$$service $$service pnpm test; \
 	done
+	@make bip
 
 tmux:
 	tmux new-session -d -s logs
