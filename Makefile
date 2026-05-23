@@ -31,23 +31,8 @@ install:
         echo "[env] Создаю docker-compose.yml из docker-compose.yml.dist"; \
         cp docker-compose.yml.dist docker-compose.yml; \
     fi
-	@echo "📦 Установка зависимостей в корне монорепо..."
-	@pnpm install > /dev/null 2>&1
-	@echo "📦 Установка зависимостей для всех сервисов..."
-	@make proto-generate bip=no > /dev/null 2>&1
-	@echo "🚀 Запуск docker compose (поднимаем все сервисы)..."
-	@docker compose up -d > /dev/null 2>&1
-	@echo "⏳ Ожидание запуска контейнеров (10 секунд)..."
-	@sleep 10
-	@echo '🚀 Generating Prisma clients...'
-	@make prisma-generate bip=no > /dev/null 2>&1
-	@echo '🚀 Apply migrations...'
-	@make prisma-migrate bip=no > /dev/null 2>&1
-	@make seed bip=no
-	@echo "🛑 Остановка docker compose (выключаем все сервисы)..."
-	@docker compose down > /dev/null 2>&1
-	@echo "✅ Инициализация завершена!"
-	@make bip
+	@make proto-generate bip=no
+	@make reset
 
 bip:
 	@paplay /usr/share/sounds/freedesktop/stereo/complete.oga

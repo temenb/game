@@ -27,7 +27,7 @@ export async function initBoss(cb: () => void): Promise<typeof PgBoss> {
       // logger.log('3');
 
       cb();
-      logger.log(_boss);
+      // logger.log(_boss);
     } catch (e) {
       logger.log(e);
     }
@@ -38,9 +38,8 @@ export async function initBoss(cb: () => void): Promise<typeof PgBoss> {
 }
 
 export function boss(): typeof PgBoss {
-  logger.log('boss------------------------------------------------------------------------------------------------------');
   if (!_boss) {
-    throw new Error('Boss has not been initialized. Call createBoss() first.!!!!!!!!!!!!!!!!!!11');
+    throw new Error('Boss has not been initialized. Call createBoss() first.');
   }
   return _boss!;
 }
@@ -54,7 +53,6 @@ export async function startWorker(kafkaConfig: KafkaConfig, topic: string) {
   await boss().work(pgBossKafkaEventPrefix + topic, async (job: Job) => {
     try {
 
-      logger.log('boss().work()')
       const j = Array.isArray(job) ? job[0] : job;
       const {name, data} = j;
 

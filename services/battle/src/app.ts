@@ -34,12 +34,13 @@ async function startPgBoss() {
 }
 
 async function createKafkaConsumers() {
-  // return new Promise<void>(() => {
-  //   createConsumer(kafkaConfig, {
-  //     ...createUserConsumerConfig,
-  //     handler: userCreated,
-  //   });
-  // });
+  const configs = Object.values(kafkaConsumersConfig);
+
+  await Promise.all(
+    configs.map(async ({ topic, handler }) => {
+      await createConsumer(kafkaConfig, { topic, handler });
+    })
+  );
 }
 
 async function bootstrap() {

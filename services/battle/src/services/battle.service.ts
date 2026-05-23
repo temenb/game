@@ -3,6 +3,8 @@ import {Battle, BattleStatus} from "@prisma/client";
 import {enqueueEventTx} from "@shared/pg-boss/src/enqueueEvent";
 import {kafkaProducersConfig} from "../config/kafka.config";
 import logger from "@shared/logger";
+import {BattleObject} from "../grpc/generated/battle";
+import {battleToGrpc, battleToPrisma} from "../lib/battle-grpc-prisma-converters";
 
 export class NotFoundError extends Error {
   constructor(message: string) {
@@ -19,40 +21,22 @@ export async function getBattle(battleId: string): Promise<Battle | null> {
   return battle;
 }
 
-export async function updateBattle(userId: string): Promise<Battle> {
-  // Находим активный баттл пользователя
-  const existingBattle = await prisma.battle.findFirst({
-    where: {
-      players: { has: userId },
-      status: { not: BattleStatus.Finished },
+export async function updateBattle(battleObj: BattleObject): Promise<Battle> {
+  const battle = battleToPrisma(battleObj);
+  const updated = await prisma.battle.update({
+    where: { id: battle.id },
+    data: {
+      cells: battle.cells,
+      status: battle.status,
+      winner: battle.winner ?? null,
+      lastMoveAt: new Date(),
     },
   });
 
-  if (!existingBattle) {
-    throw new NotFoundError("Unknown error");
-  }
-
-  // Обновляем состояние баттла в транзакции
-  return prisma.$transaction(async (tx) => {
-    const updated = await tx.battle.update({
-      where: { id: existingBattle.id },
-      data: {
-        updatedAt: new Date(),
-        // здесь можно добавить логику изменения статуса, очков, хода и т.п.
-      },
-    });
-
-    // например, публикуем событие в Kafka
-    // await enqueueEventTx(
-    //   kafkaProducersConfig.topicUpdated,
-    //   updated as object,
-    //   tx
-    // );
-
-    return updated;
-  });
+  logger.log("battle updated");
+  logger.log(updated);
+  return updated;
 }
-
 export async function upsertBattle(userId: string): Promise<Battle> {
   // Проверяем, есть ли уже мой активный баттл
   const existingMyBattle = await prisma.battle.findFirst({
@@ -103,7 +87,7 @@ export async function upsertBattle(userId: string): Promise<Battle> {
 
       logger.log('battle started');
       logger.log(battle);
-      await enqueueEventTx(kafkaProducersConfig.topicBattleStarted, battle as object, tx);
+      await enqueueEventTx(kafkaProducersConfig.topicBattleStarted, battleToGrpc(battle), tx);
 
       return battle;
     });

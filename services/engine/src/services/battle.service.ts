@@ -1,14 +1,9 @@
-import {kafkaConfig, kafkaProducersConfig} from "../config/kafka.config";
+import {kafkaProducersConfig} from "../config/kafka.config";
 import {StoreRegistry, stores} from "./store-registry";
 import {BattleCellValue, BattleObject, BattleStatus} from "../grpc/generated/battle";
 import {BattleMoveRequest} from "../grpc/generated/engine";
 import {BattleStateStore} from "../stores/battleStateStore";
 import {enqueueEvent} from "@shared/pg-boss/src/enqueueEvent";
-import logger from "@shared/logger";
-import {pgBossKafkaEventPrefix} from "@shared/pg-boss";
-import {createProducer} from "@shared/kafka";
-// import logger from "@shared/logger";
-// import {boss, pgBossKafkaEventPrefix} from "@shared/pg-boss";
 
 export function battleStore(): BattleStateStore {
   // убедимся, что сторы инициализированы
@@ -21,34 +16,13 @@ export function battleStore(): BattleStateStore {
   return battleStore;
 }
 
-export const battleNew = async (battleId: string, players: string[]) => {
+export const battleNew = async (battle: BattleObject) => {
 
-  const battle: BattleObject = {
-    id: battleId,
-    cells: Array(9).fill(BattleCellValue.CELL_EMPTY),
-    players,
-    status: BattleStatus.ACTIVE,
-    winner: "",
-    // createdAt: new Date().toISOString(),
-    // updatedAt: new Date().toISOString(),
-  };
+  battle.cells = Array(9).fill(BattleCellValue.CELL_EMPTY);
+  battle.status = BattleStatus.ACTIVE;
+  battle.winner = "";
 
   await battleStore().set(battle);
-
-  // try {
-  //
-  //   logger.log('boss().work()!!!!!!!!!!!!!!!!!')
-  //   const producer = await createProducer(kafkaConfig);
-  //
-  //   await producer.send(kafkaProducersConfig.topicBattleUpdated, battle);
-  //   logger.log('pgBoss ' + kafkaProducersConfig.topicBattleUpdated + ' event successfully done');
-  //
-  //   return true;
-  // } catch (err) {
-  //   logger.error('Kafka send failed:', err);
-  //   throw err;
-  // }
-
   await enqueueEvent(kafkaProducersConfig.topicBattleUpdated, battle);
 
 };

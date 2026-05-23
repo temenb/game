@@ -10,7 +10,7 @@ export async function battleUpdated(message: BattleObject): Promise<void> {
     await updateBattle(message);
   } catch (error) {
     logger.error(`[Kafka] Failed to process message`, {
-      rawValue: message.userId,
+      rawValue: message,
       error,
     });
   }
