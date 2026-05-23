@@ -4,18 +4,30 @@ import * as StreamingGrpc from '../generated/streaming';
 import getUserIdFromMetadata from "../../lib/getUserIdFromMetadata";
 import * as engineService from "../../services/engine.service";
 import * as battleService from "../../services/battle.service";
+import logger from "@shared/logger";
 
 const activeBattleStreams = new Map<string, Set<grpc.ServerDuplexStream<StreamingGrpc.ClientRequest, BattleGrpc.BattleObject>>>();
 
 export function getBattleStream(
   battleId: string
 ): Set<grpc.ServerDuplexStream<StreamingGrpc.ClientRequest, BattleGrpc.BattleObject>> | undefined {
+
   return activeBattleStreams.get(battleId);
+}
+
+export function deleteActiveBattleStream(
+  battleId: string
+) {
+
+  activeBattleStreams.delete(battleId);
 }
 
 export async function battleChannel(
   call: grpc.ServerDuplexStream<StreamingGrpc.ClientRequest, BattleGrpc.BattleObject>) {
   call.on('data', async (event: StreamingGrpc.ClientRequest) => {
+
+
+    logger.log("Active battle streams:", Array.from(activeBattleStreams.keys()));
 
     const userId = getUserIdFromMetadata(call);
 
@@ -23,7 +35,7 @@ export async function battleChannel(
       const battle = await battleService.upsertBattle(userId);
 
       if (!battle) {
-        call.emit("error", "Battle not found");
+        call.emit("error", new Error("Battle not found"));
         return;
       }
 
@@ -31,26 +43,16 @@ export async function battleChannel(
         activeBattleStreams.set(battle.id, new Set());
       }
       activeBattleStreams.get(battle.id)!.add(call);
+      logger.log("Activete battle stream :", battle.id);
       call.write(battle);
     }
 
     if (event.move) {
       if (userId != event.move.userId) {
-        call.emit("error", "Unknown error");
+        call.emit("error", new Error("Unknown error"));
       }
       engineService.makeMove(event.move);
     }
-  });
-
-  call.on("end", () => {
-    // удаляем стрим из активных
-    for (const [battleId, streams] of activeBattleStreams.entries()) {
-      streams.delete(call);
-      if (streams.size === 0) {
-        activeBattleStreams.delete(battleId);
-      }
-    }
-    call.end();
   });
 }
 

@@ -4,6 +4,7 @@ import {
   BattleStatus as GrpcBattleStatus
 } from "../grpc/generated/battle";
 import {Battle, BattleCellValue, BattleStatus} from "@prisma/client";
+import logger from "@shared/logger";
 
 const battleStatusMap: Record<BattleStatus, GrpcBattleStatus> = {
   [BattleStatus.Active]: GrpcBattleStatus.ACTIVE,
@@ -19,7 +20,7 @@ const battleCellValueMap: Record<BattleCellValue, GrpcBattleCellValue> = {
 
 export function battleStatusToGrpc(status: BattleStatus): GrpcBattleStatus {
   const mapped = battleStatusMap[status];
-  if (!mapped) throw new Error(`Unknown BattleStatus: ${status}`);
+  if (mapped === undefined) throw new Error(`Unknown BattleStatus: ${status}`);
   return mapped;
 }
 
@@ -36,20 +37,20 @@ function flip<T extends string | number, U extends string | number>(
 export function battleStatusToPrisma(status: GrpcBattleStatus): BattleStatus {
   const grpcToBattleStatusMap = flip(battleStatusMap);
   const mapped = grpcToBattleStatusMap[status];
-  if (!mapped) throw new Error(`Unknown GrpcBattleStatus: ${status}`);
+  if (mapped === undefined) throw new Error(`Unknown GrpcBattleStatus: ${status}`);
   return mapped as BattleStatus;
 }
 
 export function battleCellValueToGrpc(cell: BattleCellValue): GrpcBattleCellValue {
   const mapped = battleCellValueMap[cell];
-  if (!mapped) throw new Error(`Unknown BattleCellValue: ${cell}`);
+  if (mapped === undefined) throw new Error(`Unknown BattleCellValue: ${cell}`);
   return mapped;
 }
 
 export function battleCellValueToPrisma(cell: GrpcBattleCellValue): BattleCellValue {
   const grpcToBattleCellValueMap = flip(battleCellValueMap);
   const mapped = grpcToBattleCellValueMap[cell];
-  if (!mapped) throw new Error(`Unknown GrpcBattleCellValue: ${cell}`);
+  if (mapped === undefined) throw new Error(`Unknown GrpcBattleCellValue: ${cell}`);
   return mapped as BattleCellValue;
 }
 

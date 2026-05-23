@@ -33,6 +33,6 @@ export const readyz = (): Promise<HealthGrpc.ReadyStatus | null> => {
 
 export const getMyProfile = (metadata: grpc.Metadata): Promise<ProfileGrpc.ProfileObject | null> => {
   const grpcRequest: EmptyGrpc.Empty = {};
-  logger.log(metadata);
+  // logger.log(metadata);
   return orchestrationManager.call((client, cb) => client.getMyProfile(grpcRequest, metadata, cb));
 };

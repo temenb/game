@@ -37,7 +37,7 @@ async function createKafkaConsumers() {
 async function bootstrap() {
   try {
     await Promise.all([startGrpc(), createKafkaConsumers(),]);
-    logger.info('🚀 Streaming успешно запущен: gRPC + HTTP');
+    logger.info('🚀 Streaming успешно запущен');
   } catch (err) {
     logger.error('💥 Ошибка запуска Streaming:', err);
     process.exit(1);

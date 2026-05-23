@@ -24,7 +24,7 @@ export const getUserIdFromMetadata = (
     throw new Error('JWT payload missing sub');
   }
 
-  logger.log(payload.sub);
+  // logger.log(payload.sub);
 
   return payload.sub;
 };

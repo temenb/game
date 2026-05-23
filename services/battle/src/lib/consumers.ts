@@ -3,7 +3,7 @@ import {updateBattle} from "../services/battle.service";
 import {BattleObject} from "../grpc/generated/battle";
 
 
-export async function battleUpdated(message: any): Promise<void> {
+export async function battleUpdated(topic: string, partition: number, message: any): Promise<void> {
   try {
     logger.log('battleUpdated');
     logger.log(message);

@@ -13,7 +13,12 @@ const orchestrationManager = new GrpcClientManager<OrchestrationGrpc.Orchestrati
 
 export const health = (): Promise<HealthGrpc.HealthReport | null> => {
   const grpcRequest: EmptyGrpc.Empty = {};
-  return orchestrationManager.call((client, cb) => client.health(grpcRequest, cb));
+  return orchestrationManager.call<HealthGrpc.HealthReport>(
+    (client, cb) => client.health(grpcRequest, cb)
+  ).catch((err) => {
+    logger.error("Health check failed:", err);
+    return null;
+  });
 };
 
 export const status = (): Promise<HealthGrpc.StatusInfo | null> => {

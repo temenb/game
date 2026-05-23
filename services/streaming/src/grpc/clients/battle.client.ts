@@ -5,6 +5,7 @@ import * as EmptyGrpc from '../generated/common/empty';
 import * as AuthGrpc from '../generated/auth';
 import config from '../../config/config';
 import {GrpcClientManager} from '@shared/grpc-client-manager';
+import logger from "@shared/logger";
 
 const battleManager = new GrpcClientManager<BattleGrpc.BattleClient>(() => {
   return new BattleGrpc.BattleClient(config.serviceBattleUrl, grpc.credentials.createInsecure());
@@ -37,5 +38,10 @@ export const getBattle = (battleId: string): Promise<BattleGrpc.BattleObject | n
 
 export const upsertBattle = (userId: string): Promise<BattleGrpc.BattleObject | null> => {
   const grpcRequest: AuthGrpc.UserIdRequest = { userId };
-  return battleManager.call<BattleGrpc.BattleObject | null>((client, cb) => client.upsertBattle(grpcRequest, cb));
+  return battleManager.call<BattleGrpc.BattleObject>(
+    (client, cb) => client.upsertBattle(grpcRequest, cb)
+  ).catch((err) => {
+    logger.error("Upsert battle failed:", err);
+    return null;
+  });
 };

@@ -41,7 +41,7 @@ async function startHttp() {
 async function bootstrap() {
   try {
     await Promise.all([startGrpc(), startHttp()]);
-    logger.info('🚀 Gateway успешно запущен: gRPC + HTTP');
+    logger.info('🚀 Gateway успешно запущен');
   } catch (err) {
     logger.error('💥 Ошибка запуска Gateway:', err);
     process.exit(1);

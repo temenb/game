@@ -12,7 +12,12 @@ const battleManager = new GrpcClientManager<BattleGrpc.BattleClient>(() => {
 
 export const health = (): Promise<HealthGrpc.HealthReport | null> => {
   const grpcRequest: EmptyGrpc.Empty = {};
-  return battleManager.call((client, cb) => client.health(grpcRequest, cb));
+  return battleManager.call<HealthGrpc.HealthReport>(
+    (client, cb) => client.health(grpcRequest, cb)
+  ).catch((err) => {
+    logger.error("Health check failed:", err);
+    return null;
+  });
 };
 
 export const status = (): Promise<HealthGrpc.StatusInfo | null> => {

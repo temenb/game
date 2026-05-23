@@ -5,6 +5,7 @@ import * as HealthGrpc from '../generated/common/health';
 import * as EmptyGrpc from '../generated/common/empty';
 import config from '../../config/config';
 import {GrpcClientManager} from '@shared/grpc-client-manager';
+import logger from "@shared/logger";
 
 const engineManager = new GrpcClientManager<EngineGrpc.EngineClient>(() => {
   return new EngineGrpc.EngineClient(config.serviceEngineUrl, grpc.credentials.createInsecure());
@@ -12,7 +13,12 @@ const engineManager = new GrpcClientManager<EngineGrpc.EngineClient>(() => {
 
 export const health = (): Promise<HealthGrpc.HealthReport | null> => {
   const grpcRequest: EmptyGrpc.Empty = {};
-  return engineManager.call((client, cb) => client.health(grpcRequest, cb));
+  return engineManager.call<HealthGrpc.HealthReport>(
+    (client, cb) => client.health(grpcRequest, cb)
+  ).catch((err) => {
+    logger.error("Health check failed:", err);
+    return null;
+  });
 };
 
 export const status = (): Promise<HealthGrpc.StatusInfo | null> => {
