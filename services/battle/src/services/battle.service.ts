@@ -5,6 +5,7 @@ import {kafkaProducersConfig} from "../config/kafka.config";
 import logger from "@shared/logger";
 import {BattleObject} from "../grpc/generated/battle";
 import {battleToGrpc, battleToPrisma} from "../lib/battle-grpc-prisma-converters";
+import {BattleModel} from "../models/battle.model";
 
 export class NotFoundError extends Error {
   constructor(message: string) {
@@ -13,93 +14,31 @@ export class NotFoundError extends Error {
   }
 }
 
-export async function getBattle(battleId: string): Promise<Battle | null> {
-  const battle = await prisma.battle.findUnique({
-    where: {id: battleId}
-  });
-
-  return battle;
-}
-
-export async function updateBattle(battleObj: BattleObject): Promise<Battle> {
-  const battle = battleToPrisma(battleObj);
-  const updated = await prisma.battle.update({
-    where: { id: battle.id },
-    data: {
-      cells: battle.cells,
-      status: battle.status,
-      winner: battle.winner ?? null,
-      lastMoveAt: new Date(),
-    },
-  });
-
-  logger.log("battle updated");
-  logger.log(updated);
-  return updated;
-}
 export async function upsertBattle(userId: string): Promise<Battle> {
-  // Проверяем, есть ли уже мой активный баттл
-  const existingMyBattle = await prisma.battle.findFirst({
-    where: {
-      players: { has: userId },
-      status: { not: BattleStatus.Finished },
-    },
-  });
+  const existingMyBattle = await BattleModel.findBattleByUser(userId);
 
   if (existingMyBattle) {
     return existingMyBattle;
   }
 
-  // Ищем чужой баттл с одним игроком
-  const existingSomebodiesBattle = await prisma.battle.findFirst({
-    where: {
-      playersCount: 1,
-      status: { not: BattleStatus.Finished },
-      NOT: { players: { has: userId } },
-    },
-  });
+  let attempts = 3;
 
-  if (existingSomebodiesBattle) {
-    return prisma.$transaction(async (tx) => {
-      const updated = await tx.battle.updateMany({
-        where: {
-          id: existingSomebodiesBattle.id,
-          playersCount: 1, // гарантируем, что пока один игрок
-          status: { not: BattleStatus.Finished },
-        },
-        data: {
-          players: { push: userId },
-          playersCount: { increment: 1 },
-        },
-      });
+  while (attempts > 0) {
+    const existingSomebodiesBattle = await BattleModel.findAvailableBattle(userId);
 
-      if (updated.count === 0) {
-        throw new Error("Battle already full or finished");
+    if (existingSomebodiesBattle) {
+      const joined = await BattleModel.joinBattle(existingSomebodiesBattle.id, userId);
+      if (joined) {
+        return joined;
       }
+      attempts--;
+      continue;
+    }
 
-      const battle = await tx.battle.findUnique({
-        where: { id: existingSomebodiesBattle.id },
-      });
 
-      if (!battle) {
-        throw new NotFoundError("Unknown error");
-      }
-
-      logger.log('battle started');
-      logger.log(battle);
-      await enqueueEventTx(kafkaProducersConfig.topicBattleStarted, battleToGrpc(battle), tx);
-
-      return battle;
-    });
+    return BattleModel.createBattle(userId);
   }
 
-  // Если ничего не нашли — создаём новый баттл
-  return await prisma.battle.create({
-    data: {
-      players: [userId],
-      playersCount: 1,
-      status: BattleStatus.Active,
-    },
-  });
+  return BattleModel.createBattle(userId);
 }
 

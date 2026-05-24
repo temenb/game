@@ -18,7 +18,6 @@ export function getBattleStream(
 export function deleteActiveBattleStream(
   battleId: string
 ) {
-
   activeBattleStreams.delete(battleId);
 }
 

@@ -81,26 +81,17 @@ describe("Gateway Service", () => {
 
     stream1.write({ join: {} });
 
-    await new Promise(resolve => setTimeout(resolve, 1000));
     stream1.on("data", (battleObject: BattleGrpc.BattleObject) => {
       // console.log("Got battle update:", battleObject);
     });
 
-    await new Promise(resolve => setTimeout(resolve, 1000));
     stream1.on("error", (err: grpc.ServiceError) => {
       // console.error("Battle stream error:", err);
     });
 
-    await new Promise(resolve => setTimeout(resolve, 1000));
     stream1.on("end", () => {
       // console.log("Battle stream ended");
     });
-
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    stream1.end();
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
-
 
 
 
@@ -113,24 +104,24 @@ describe("Gateway Service", () => {
 
     stream2.write({ join: {} });
 
-    await new Promise(resolve => setTimeout(resolve, 1000));
     stream2.on("data", (battleObject: BattleGrpc.BattleObject) => {
       // console.log("Got battle update:", battleObject);
     });
 
-    await new Promise(resolve => setTimeout(resolve, 1000));
     stream2.on("error", (err: grpc.ServiceError) => {
       // console.error("Battle stream error:", err);
     });
 
-    await new Promise(resolve => setTimeout(resolve, 1000));
     stream2.on("end", () => {
       // console.log("Battle stream ended");
     });
 
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    stream1.end();
+    await new Promise(resolve => stream1.on("end", resolve));
+
     stream2.end();
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise(resolve => stream2.on("end", resolve));
+
 
 
 
