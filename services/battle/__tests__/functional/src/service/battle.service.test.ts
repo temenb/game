@@ -15,11 +15,13 @@ beforeEach(async () => {
 });
 
 describe("upsertBattle", () => {
-  const userId1 = crypto.randomUUID();
-  const userId2 = crypto.randomUUID();
+  let userId1: string;
+  let userId2: string;
 
   beforeEach(() => {
     jest.clearAllMocks();
+    userId1 = crypto.randomUUID()
+    userId2 = crypto.randomUUID()
   });
 
   test("golden hummer", async () => {
@@ -40,60 +42,45 @@ describe("upsertBattle", () => {
     expect(battle.playersCount).toEqual(2);
     expect(battle.players).toContain(userId1);
     expect(battle.players).toContain(userId2);
-
-
-
   });
 
-  // test("возвращает мой активный баттл", async () => {
-  //
-  //   const myBattle = { id: "battle-1", players: [userId1, userId2], status: BattleStatus.Active };
-  //   (prisma.battle.findFirst as jest.Mock).mockResolvedValueOnce(myBattle);
-  //
-  //
-  //   expect(result).toEqual(myBattle);
-  //   expect(prisma.battle.findFirst).toHaveBeenCalledWith({
-  //     where: { players: { has: userId1 }, status: { not: BattleStatus.Finished } },
-  //   });
-  // });
-  //
-  // test("присоединяется к чужому баттлу", async () => {
-  //   const otherBattle = { id: "battle-2", players: ["other"], playersCount: 1, status: BattleStatus.Active };
-  //   (prisma.battle.findFirst as jest.Mock)
-  //     .mockResolvedValueOnce(null) // мой баттл не найден
-  //     .mockResolvedValueOnce(otherBattle); // чужой найден
-  //
-  //   (prisma.battle.updateMany as jest.Mock).mockResolvedValue({ count: 1 });
-  //   const updatedBattle = { ...otherBattle, players: ["other", userId1], playersCount: 2 };
-  //   (prisma.battle.findUnique as jest.Mock).mockResolvedValue(updatedBattle);
-  //
-  //   const result = await upsertBattle(userId1);
-  //
-  //   expect(result).toEqual(updatedBattle);
-  //   expect(prisma.battle.updateMany).toHaveBeenCalled();
-  //   expect(enqueueEventTx).toHaveBeenCalled();
-  // });
-  //
-  // test("ошибка если чужой баттл уже занят", async () => {
-  //   const otherBattle = { id: "battle-3", players: ["other"], playersCount: 1, status: BattleStatus.Active };
-  //   (prisma.battle.findFirst as jest.Mock)
-  //     .mockResolvedValueOnce(null)
-  //     .mockResolvedValueOnce(otherBattle);
-  //
-  //   (prisma.battle.updateMany as jest.Mock).mockResolvedValue({ count: 0 });
-  //
-  //   await expect(upsertBattle(userId1)).rejects.toThrow("Battle already full or finished");
-  // });
-  //
-  // test("ошибка если баттл не найден после update", async () => {
-  //   const otherBattle = { id: "battle-4", players: ["other"], playersCount: 1, status: BattleStatus.Active };
-  //   (prisma.battle.findFirst as jest.Mock)
-  //     .mockResolvedValueOnce(null)
-  //     .mockResolvedValueOnce(otherBattle);
-  //
-  //   (prisma.battle.updateMany as jest.Mock).mockResolvedValue({ count: 1 });
-  //   (prisma.battle.findUnique as jest.Mock).mockResolvedValue(null);
-  //
-  //   await expect(upsertBattle(userId1)).rejects.toThrow("Unknown error");
-  // });
+  test("создание нового баттла для userId1", async () => {
+    const battle = await upsertBattle(userId1);
+
+    expect(battle.players).toContain(userId1);
+    expect(battle.playersCount).toBe(1);
+    expect(battle.status).toBe(BattleStatus.Active);
+  });
+
+  test("возврат существующего баттла для userId1", async () => {
+    const battle1 = await upsertBattle(userId1);
+    const battle2 = await upsertBattle(userId1);
+
+    expect(battle2.id).toBe(battle1.id);
+    expect(battle2.players).toContain(userId1);
+  });
+
+  test("присоединение второго игрока userId2 к баттлу userId1", async () => {
+    await upsertBattle(userId1);
+    const battle = await upsertBattle(userId2);
+
+    expect(battle.players).toContain(userId1);
+    expect(battle.players).toContain(userId2);
+    expect(battle.playersCount).toBe(2);
+  });
+
+  test("создание нового баттла для userId2, если чужих нет", async () => {
+    const battle1 = await upsertBattle(userId1);
+    // завершаем первый баттл вручную
+    await prisma.battle.update({
+      where: { id: battle1.id },
+      data: { status: BattleStatus.Finished },
+    });
+
+    const battle2 = await upsertBattle(userId2);
+
+    expect(battle2.id).not.toBe(battle1.id);
+    expect(battle2.players).toContain(userId2);
+    expect(battle2.playersCount).toBe(1);
+  });
 });

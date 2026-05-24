@@ -1,10 +1,4 @@
-import {prisma} from '../lib/prisma';
 import {Battle, BattleStatus} from "@prisma/client";
-import {enqueueEventTx} from "@shared/pg-boss/src/enqueueEvent";
-import {kafkaProducersConfig} from "../config/kafka.config";
-import logger from "@shared/logger";
-import {BattleObject} from "../grpc/generated/battle";
-import {battleToGrpc, battleToPrisma} from "../lib/battle-grpc-prisma-converters";
 import {BattleModel} from "../models/battle.model";
 
 export class NotFoundError extends Error {
