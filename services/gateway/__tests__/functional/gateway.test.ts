@@ -116,11 +116,12 @@ describe("Gateway Service", () => {
       // console.log("Battle stream ended");
     });
 
-    stream1.end();
-    await new Promise(resolve => stream1.on("end", resolve));
 
+
+    stream1.end();
     stream2.end();
     await new Promise(resolve => stream2.on("end", resolve));
+    await new Promise(resolve => stream1.on("end", resolve));
 
 
 

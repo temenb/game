@@ -4,6 +4,7 @@ import * as BattleService from '../../services/battle.service';
 import {callbackError} from './callback.error';
 import {battleToGrpc, battleToPrisma} from '../../lib/battle-grpc-prisma-converters';
 import logger from "@shared/logger";
+import {BattleModel} from "../../models/battle.model";
 
 
 export async function upsertBattle(
@@ -34,7 +35,7 @@ export const getBattle = async (
   const {battleId} = call.request;
 
   try {
-    const result = await BattleService.getBattle(battleId);
+    const result = await BattleModel.getBattle(battleId);
 
     if (!result) {
       throw new Error("Battle not found");

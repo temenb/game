@@ -23,6 +23,7 @@ export function deleteActiveBattleStream(
 
 export async function battleChannel(
   call: grpc.ServerDuplexStream<StreamingGrpc.ClientRequest, BattleGrpc.BattleObject>) {
+
   call.on('data', async (event: StreamingGrpc.ClientRequest) => {
 
 
@@ -42,17 +43,58 @@ export async function battleChannel(
         activeBattleStreams.set(battle.id, new Set());
       }
       activeBattleStreams.get(battle.id)!.add(call);
-      logger.log("Activete battle stream :", battle.id);
+      logger.log("Active battle stream:", battle.id);
       call.write(battle);
     }
-
+    
     if (event.move) {
       if (userId != event.move.userId) {
         call.emit("error", new Error("Unknown error"));
       }
       engineService.makeMove(event.move);
     }
+
+    // if (event.leave) {
+    //   const battleId = event.leave.battleId;
+    //   const streams = activeBattleStreams.get(battleId);
+    //   if (streams) {
+    //     streams.delete(call);
+    //     if (streams.size === 0) {
+    //       activeBattleStreams.delete(battleId);
+    //     }
+    //   }
+    //   call.end();
+    // }
+    //
+    // if (event.end) {
+    //   const battleId = event.end.battleId;
+    //   const streams = activeBattleStreams.get(battleId);
+    //   if (streams) {
+    //     for (const stream of streams) {
+    //       stream.end();
+    //     }
+    //     activeBattleStreams.delete(battleId);
+    //   }
+    // }
+    //
+    // if (event.ping) {
+    //   call.write({ ping: true } as any); // можно вернуть простое подтверждение
+    // }
+  });
+
+  call.on("end", () => {
+    // удаляем стрим из всех баттлов при закрытии соединения
+    for (const [battleId, streams] of activeBattleStreams.entries()) {
+      streams.delete(call);
+      if (streams.size === 0) {
+        activeBattleStreams.delete(battleId);
+      }
+    }
+    call.end();
+  });
+
+  call.on("error", (err) => {
+    logger.error("Stream error:", err);
   });
 }
-
 
