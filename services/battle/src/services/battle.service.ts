@@ -21,9 +21,10 @@ export async function upsertBattle(userId: string): Promise<Battle> {
     const existingSomebodiesBattle = await BattleModel.findAvailableBattle(userId);
 
     if (existingSomebodiesBattle) {
-      const joined = await BattleModel.joinBattle(existingSomebodiesBattle.id, userId);
-      if (joined) {
-        return joined;
+      try {
+        return await BattleModel.joinBattle(existingSomebodiesBattle.id, userId);
+      } catch (e) {
+        
       }
       attempts--;
       continue;

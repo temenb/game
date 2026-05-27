@@ -1,5 +1,5 @@
 import * as BattleClient from "../grpc/clients/battle.client";
-import {getBattleStreams, deleteBattleStream} from "../channels/battle.stream";
+import BattleStreamRegistry from "../channels/battle.stream";
 import {BattleObject, BattleStatus} from "../grpc/generated/battle";
 import logger from "@shared/logger";
 
@@ -19,7 +19,7 @@ export const upsertBattle = async (userId: string) =>
   await BattleClient.upsertBattle(userId);
 
 export const updateBattle = async (battle: BattleObject) => {
-  const streams = getBattleStreams(battle.id);
+  const streams = BattleStreamRegistry.getBattleStreams(battle.id);
   if (!streams) {
     logger.log("battle object = ", battle);
     throw new Error(`No active streams found for battleId=${battle.id}`);
@@ -38,7 +38,7 @@ export const updateBattle = async (battle: BattleObject) => {
         logger.error("Error closing stream:", err);
       }
     }
-    deleteBattleStream(battle.id);
+    BattleStreamRegistry.deleteBattleStream(battle.id);
     logger.log(`Removed battle ${battle.id} from activeBattleStreams`);
   }
 };

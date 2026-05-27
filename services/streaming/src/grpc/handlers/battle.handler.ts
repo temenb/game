@@ -5,7 +5,7 @@ import getUserIdFromMetadata from "../../lib/getUserIdFromMetadata";
 import * as engineService from "../../services/engine.service";
 import * as battleService from "../../services/battle.service";
 import logger from "@shared/logger";
-import {setBattleStream} from "../../channels/battle.stream";
+import BattleStreamRegistry from "../../channels/battle.stream";
 
 export async function battleChannel(
   call: grpc.ServerDuplexStream<StreamingGrpc.BattleStreamRequest, BattleGrpc.BattleObject>) {
@@ -22,7 +22,7 @@ export async function battleChannel(
         call.emit("error", new Error("Battle not found"));
         return;
       }
-      setBattleStream(battle.id, call);
+      BattleStreamRegistry.setBattleStream(battle.id, call);
       logger.log("Battle stream was set:" + battle.id);
       call.write(battle);
     }
