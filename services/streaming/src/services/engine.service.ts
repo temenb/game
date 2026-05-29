@@ -14,5 +14,5 @@ export const readyz = async () =>
   await EngineClient.readyz();
 
 export const makeMove = async (move: EngineGrpc.BattleMoveRequest) =>
-  await EngineClient.makeMove(move);
+  await EngineClient.battleMove(move);
 

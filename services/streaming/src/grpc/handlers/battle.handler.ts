@@ -16,6 +16,7 @@ export async function battleChannel(
     const userId = getUserIdFromMetadata(call);
 
     if (event.join) {
+      logger.log("Battle join event");
       const battle = await battleService.upsertBattle(userId);
 
       if (!battle) {
@@ -24,10 +25,11 @@ export async function battleChannel(
       }
       BattleStreamRegistry.setBattleStream(battle.id, call);
       logger.log("Battle stream was set:" + battle.id);
-      call.write(battle);
+      BattleStreamRegistry.writeBattleStreams(battle);
     }
 
     if (event.move) {
+      logger.log("Battle move event");
       if (userId != event.move.userId) {
         call.emit("error", new Error("Unknown error"));
       }

@@ -115,4 +115,22 @@ export default class BattleStreamRegistry {
       this.heartbeatTimers.delete(call);
     }
   }
+
+  static writeBattleStreams(battle: BattleGrpc.BattleObject) {
+    const streams = BattleStreamRegistry.getBattleStreams(battle.id);
+    if (!streams) {
+      logger.log(`No active streams found for battleId=${battle.id}`, battle);
+      throw new Error(`No active streams found for battleId=${battle.id}`);
+    }
+
+
+    logger.log('Update streams for battle: ' + battle.id, battle);
+    logger.log('Streams count: ' + streams.size);
+    let count = 0;
+    for (const stream of streams) {
+      logger.log('Streams update ' + ++count);
+
+      stream.write(battle);
+    }
+  }
 }

@@ -120,6 +120,7 @@ describe("Gateway Service", () => {
 
     const payload1 = jwt.decode(auth1.accessToken) as { sub: string; iat: number; exp: number };
     expect(payload1.sub).toBeDefined();
+    console.log('user1', payload1.sub);
 
     //------------------------------------------------------------------------------------------------------------------
 
@@ -128,68 +129,86 @@ describe("Gateway Service", () => {
 
     const stream1 = streamingClient.battleChannel(metadata1);
 
-    stream1.write({ join: {} });
-
-    stream1.on("data", (battleObject: BattleGrpc.BattleObject) => {
-      console.log("-=1=- Got battle update:", battleObject);
-      if (counter == 0) {
-        console.log("-=1=- Player move:", battleObject);
-        stream2.write({ move: {battleId: battleObject.id, userId: payload1.sub, cellIdx: 4} });
-      } else if (counter == 1) {
-        console.log("-=1=- Player move:", battleObject);
-        stream2.write({ move: {battleId: battleObject.id, userId: payload1.sub, cellIdx: 0} });
-      } else if (counter == 2) {
-        console.log("-=1=- Player move:", battleObject);
-        stream2.write({ move: {battleId: battleObject.id, userId: payload1.sub, cellIdx: 4} });
-      } else if (counter == 4) {
-        console.log("-=1=- Player move:", battleObject);
-        stream2.write({ move: {battleId: battleObject.id, userId: payload1.sub, cellIdx: 0} });
-      } else if (counter == 6) {
-        console.log("-=1=- Player move:", battleObject);
-        stream2.write({ move: {battleId: battleObject.id, userId: payload1.sub, cellIdx: 8} });
-      }
-
+    stream1.on("error", (err: grpc.ServiceError) => {
+      console.error("-=1=- Battle stream error:", err);
     });
 
+    stream1.on("end", () => {
+      console.log("-=1=- Battle stream ended");
+    });
 
 
 
 
     const metadata2 = new grpc.Metadata();
     metadata2.add("authorization", `Bearer ${auth2.accessToken}`);
-    const payload2 = jwt.decode(auth1.accessToken) as { sub: string; iat: number; exp: number };
+    const payload2 = jwt.decode(auth2.accessToken) as { sub: string; iat: number; exp: number };
+    console.log('user2', payload2.sub);
+
 
     const stream2 = streamingClient.battleChannel(metadata2);
-
-    stream2.write({ join: {} });
-
-    stream2.on("data", (battleObject: BattleGrpc.BattleObject) => {
-      console.log("-=2=- Got battle update:", battleObject);
-      if (counter == 3) {
-        console.log("-=2=- Player move:", battleObject);
-        stream2.write({ move: {battleId: battleObject.id, userId: payload2.sub, cellIdx: 1} });
-      } else if (counter == 5) {
-        console.log("-=2=- Player move:", battleObject);
-        stream2.write({ move: {battleId: battleObject.id, userId: payload2.sub, cellIdx: 2} });
-      }
-    });
 
     stream2.on("error", (err: grpc.ServiceError) => {
       console.error("-=2=- Battle stream error:", err);
     });
 
     stream2.on("end", () => {
-      // console.log("-=2=- Battle stream ended");
+      console.log("-=2=- Battle stream ended");
     });
 
 
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    const start = new Promise<void>(async (resolve) => {
+      stream1.on("data", (battleObject: BattleGrpc.BattleObject) => {
+        console.log("------------------------------------------------------------------------------=1=- Got battle update:", battleObject);
+        gameplay(battleObject);
+      });
 
+      stream2.on("data", (battleObject: BattleGrpc.BattleObject) => {
+        console.log("------------------------------------------------------------------------------=2=- Got battle update:", battleObject);
+        gameplay(battleObject);
+      });
+
+      const gameplay = async (battleObject?: BattleGrpc.BattleObject | null) => {
+        console.log('=====================================================================step', counter);
+        if (!battleObject) {
+          stream1.write({ join: {} });
+        } else if (1 == counter) {
+          stream2.write({ join: {} });
+        } else if (5 == counter) {
+          console.log("-=1=- Player move:", battleObject);
+          stream1.write({ move: {battleId: battleObject.id, userId: payload1.sub, cellIdx: 4} });
+        } else if (7 == counter) {
+          console.log("-=2=- Player move:", battleObject);
+          stream2.write({ move: {battleId: battleObject.id, userId: payload2.sub, cellIdx: 1} });
+        } else if (9 == counter) {
+          console.log("-=1=- Player move:", battleObject);
+          stream1.write({ move: {battleId: battleObject.id, userId: payload1.sub, cellIdx: 0} });
+        } else if (11 == counter) {
+          console.log("-=2=- Player move:", battleObject);
+          stream2.write({ move: {battleId: battleObject.id, userId: payload2.sub, cellIdx: 2} });
+        } else if (13 == counter) {
+          console.log("-=1=- Player move:", battleObject);
+          stream1.write({ move: {battleId: battleObject.id, userId: payload1.sub, cellIdx: 8} });
+        } else if (14 < counter) {
+          resolve();
+        }
+        console.log("-------------------------------------------------------------------------------------------------------------------------------");
+
+        counter++;
+      };
+
+      await gameplay();
+    });
+
+    await start;
+
+    console.log("EXIT");
 
     stream1.end();
 
     stream2.end();
 
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
     console.log('streams are closed')
 

@@ -37,11 +37,11 @@ async function startPgBoss() {
 async function createKafkaConsumers() {
   const configs = Object.values(kafkaConsumersConfig);
 
-  await Promise.all(
-    configs.map(async ({ topic, handler }) => {
-      await createConsumer(kafkaConfig, { topic, handler });
-    })
-  );
+  // await Promise.all(
+  //   configs.map(async ({ topic, handler }) => {
+  //     await createConsumer(kafkaConfig, { topic, handler });
+  //   })
+  // );
 }
 
 async function startRedis() {

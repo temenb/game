@@ -1,10 +1,10 @@
-import {Battle, BattleStatus} from "@prisma/client";
+import {Battle, BattleStatus, BattleCellValue} from "@prisma/client";
 import prisma from "../lib/prisma";
 import {BattleObject} from "../grpc/generated/battle";
 import {battleToGrpc, battleToPrisma} from "../lib/battle-grpc-prisma-converters";
 import logger from "@shared/logger";
-import {enqueueEventTx} from "@shared/pg-boss/src/enqueueEvent";
-import {kafkaProducersConfig} from "../config/kafka.config";
+import * as BattleGrpc from "../grpc/generated/battle";
+import * as EmptyGrpc from "../grpc/generated/common/empty";
 import {NotFoundError} from "../services/battle.service";
 
 export class BattleModel {
@@ -17,6 +17,7 @@ export class BattleModel {
     });
   }
 
+
   static async findAvailableBattle(userId: string): Promise<Battle | null> {
     return prisma.battle.findFirst({
       where: {
@@ -27,7 +28,11 @@ export class BattleModel {
     });
   }
 
-  static async joinBattle(battleId: string, userId: string): Promise<Battle> {
+  static async joinBattle(
+    battleId: string
+    , userId: string
+    , callback: (battle: BattleGrpc.BattleObject) => Promise<EmptyGrpc.Empty | null>
+  ): Promise<Battle> {
     return prisma.$transaction(async (tx) => {
       const updated = await tx.battle.updateMany({
         where: {
@@ -40,6 +45,7 @@ export class BattleModel {
           playersCount: { increment: 1 },
         },
       });
+
 
       if (updated.count === 0) {
         throw new Error("Battle already full or finished");
@@ -55,18 +61,11 @@ export class BattleModel {
 
       logger.log('battle started');
       logger.log(battle);
-      await enqueueEventTx(kafkaProducersConfig.topicBattleStarted, battleToGrpc(battle), tx);
 
+      callback(battleToGrpc(battle));
       return battle;
     });
   }
-
-
-
-
-
-
-
 
   static async getBattle(battleId: string): Promise<Battle | null> {
     return await prisma.battle.findUnique({
@@ -75,9 +74,13 @@ export class BattleModel {
   }
 
   static async createBattle(userId: string): Promise<Battle> {
+
+
+    logger.log('create battle for user', userId);
     return prisma.battle.create({
       data: {
         players: [userId],
+        cells: Array(9).fill(BattleCellValue.EMPTY),
         playersCount: 1,
         status: BattleStatus.Active,
       },

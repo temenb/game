@@ -19,25 +19,11 @@ export const upsertBattle = async (userId: string) =>
   await BattleClient.upsertBattle(userId);
 
 export const updateBattle = async (battle: BattleObject) => {
-  const streams = BattleStreamRegistry.getBattleStreams(battle.id);
-  if (!streams) {
-    logger.log("battle object = ", battle);
-    throw new Error(`No active streams found for battleId=${battle.id}`);
-  }
-
-  for (const stream of streams) {
-    stream.write(battle);
-  }
+  logger.log('update battle: battle');
+  BattleStreamRegistry.writeBattleStreams(battle);
 
   if (battle.winner || battle.status != BattleStatus.ACTIVE) {
     logger.log(`Battle ${battle.id} finished. Closing streams...`);
-    for (const stream of streams) {
-      try {
-        stream.end();
-      } catch (err) {
-        logger.error("Error closing stream:", err);
-      }
-    }
     BattleStreamRegistry.deleteBattleStream(battle.id);
     logger.log(`Removed battle ${battle.id} from activeBattleStreams`);
   }

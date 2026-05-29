@@ -4,6 +4,7 @@ import {BattleCellValue, BattleObject, BattleStatus} from "../grpc/generated/bat
 import {BattleMoveRequest} from "../grpc/generated/engine";
 import {BattleStateStore} from "../stores/battleStateStore";
 import {enqueueEvent} from "@shared/pg-boss/src/enqueueEvent";
+import logger from "@shared/logger";
 
 export function battleStore(): BattleStateStore {
   // убедимся, что сторы инициализированы
@@ -17,7 +18,7 @@ export function battleStore(): BattleStateStore {
 }
 
 export const battleNew = async (battle: BattleObject) => {
-
+  logger.log('New battle started', battle)
   battle.cells = Array(9).fill(BattleCellValue.CELL_EMPTY);
   battle.status = BattleStatus.ACTIVE;
   battle.winner = "";
@@ -29,7 +30,7 @@ export const battleNew = async (battle: BattleObject) => {
 
 function getSymbolForUser(battle: BattleObject, move: BattleMoveRequest): BattleCellValue {
   const idx = battle.players.indexOf(move.userId);
-  if (idx === -1) throw new Error("Игрок не найден в баттле");
+  if (idx === -1) throw new Error("User is not found in the battle");
 
   return idx === 0 ? BattleCellValue.CELL_X : BattleCellValue.CELL_O;
 }
@@ -53,11 +54,10 @@ function verifyCell(battle: BattleObject, move: BattleMoveRequest) {
 }
 
 function isWin(battle: BattleObject): boolean {
-  // Проверяем победные комбинации
   const winningCombos = [
-    [0,1,2],[3,4,5],[6,7,8], // строки
-    [0,3,6],[1,4,7],[2,5,8], // столбцы
-    [0,4,8],[2,4,6]          // диагонали
+    [0,1,2],[3,4,5],[6,7,8],
+    [0,3,6],[1,4,7],[2,5,8],
+    [0,4,8],[2,4,6]
   ];
 
   for (const [a,b,c] of winningCombos) {
