@@ -8,8 +8,8 @@ router.get('/status', authController.status);
 router.get('/livez', authController.livez);
 router.get('/readyz', authController.readyz);
 
-router.get('/anonymousSignInRequest', authController.anonymousSignIn);
-router.get('/refreshTokensRequest', authController.refreshTokens);
+router.post('/anonymousSignIn', authController.anonymousSignIn);
+router.post('/refreshTokens', authController.refreshTokens);
 
 export default router;
 

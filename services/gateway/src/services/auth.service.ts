@@ -1,4 +1,5 @@
 import * as AuthClient from '../grpc/clients/auth.client';
+import * as AuthGrpc from '../grpc/generated/auth';
 import logger from "@shared/logger";
 import {AnonymousSignInRequest, RefreshTokensRequest} from "../grpc/generated/auth";
 

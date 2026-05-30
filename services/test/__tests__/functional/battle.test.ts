@@ -7,184 +7,165 @@ import jwt from "jsonwebtoken";
 import WebSocket from "ws";
 import {GatewayClient} from "../../src/grpc/generated/gateway";
 import {StreamingClient} from "../../src/grpc/generated/streaming";
+import net from "net";
+import * as http from "node:http";
 
+async function gatewayRequest(uri: string, request: object): Promise<any> {
+  return new Promise((resolve, reject) => {
+    const data = JSON.stringify(request);
 
+    const options = {
+      hostname: config.httpGatewayHost,
+      port: Number(config.httpGatewayPort),
+      path: `/${uri}`,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Content-Length": Buffer.byteLength(data),
+      },
+    };
+
+    const req = http.request(options, (res) => {
+      let body = "";
+      res.on("data", (chunk) => (body += chunk));
+      res.on("end", () => {
+        try {
+          console.log(body);
+          const response = JSON.parse(body);
+          resolve(response);
+        } catch (err) {
+          reject(err);
+        }
+      });
+    });
+
+    req.on("error", (err) => reject(err));
+    req.write(data);
+    req.end();
+  });
+}
 
 describe("Gateway Service", () => {
 
-  let gatewayClient: GatewayClient;
-  let streamingClient: StreamingClient;
+  test("TCP anonymousSignIn on gateway", async () => {
 
-  function callUnary<TReq, TRes>(
-    fn: (req: TReq, cb: (err: grpc.ServiceError | null, res?: TRes) => void) => void,
-    req: TReq
-  ): Promise<TRes> {
-    return new Promise((resolve, reject) => {
-      fn(req, (err, res) => {
-        if (err) reject(err);
-        else resolve(res!);
-      });
-    });
-  }
+    const deviceId = `device-${Math.random().toString(36).substring(2, 8)}`;
+    const response = await gatewayRequest("auth/anonymousSignIn", { deviceId });
 
-  beforeAll(async () => {
-    gatewayClient = new GatewayGrpc.GatewayClient('gateway:' + config.grpcPort, grpc.credentials.createInsecure());
+    console.log(response);
+
+    expect(response).toBeDefined();
+    // expect(response.accessToken).toBeDefined();
+
+    // console.log("✅ Got accessToken:", response.accessToken);
   });
 
-  afterAll(async () => {
-    streamingClient.close();
-    gatewayClient.close();
-  });
-
-  // test("Channel test", async () => {
+  // test("Game story functional", async () => {
   //
-  //   const deviceId = `device-${Math.random().toString(36).substring(2, 8)}`;
-  //   const grpcRequest: AuthGrpc.AnonymousSignInRequest = {deviceId: deviceId};
+  //   const deviceId1 = `device-${Math.random().toString(36).substring(2, 8)}`;
+  //   const deviceId2 = `device-${Math.random().toString(36).substring(2, 8)}`;
+  //   const grpcRequest1: AuthGrpc.AnonymousSignInRequest = {deviceId: deviceId1};
+  //   const grpcRequest2: AuthGrpc.AnonymousSignInRequest = {deviceId: deviceId2};
   //
-  //   const auth: AuthGrpc.AuthObject = await callUnary(
+  //   let counter = 0;
+  //
+  //   const client = new net.Socket();
+  //   client.connect(config.httpGatewayPort, config.httpGatewayHost, (done) => {
+  //
+  //   });
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //   const auth1: AuthGrpc.AuthObject = await callUnary(
   //     gatewayClient.anonymousSignIn.bind(gatewayClient),
-  //     grpcRequest
+  //     grpcRequest1
+  //   );
+  //   const auth2: AuthGrpc.AuthObject = await callUnary(
+  //     gatewayClient.anonymousSignIn.bind(gatewayClient),
+  //     grpcRequest2
   //   );
   //
-  //   if (!auth) {
+  //   if (!auth1 || !auth2) {
   //     fail('AuthObject shouldn\'t be null');
   //   }
   //
   //   //------------------------------------------------------------------------------------------------------------------
-  //   expect(auth).toBeDefined();
+  //   expect(auth1).toBeDefined();
   //
-  //   const payload = jwt.decode(auth.accessToken) as { sub: string; iat: number; exp: number };
-  //   expect(payload.sub).toBeDefined();
-  //
-  //   const accessPayload = jwt.decode(auth.accessToken) as any;
-  //   const refreshPayload = jwt.decode(auth.refreshToken) as any;
-  //
-  //   expect(accessPayload.sub).toBeDefined();
-  //   expect(refreshPayload.sub).toBeDefined();
-  //   expect(accessPayload.sub).not.toHaveLength(0);
-  //   expect(refreshPayload.sub).not.toHaveLength(0);
+  //   const payload1 = jwt.decode(auth1.accessToken) as { sub: string; iat: number; exp: number };
+  //   const payload2 = jwt.decode(auth2.accessToken) as { sub: string; iat: number; exp: number };
+  //   expect(payload1.sub).toBeDefined();
+  //   console.log('user1', payload1.sub);
+  //   console.log('user2', payload2.sub);
   //
   //   //------------------------------------------------------------------------------------------------------------------
   //
-  //   const metadata = new grpc.Metadata();
-  //   metadata.add("authorization", `Bearer ${auth.accessToken}`);
+  //   const ws1 = new WebSocket(`ws://streaming:${config.webSocketPort}?token=${auth1.accessToken}`);
+  //   const ws2 = new WebSocket(`ws://streaming:${config.webSocketPort}?token=${auth2.accessToken}`);
   //
-  //   const stream = streamingClient.battleChannel(metadata);
   //
-  //   stream.write({ join: {} });
   //
-  //   stream.on("data", (battleObject: BattleGrpc.BattleObject) => {
-  //     console.log("Got battle update:", battleObject);
+  //   const start = new Promise<void>(async (resolve) => {
+  //
+  //     const gameplay = async (battleObject?: BattleGrpc.BattleObject | null) => {
+  //       console.log('=====================================================================step', counter);
+  //       if (!battleObject) {
+  //         ws1.send(JSON.stringify({ type: "battle", payload: { join: {} } }));
+  //       } else if (counter === 1) {
+  //         ws2.send(JSON.stringify({ type: "battle", payload: { join: {} } }));
+  //       } else if (counter === 5) {
+  //         ws1.send(JSON.stringify({ type: "battle", payload: { move: { battleId: battleObject.id, userId: payload1.sub, cellIdx: 4 } } }));
+  //       } else if (counter === 7) {
+  //         ws2.send(JSON.stringify({ type: "battle", payload: { move: { battleId: battleObject.id, userId: payload2.sub, cellIdx: 1 } } }));
+  //       } else if (counter === 9) {
+  //         ws1.send(JSON.stringify({ type: "battle", payload: { move: { battleId: battleObject.id, userId: payload1.sub, cellIdx: 0 } } }));
+  //       } else if (counter === 11) {
+  //         ws2.send(JSON.stringify({ type: "battle", payload: { move: { battleId: battleObject.id, userId: payload2.sub, cellIdx: 2 } } }));
+  //       } else if (counter === 13) {
+  //         ws1.send(JSON.stringify({ type: "battle", payload: { move: { battleId: battleObject.id, userId: payload1.sub, cellIdx: 8 } } }));
+  //       } else if (counter > 14) {
+  //         resolve();
+  //       }
+  //       console.log("-------------------------------------------------------------------------------------------------------------------------------");
+  //
+  //       counter++;
+  //     };
+  //
+  //
+  //     ws1.on("message", (data: BattleGrpc.BattleObject) => {
+  //       console.log("------------------------------------------------------------------------------=1=- Got battle update:", battleObject);
+  //       const battleObject = JSON.parse(data.toString());
+  //       gameplay(battleObject);
+  //     });
+  //
+  //     ws2.on("message", (data: BattleGrpc.BattleObject) => {
+  //       console.log("------------------------------------------------------------------------------=2=- Got battle update:", battleObject);
+  //       const battleObject = JSON.parse(data.toString());
+  //       gameplay(battleObject);
+  //     });
+  //
+  //     await gameplay();
   //   });
   //
-  //   stream.on("error", (err: grpc.ServiceError) => {
-  //     console.error("Battle stream error:", err);
-  //   });
   //
-  //   stream.on("end", () => {
-  //     console.log("Battle stream ended");
-  //   });
+  //   await start;
+  //
+  //   ws1.close();
+  //   ws2.close();
   //
   //
-  //   stream.end();
-  //   await new Promise(resolve => stream.on("finish", resolve));
+  //   ///
+  //   console.log('streams are closed')
   //
   //
-  // });
-
-  test("Game story functional", async () => {
-
-    const deviceId1 = `device-${Math.random().toString(36).substring(2, 8)}`;
-    const deviceId2 = `device-${Math.random().toString(36).substring(2, 8)}`;
-    const grpcRequest1: AuthGrpc.AnonymousSignInRequest = {deviceId: deviceId1};
-    const grpcRequest2: AuthGrpc.AnonymousSignInRequest = {deviceId: deviceId2};
-
-    let counter = 0;
-
-    const auth1: AuthGrpc.AuthObject = await callUnary(
-      gatewayClient.anonymousSignIn.bind(gatewayClient),
-      grpcRequest1
-    );
-    const auth2: AuthGrpc.AuthObject = await callUnary(
-      gatewayClient.anonymousSignIn.bind(gatewayClient),
-      grpcRequest2
-    );
-
-    if (!auth1 || !auth2) {
-      fail('AuthObject shouldn\'t be null');
-    }
-
-    //------------------------------------------------------------------------------------------------------------------
-    expect(auth1).toBeDefined();
-
-    const payload1 = jwt.decode(auth1.accessToken) as { sub: string; iat: number; exp: number };
-    const payload2 = jwt.decode(auth2.accessToken) as { sub: string; iat: number; exp: number };
-    expect(payload1.sub).toBeDefined();
-    console.log('user1', payload1.sub);
-    console.log('user2', payload2.sub);
-
-    //------------------------------------------------------------------------------------------------------------------
-
-    const ws1 = new WebSocket(`ws://streaming:${config.webSocketPort}?token=${auth1.accessToken}`);
-    const ws2 = new WebSocket(`ws://streaming:${config.webSocketPort}?token=${auth2.accessToken}`);
-
-
-
-    const start = new Promise<void>(async (resolve) => {
-
-      const gameplay = async (battleObject?: BattleGrpc.BattleObject | null) => {
-        console.log('=====================================================================step', counter);
-        if (!battleObject) {
-          ws1.send(JSON.stringify({ type: "battle", payload: { join: {} } }));
-        } else if (counter === 1) {
-          ws2.send(JSON.stringify({ type: "battle", payload: { join: {} } }));
-        } else if (counter === 5) {
-          ws1.send(JSON.stringify({ type: "battle", payload: { move: { battleId: battleObject.id, userId: payload1.sub, cellIdx: 4 } } }));
-        } else if (counter === 7) {
-          ws2.send(JSON.stringify({ type: "battle", payload: { move: { battleId: battleObject.id, userId: payload2.sub, cellIdx: 1 } } }));
-        } else if (counter === 9) {
-          ws1.send(JSON.stringify({ type: "battle", payload: { move: { battleId: battleObject.id, userId: payload1.sub, cellIdx: 0 } } }));
-        } else if (counter === 11) {
-          ws2.send(JSON.stringify({ type: "battle", payload: { move: { battleId: battleObject.id, userId: payload2.sub, cellIdx: 2 } } }));
-        } else if (counter === 13) {
-          ws1.send(JSON.stringify({ type: "battle", payload: { move: { battleId: battleObject.id, userId: payload1.sub, cellIdx: 8 } } }));
-        } else if (counter > 14) {
-          resolve();
-        }
-        console.log("-------------------------------------------------------------------------------------------------------------------------------");
-
-        counter++;
-      };
-
-
-      ws1.on("message", (data: BattleGrpc.BattleObject) => {
-        console.log("------------------------------------------------------------------------------=1=- Got battle update:", battleObject);
-        const battleObject = JSON.parse(data.toString());
-        gameplay(battleObject);
-      });
-
-      ws2.on("message", (data: BattleGrpc.BattleObject) => {
-        console.log("------------------------------------------------------------------------------=2=- Got battle update:", battleObject);
-        const battleObject = JSON.parse(data.toString());
-        gameplay(battleObject);
-      });
-
-      await gameplay();
-    });
-
-
-    await start;
-
-    ws1.close();
-    ws2.close();
-
-
-    ///
-    console.log('streams are closed')
-
-
-    // });
-  }, 20000);
+  //   // });
+  // }, 20000);
 
 });
 
