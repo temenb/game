@@ -1,6 +1,7 @@
 import * as AuthService from "../../services/auth.service";
 import getUserId from "../../lib/getUserId";
 import wrapper from "./wrapper";
+import {AnonymousSignInRequest, RefreshTokensRequest} from "../../grpc/generated/auth";
 
 // Middleware-функции для роутов
 export const health = wrapper(async (req, res) => {
@@ -19,14 +20,14 @@ export const readyz = wrapper(async (req, res) => {
   return AuthService.readyz();
 });
 
-export const refreshTokens = wrapper(async (req, res) => {
-  const token = req.body.token;
-  return AuthService.refreshTokens(token);
+export const anonymousSignIn = wrapper(async (req, res) => {
+  const request = req.body as AnonymousSignInRequest;
+  return AuthService.anonymousSignIn(request);
 });
 
-export const anonymousSignIn = wrapper(async (req, res) => {
-  const deviceId = String(req.query.deviceId);
-  return AuthService.anonymousSignIn(deviceId);
+export const refreshTokens = wrapper(async (req, res) => {
+  const request = req.body as RefreshTokensRequest;
+  return AuthService.refreshTokens(request);
 });
 
 // export const register = wrapper(async (req, res) => {
@@ -53,3 +54,4 @@ export const anonymousSignIn = wrapper(async (req, res) => {
 //   const {token, newPassword} = req.body;
 //   return AuthService.resetPassword(token, newPassword);
 // });
+

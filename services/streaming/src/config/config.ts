@@ -1,8 +1,9 @@
 export const config = {
   grpcPort: process.env.GRPC_PORT || 50051,
+  webSocketPort: process.env.WEB_SOCKET_PORT || 8080,
   serviceAuthUrl: process.env.SERVICE_AUTH_URL || 'auth:50051',
   serviceProfileUrl: process.env.SERVICE_PROFILE_URL || 'profile:50051',
-  serviceOrchestrationUrl: process.env.SERVICE_ORCHESTRATION_URL || 'orchestration:50051',
+  serviceTestUrl: process.env.SERVICE_ORCHESTRATION_URL || 'test:50051',
   serviceEngineUrl: process.env.SERVICE_ENGINE_URL || 'engine:50051',
   serviceBattleUrl: process.env.SERVICE_BATTLE_URL || 'battle:50051',
   rabbitHost: process.env.RABBIT_HOST || 'rabbit',

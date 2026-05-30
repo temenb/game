@@ -3,9 +3,13 @@ import * as grpc from '@grpc/grpc-js';
 import logger from '@shared/logger';
 import {createConsumer} from "@shared/kafka";
 import kafkaConfig, {kafkaConsumersConfig} from "./config/kafka.config";
+import wss from "./websocket/server";
+import {WebSocket} from "ws";
+import config from "./config/config";
 
 
-const GRPC_PORT = Number(process.env.GRPC_PORT ?? 50051);
+
+const GRPC_PORT = Number(config.grpcPort);
 
 async function startGrpc() {
   return new Promise<void>((resolve, reject) => {
@@ -51,3 +55,4 @@ async function bootstrap() {
 }
 
 bootstrap();
+

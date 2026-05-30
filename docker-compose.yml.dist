@@ -45,6 +45,25 @@ services:
     networks:
       - backend
 
+  test:
+    build:
+      context: .
+      dockerfile: services/test/Dockerfile
+    container_name: game-test
+    env_file:
+      - services/test/.env
+    #    ports:
+    #      - "50051:50051"
+    volumes:
+      - ./shared:/usr/src/app/shared
+      - ./services/test/prisma:/usr/src/app/services/test/prisma
+      - ./services/test/src:/usr/src/app/services/test/src/
+      - ./services/test/__tests__:/usr/src/app/services/test/__tests__/
+      - ./services/test/package.json:/usr/src/app/services/test/package.json
+    command: pnpm dlx turbo run dev --parallel
+    networks:
+      - backend
+
   orchestration:
     build:
       context: .

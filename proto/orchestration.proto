@@ -2,7 +2,8 @@ syntax = "proto3";
 
 import "common/health.proto";
 import "common/empty.proto";
-//import "profile.proto";
+import "profile.proto";
+import "auth.proto";
 
 package orchestration;
 
@@ -11,4 +12,6 @@ service Orchestration {
   rpc Status (common.empty.Empty) returns (common.health.StatusInfo);
   rpc Livez (common.empty.Empty) returns (common.health.LiveStatus);
   rpc Readyz (common.empty.Empty) returns (common.health.ReadyStatus);
+
+  rpc GetProfileByUser (auth.UserIdRequest) returns (profile.ProfileObject);
 }

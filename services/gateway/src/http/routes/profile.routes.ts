@@ -7,5 +7,6 @@ router.get('/health', profileController.health);
 router.get('/status', profileController.status);
 router.get('/livez', profileController.livez);
 router.get('/readyz', profileController.readyz);
+router.get('/getMyProfile', profileController.getMyProfile);
 
 export default router;

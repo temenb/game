@@ -1,4 +1,5 @@
 import * as grpc from '@grpc/grpc-js';
+import * as AuthGrpc from '../generated/auth';
 import * as ProfileGrpc from '../generated/profile';
 import * as HealthGrpc from '../generated/common/health';
 import * as EmptyGrpc from '../generated/common/empty';
@@ -33,5 +34,10 @@ export const livez = (): Promise<HealthGrpc.LiveStatus | null> => {
 export const readyz = (): Promise<HealthGrpc.ReadyStatus | null> => {
   const grpcRequest: EmptyGrpc.Empty = {};
   return profileManager.call((client, cb) => client.readyz(grpcRequest, cb));
+};
+
+export const getMyProfile = (userId: string): Promise<ProfileGrpc.ProfileObject | null> => {
+  const grpcRequest: AuthGrpc.UserIdRequest = {userId};
+  return profileManager.call((client, cb) => client.getProfileByUser(grpcRequest, cb));
 };
 

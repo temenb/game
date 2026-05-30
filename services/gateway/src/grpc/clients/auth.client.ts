@@ -5,6 +5,7 @@ import * as EmptyGrpc from '../generated/common/empty';
 import config from '../../config/config';
 import {GrpcClientManager} from '@shared/grpc-client-manager';
 import logger from "@shared/logger";
+import {AnonymousSignInRequest} from "../generated/auth";
 
 const authManager = new GrpcClientManager<AuthGrpc.AuthClient>(() => {
   return new AuthGrpc.AuthClient(config.serviceAuthUrl, grpc.credentials.createInsecure());
@@ -35,13 +36,12 @@ export const readyz = (): Promise<HealthGrpc.ReadyStatus | null> => {
   return authManager.call((client, cb) => client.readyz(grpcRequest, cb));
 };
 
-export const register = (email: string, password: string): Promise<AuthGrpc.AuthObject | null> => {
-  const grpcRequest: AuthGrpc.RegisterRequest = {email, password};
-  return authManager.call((client, cb) => client.register(grpcRequest, cb));
-};
+// export const register = (email: string, password: string): Promise<AuthGrpc.AuthObject | null> => {
+//   const grpcRequest: AuthGrpc.RegisterRequest = {email, password};
+//   return authManager.call((client, cb) => client.register(grpcRequest, cb));
+// };
 
-export const anonymousSignIn = (deviceId: string): Promise<AuthGrpc.AuthObject | null> => {
-  const grpcRequest: AuthGrpc.AnonymousSignInRequest = {deviceId};
+export const anonymousSignIn = (grpcRequest: AuthGrpc.AnonymousSignInRequest): Promise<AuthGrpc.AuthObject | null> => {
   return authManager.call((client, cb) => client.anonymousSignIn(grpcRequest, cb));
 };
 
@@ -50,8 +50,7 @@ export const anonymousSignIn = (deviceId: string): Promise<AuthGrpc.AuthObject |
 //   return authManager.call((client, cb) => client.login(grpcRequest, cb));
 // };
 
-export const refreshTokens = (token: string): Promise<AuthGrpc.AuthObject | null> => {
-  const grpcRequest: AuthGrpc.RefreshTokensRequest = {token};
+export const refreshTokens = (grpcRequest: AuthGrpc.RefreshTokensRequest): Promise<AuthGrpc.AuthObject | null> => {
   return authManager.call((client, cb) => client.refreshTokens(grpcRequest, cb));
 };
 

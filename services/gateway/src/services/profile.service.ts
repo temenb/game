@@ -13,3 +13,7 @@ export const livez = async () =>
 
 export const readyz = async () =>
   await ProfileClient.readyz();
+
+export const getProfileByUser = async (userId: string) => {
+  await OrchestrationClient.getProfileByUser(userId);
+}

@@ -1,5 +1,5 @@
 import * as grpc from '@grpc/grpc-js';
-import * as OrchestrationGrpc from '../generated/orchestration';
+import * as TestGrpc from '../generated/test';
 import * as ProfileGrpc from '../generated/profile';
 import * as HealthGrpc from '../generated/common/health';
 import * as EmptyGrpc from '../generated/common/empty';
@@ -7,32 +7,26 @@ import logger from '@shared/logger';
 import config from '../../config/config';
 import {GrpcClientManager} from '@shared/grpc-client-manager';
 
-const orchestrationManager = new GrpcClientManager<OrchestrationGrpc.OrchestrationClient>(() => {
-  return new OrchestrationGrpc.OrchestrationClient(config.serviceOrchestrationUrl, grpc.credentials.createInsecure());
+const testManager = new GrpcClientManager<TestGrpc.TestClient>(() => {
+  return new TestGrpc.TestClient(config.serviceTestUrl, grpc.credentials.createInsecure());
 });
 
 export const health = (): Promise<HealthGrpc.HealthReport | null> => {
   const grpcRequest: EmptyGrpc.Empty = {};
-  return orchestrationManager.call((client, cb) => client.health(grpcRequest, cb));
+  return testManager.call((client, cb) => client.health(grpcRequest, cb));
 };
 
 export const status = (): Promise<HealthGrpc.StatusInfo | null> => {
   const grpcRequest: EmptyGrpc.Empty = {};
-  return orchestrationManager.call((client, cb) => client.status(grpcRequest, cb));
+  return testManager.call((client, cb) => client.status(grpcRequest, cb));
 };
 
 export const livez = (): Promise<HealthGrpc.LiveStatus | null> => {
   const grpcRequest: EmptyGrpc.Empty = {};
-  return orchestrationManager.call((client, cb) => client.livez(grpcRequest, cb));
+  return testManager.call((client, cb) => client.livez(grpcRequest, cb));
 };
 
 export const readyz = (): Promise<HealthGrpc.ReadyStatus | null> => {
   const grpcRequest: EmptyGrpc.Empty = {};
-  return orchestrationManager.call((client, cb) => client.readyz(grpcRequest, cb));
-};
-
-export const getMyProfile = (metadata: grpc.Metadata): Promise<ProfileGrpc.ProfileObject | null> => {
-  const grpcRequest: EmptyGrpc.Empty = {};
-  // logger.log(metadata);
-  return orchestrationManager.call((client, cb) => client.getMyProfile(grpcRequest, metadata, cb));
+  return testManager.call((client, cb) => client.readyz(grpcRequest, cb));
 };

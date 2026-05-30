@@ -17,3 +17,8 @@ export const livez = wrapper(async (req, res) => {
 export const readyz = wrapper(async (req, res) => {
   return ProfileService.readyz();
 });
+
+export const getMyProfile = wrapper(async (req, res) => {
+  const userId = getUserId(req);
+  return ProfileService.getProfileByUser(userId);
+});

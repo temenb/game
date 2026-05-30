@@ -2,8 +2,8 @@ syntax = "proto3";
 
 import "common/health.proto";
 import "common/empty.proto";
-import "battle.proto";
-import "profile.proto";
+//import "battle.proto";
+//import "profile.proto";
 import "engine.proto";
 
 package streaming;
@@ -16,10 +16,10 @@ service Streaming {
 
 
 
-  rpc GetMyProfile (common.empty.Empty) returns (profile.ProfileObject);
+//  rpc GetMyProfile (common.empty.Empty) returns (profile.ProfileObject);
 
 
-  rpc BattleChannel (stream BattleStreamRequest) returns (stream battle.BattleObject);
+//  rpc BattleChannel (stream BattleStreamRequest) returns (stream battle.BattleObject);
 }
 
 message BattleStreamRequest {

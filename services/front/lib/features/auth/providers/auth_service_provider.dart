@@ -9,6 +9,7 @@ final authServiceProvider = Provider<AuthService>((ref) {
 
   // logger.d("Debug message");
   final authService = AuthService(config);
+  authService.init();
 
   return authService;
 });

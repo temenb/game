@@ -1,18 +1,18 @@
-import * as OrchestrationClient from "../grpc/clients/orchestration.client";
+import * as TestClient from "../grpc/clients/test.client";
 import * as ProfileClient from "../grpc/clients/profile.client";
 import * as grpc from "@grpc/grpc-js";
 
 export const health = async () =>
-  await OrchestrationClient.health();
+  await TestClient.health();
 
 export const status = async () =>
-  await OrchestrationClient.status();
+  await TestClient.status();
 
 export const livez = async () =>
-  await OrchestrationClient.livez();
+  await TestClient.livez();
 
 export const readyz = async () =>
-  await OrchestrationClient.readyz();
+  await TestClient.readyz();
 
 export const getMyProfile = async (metadata: grpc.Metadata) =>
-  await OrchestrationClient.getMyProfile(metadata);
+  await TestClient.getMyProfile(metadata);
