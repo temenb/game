@@ -116,8 +116,10 @@ export default class BattleStreamRegistry {
     let count = 0;
     for (const stream of streams) {
       logger.log('Streams update ' + ++count);
-
-      stream.send(JSON.stringify(battle));
+      stream.send(JSON.stringify({
+        type: "battle",
+        payload: { message: battle }
+      }));
     }
   }
 }

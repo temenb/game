@@ -79,25 +79,26 @@ describe("Gateway Service", () => {
 
 
     const start = new Promise<void>(async (resolve) => {
-
       let counter = 0;
       const gameplay = async (battleObject?: BattleGrpc.BattleObject | null) => {
+        console.log(battleObject);
+
         console.log('=====================================================================step ', counter);
         if (!battleObject) {
           ws1.send(JSON.stringify({ type: "battle", payload: { join: {} } }));
         } else if (counter === 1) {
-        //   ws2.send(JSON.stringify({ type: "battle", payload: { join: {} } }));
-        // } else if (counter === 5) {
-        //   ws1.send(JSON.stringify({ type: "battle", payload: { move: { battleId: battleObject.id, userId: payload1.sub, cellIdx: 4 } } }));
-        // } else if (counter === 7) {
-        //   ws2.send(JSON.stringify({ type: "battle", payload: { move: { battleId: battleObject.id, userId: payload2.sub, cellIdx: 1 } } }));
-        // } else if (counter === 9) {
-        //   ws1.send(JSON.stringify({ type: "battle", payload: { move: { battleId: battleObject.id, userId: payload1.sub, cellIdx: 0 } } }));
-        // } else if (counter === 11) {
-        //   ws2.send(JSON.stringify({ type: "battle", payload: { move: { battleId: battleObject.id, userId: payload2.sub, cellIdx: 2 } } }));
-        // } else if (counter === 13) {
-        //   ws1.send(JSON.stringify({ type: "battle", payload: { move: { battleId: battleObject.id, userId: payload1.sub, cellIdx: 8 } } }));
-        // } else if (counter > 14) {
+          ws2.send(JSON.stringify({ type: "battle", payload: { join: {} } }));
+        } else if (counter === 5) {
+          ws1.send(JSON.stringify({ type: "battle", payload: { move: { battleId: battleObject.id, userId: payload1.sub, cellIdx: 4 } } }));
+        } else if (counter === 7) {
+          ws2.send(JSON.stringify({ type: "battle", payload: { move: { battleId: battleObject.id, userId: payload2.sub, cellIdx: 1 } } }));
+        } else if (counter === 9) {
+          ws1.send(JSON.stringify({ type: "battle", payload: { move: { battleId: battleObject.id, userId: payload1.sub, cellIdx: 0 } } }));
+        } else if (counter === 11) {
+          ws2.send(JSON.stringify({ type: "battle", payload: { move: { battleId: battleObject.id, userId: payload2.sub, cellIdx: 2 } } }));
+        } else if (counter === 13) {
+          ws1.send(JSON.stringify({ type: "battle", payload: { move: { battleId: battleObject.id, userId: payload1.sub, cellIdx: 8 } } }));
+        } else if (counter > 14) {
           resolve();
         }
         console.log("-------------------------------------------------------------------------------------------------------------------------------");
@@ -107,16 +108,21 @@ describe("Gateway Service", () => {
 
 
       ws1.on("message", (data: BattleGrpc.BattleObject) => {
-        console.log("------------------------------------------------------------------------------=1=- Got battle update:", data);
-        const battleObject = JSON.parse(data.toString());
+        console.log("------------------------------------------------------------------------------=1=- Got battle update:");
+        const battleObject = JSON.parse(data.toString()).payload.message;
         gameplay(battleObject);
       });
 
       ws2.on("message", (data: BattleGrpc.BattleObject) => {
-        console.log("------------------------------------------------------------------------------=2=- Got battle update:", data);
-        const battleObject = JSON.parse(data.toString());
+        console.log("------------------------------------------------------------------------------=2=- Got battle update:");
+        const battleObject = JSON.parse(data.toString()).payload.message;
         gameplay(battleObject);
       });
+
+      await Promise.all([
+        new Promise(resolve => ws1.on('open', resolve)),
+        new Promise(resolve => ws2.on('open', resolve)),
+      ]);
 
       await gameplay();
     });
