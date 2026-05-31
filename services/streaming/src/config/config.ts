@@ -1,6 +1,6 @@
 export const config = {
-  grpcPort: process.env.GRPC_PORT || 50051,
-  webSocketPort: process.env.WEB_SOCKET_PORT || 8080,
+  grpcPort: Number(process.env.GRPC_PORT) || 50051,
+  webSocketPort: Number(process.env.WEB_SOCKET_PORT) || 8080,
   serviceAuthUrl: process.env.SERVICE_AUTH_URL || 'auth:50051',
   serviceProfileUrl: process.env.SERVICE_PROFILE_URL || 'profile:50051',
   serviceTestUrl: process.env.SERVICE_ORCHESTRATION_URL || 'test:50051',

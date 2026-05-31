@@ -7,7 +7,6 @@ services:
     env_file:
       - services/gateway/.env
     ports:
-      - "50051:50051"
       - "9090:9090"
     volumes:
       - ./shared:/usr/src/app/shared
@@ -28,8 +27,6 @@ services:
       - services/auth/.env
     environment:
       KAFKAJS_NO_PARTITIONER_WARNING: 1
-    #    ports:
-    #      - "50051:50051"
     volumes:
       - ./shared:/usr/src/app/shared
       - ./services/auth/prisma:/usr/src/app/services/auth/prisma
@@ -45,25 +42,6 @@ services:
     networks:
       - backend
 
-  test:
-    build:
-      context: .
-      dockerfile: services/test/Dockerfile
-    container_name: game-test
-    env_file:
-      - services/test/.env
-    #    ports:
-    #      - "50051:50051"
-    volumes:
-      - ./shared:/usr/src/app/shared
-      - ./services/test/prisma:/usr/src/app/services/test/prisma
-      - ./services/test/src:/usr/src/app/services/test/src/
-      - ./services/test/__tests__:/usr/src/app/services/test/__tests__/
-      - ./services/test/package.json:/usr/src/app/services/test/package.json
-    command: pnpm dlx turbo run dev --parallel
-    networks:
-      - backend
-
   orchestration:
     build:
       context: .
@@ -71,14 +49,29 @@ services:
     container_name: game-orchestration
     env_file:
       - services/orchestration/.env
-    #    ports:
-    #      - "50051:50051"
     volumes:
       - ./shared:/usr/src/app/shared
       - ./services/orchestration/prisma:/usr/src/app/services/orchestration/prisma
       - ./services/orchestration/src:/usr/src/app/services/orchestration/src/
       - ./services/orchestration/__tests__:/usr/src/app/services/orchestration/__tests__/
       - ./services/orchestration/package.json:/usr/src/app/services/orchestration/package.json
+    command: pnpm dlx turbo run dev --parallel
+    networks:
+      - backend
+
+  test:
+    build:
+      context: .
+      dockerfile: services/test/Dockerfile
+    container_name: game-test
+    env_file:
+      - services/test/.env
+    volumes:
+      - ./shared:/usr/src/app/shared
+      - ./services/test/prisma:/usr/src/app/services/test/prisma
+      - ./services/test/src:/usr/src/app/services/test/src/
+      - ./services/test/__tests__:/usr/src/app/services/test/__tests__/
+      - ./services/test/package.json:/usr/src/app/services/test/package.json
     command: pnpm dlx turbo run dev --parallel
     networks:
       - backend
@@ -90,8 +83,6 @@ services:
     container_name: game-battle
     env_file:
       - services/battle/.env
-    #    ports:
-    #      - "50051:50051"
     volumes:
       - ./shared:/usr/src/app/shared
       - ./services/battle/prisma:/usr/src/app/services/battle/prisma
@@ -110,7 +101,7 @@ services:
     env_file:
       - services/streaming/.env
     ports:
-      - "50052:50051"
+      - "8080:8080"
     volumes:
       - ./shared:/usr/src/app/shared
       - ./services/streaming/prisma:/usr/src/app/services/streaming/prisma
@@ -128,8 +119,6 @@ services:
     container_name: game-profile
     env_file:
       - services/profile/.env
-    #    ports:
-    #      - "50051:50051"
     volumes:
       - ./shared:/usr/src/app/shared
       - ./services/profile/prisma:/usr/src/app/services/profile/prisma
@@ -152,8 +141,6 @@ services:
     container_name: game-engine
     env_file:
       - services/engine/.env
-  #    ports:
-  #      - "50051:50051"
     volumes:
       - ./shared:/usr/src/app/shared
       - ./services/engine/prisma:/usr/src/app/services/engine/prisma
@@ -170,7 +157,7 @@ services:
     image: provectuslabs/kafka-ui:latest
     container_name: game-kafka-ui
     ports:
-      - "8080:8080"
+      - "8081:8080"
     environment:
       KAFKA_CLUSTERS_0_NAME: local
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092

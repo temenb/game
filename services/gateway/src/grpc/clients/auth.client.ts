@@ -42,6 +42,7 @@ export const readyz = (): Promise<HealthGrpc.ReadyStatus | null> => {
 // };
 
 export const anonymousSignIn = (grpcRequest: AuthGrpc.AnonymousSignInRequest): Promise<AuthGrpc.AuthObject | null> => {
+  logger.log(grpcRequest);
   return authManager.call((client, cb) => client.anonymousSignIn(grpcRequest, cb));
 };
 

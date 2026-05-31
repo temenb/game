@@ -3,6 +3,7 @@ import {BattleStreamRequest} from "../grpc/generated/streaming";
 import {battleHandler} from "./handlers/battle.handler";
 import jwt from "jsonwebtoken";
 import config from "../config/config";
+import logger from "@shared/logger";
 
 
 type ServerMessage =
@@ -10,21 +11,30 @@ type ServerMessage =
 
 const wss = new WebSocketServer({ port: config.webSocketPort });
 
+
+logger.info(`WebSocket listening on ${config.webSocketPort}`);
 wss.on('connection', (ws, req) => {
+  logger.log("connection...");
 
   const url = new URL(req.url!, `http://${req.headers.host}`);
   const token = url.searchParams.get('token');
 
+  if (!token) {
+    logger.error("❌ Token is missing");
+    ws.close();
+    return;
+  }
+  
   try {
-    const jwtPayload = jwt.verify(token, config.jwtAccessSecret);
+    const payload = jwt.verify(token, config.jwtAccessSecret);
     (ws as any).user = payload;
-    console.log("✅ Authorized:", payload.sub);
+    logger.log("✅ Authorized:", payload.sub);
   } catch (err) {
-    console.error("❌ JWT token is invalid");
+    logger.error("❌ JWT token is invalid");
     ws.close();
   }
 
-  console.log('🔗 New client connected');
+  logger.log('🔗 New client connected');
 
   ws.on('message', (data) => {
     try {
@@ -32,13 +42,14 @@ wss.on('connection', (ws, req) => {
 
       switch (message.type) {
         case 'battle':
+          logger.log(message);
           battleHandler(ws, message.payload);
           break;
       }
 
       //
       // const msg: BattleMessage = JSON.parse(data.toString());
-      // console.log('📩 Получено сообщение:', msg);
+      // logger.log('📩 Получено сообщение:', msg);
       //
       // if (msg.type === 'join') {
       //   // логика подключения игрока
@@ -57,15 +68,15 @@ wss.on('connection', (ws, req) => {
       //   }
       // });
     } catch (err) {
-      console.error('❌ Ошибка обработки сообщения:', err);
+      logger.error('❌ Ошибка обработки сообщения:', err);
     }
   });
 
   ws.on('close', () => {
-    console.log('❌ Клиент отключился');
+    logger.log('❌ Клиент отключился');
   });
 });
 
-console.log('🟢====================================================================== WebSocket сервер запущен на ws://localhost:8080');
+logger.log('🟢====================================================================== WebSocket сервер запущен на ws://localhost:8080');
 
 export default wss;

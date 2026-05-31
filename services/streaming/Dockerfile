@@ -23,7 +23,7 @@ RUN chown -R node:node /usr/src/app
 USER node
 
 EXPOSE 50051
-EXPOSE 9090
+EXPOSE 8080
 
 CMD ["pnpm", "--filter", "streaming", "start"]
 

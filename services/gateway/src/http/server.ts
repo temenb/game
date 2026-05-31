@@ -20,8 +20,8 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms'))
 
 const withAuth = (req: Request, res: Response, next: NextFunction) => {
     const isPublic = publicPaths.some(path => req.path.startsWith('/' + path));
-    logger.log('req.path',req.path);
-    logger.log('isPublic',isPublic);
+    // logger.log('req.path',req.path);
+    // logger.log('isPublic',isPublic);
     if (isPublic) return next();
     return verifyToken(req, res, next)
 };

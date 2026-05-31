@@ -8,6 +8,9 @@ import {WebSocket} from "ws";
 import config from "./config/config";
 
 
+wss.on('connection', (ws, req) => {
+  logger.log("test connection...");
+});
 
 const GRPC_PORT = Number(config.grpcPort);
 

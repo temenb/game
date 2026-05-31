@@ -1,22 +1,23 @@
 import {BattleStreamRequest} from "../../grpc/generated/streaming";
+import getUserIdFromMetadata from "../../lib/getUserIdFromMetadata";
+import * as battleService from "../../services/battle.service";
+import * as engineService from "../../services/engine.service";
+import logger from "@shared/logger";
+import BattleStreamRegistry from "../../channels/front.battle.stream";
 
-export async function battleHandler(call, payload: BattleStreamRequest) {
+export function battleHandler(ws: WebSocket, payload: BattleStreamRequest) {
 
-
-  call.on('data', async (event: BattleStreamRequest) => {
-
-
-    const userId = getUserIdFromMetadata(call);
+    const userId = getUserIdFromMetadata(ws);
 
     if (event.join) {
       logger.log("Battle join event");
       const battle = await battleService.upsertBattle(userId);
 
       if (!battle) {
-        call.emit("error", new Error("Battle not found"));
+        ws.emit("error", new Error("Battle not found"));
         return;
       }
-      BattleStreamRegistry.setBattleStream(battle.id, call);
+      BattleStreamRegistry.setBattleStream(battle.id, ws);
       logger.log("Battle stream was set:" + battle.id);
       BattleStreamRegistry.writeBattleStreams(battle);
     }
