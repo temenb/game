@@ -10,7 +10,7 @@ final gatewayClientProvider = Provider<GatewayClient>((ref) {
   logger.i(config);
   logger.i('Init started with config: $config');
 
-  final gatewayClient = GatewayClient();
+  final gatewayClient = GatewayClient(config.host, config.port);
 
   return gatewayClient;
 });

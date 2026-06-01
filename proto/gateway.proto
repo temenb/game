@@ -1,6 +1,5 @@
 syntax = "proto3";
 
-//import "auth.proto";
 import "common/health.proto";
 import "common/empty.proto";
 
@@ -11,8 +10,4 @@ service Gateway {
   rpc Status (common.empty.Empty) returns (common.health.StatusInfo);
   rpc Livez (common.empty.Empty) returns (common.health.LiveStatus);
   rpc Readyz (common.empty.Empty) returns (common.health.ReadyStatus);
-
-
-//  rpc AnonymousSignIn (auth.AnonymousSignInRequest) returns (auth.AuthObject);
-//  rpc RefreshTokens (auth.RefreshTokensRequest) returns (auth.AuthObject);
 }

@@ -1,10 +1,11 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:front/features/auth/services/device_service.dart';
-import 'package:front/src/clients/auth_client.dart';
 import 'package:front/src/grpc/generated/auth.pb.dart';
-import 'package:front/helpers/token_storage.dart';
+import 'package:front/src/helpers/token_storage.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 import 'package:logger/logger.dart';
+
+import '../clients/auth_client.dart';
+import '../services/device_service.dart';
 
 final logger = Logger();
 
@@ -23,15 +24,16 @@ class AuthService {
   }
 
   Future<String> getOrCreateJwt() async {
-
     final existingJwt = await TokenStorage.readJwt();
     if (existingJwt != null && !Jwt.isExpired(existingJwt)) {
       return existingJwt;
     }
-    
+
     final refreshToken = await TokenStorage.readRefreshToken();
     if (refreshToken != null) {
-      final AuthObject response = await this.authClient.refreshTokens(refreshToken);
+      final AuthObject response = await this.authClient.refreshTokens(
+        refreshToken,
+      );
 
       final newJwt = response.accessToken;
 
@@ -43,8 +45,6 @@ class AuthService {
       return newJwt;
     }
 
-
-    
     final deviceId = await DeviceService.getDeviceId();
     final response = await this.authClient.anonymousSignIn(deviceId);
     final newJwt = response.accessToken;

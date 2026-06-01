@@ -14,11 +14,6 @@ service Streaming {
   rpc Livez (common.empty.Empty) returns (common.health.LiveStatus);
   rpc Readyz (common.empty.Empty) returns (common.health.ReadyStatus);
 
-
-
-//  rpc GetMyProfile (common.empty.Empty) returns (profile.ProfileObject);
-
-
 //  rpc BattleChannel (stream BattleStreamRequest) returns (stream battle.BattleObject);
 }
 

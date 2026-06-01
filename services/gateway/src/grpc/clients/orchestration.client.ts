@@ -37,7 +37,13 @@ export const readyz = (): Promise<HealthGrpc.ReadyStatus | null> => {
   return orchestrationManager.call((client, cb) => client.readyz(grpcRequest, cb));
 };
 
-export const getProfileByUser = (userId: string): Promise<ProfileGrpc.ProfileObject | null> => {
-  const grpcRequest: AuthGrpc.UserIdRequest = { userId };
-  return orchestrationManager.call((client, cb) => client.getProfileByUser(grpcRequest, cb));
+export const getMyProfile = (jwt: string): Promise<ProfileGrpc.ProfileObject | null> => {
+  const grpcRequest: EmptyGrpc.Empty = {};
+
+  const metadata = new grpc.Metadata();
+  metadata.add("authorization", `Bearer ${jwt}`);
+
+  return orchestrationManager.call((client, cb) =>
+    client.getMyProfile(grpcRequest, metadata, cb)
+  );
 };

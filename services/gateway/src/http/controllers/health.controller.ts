@@ -3,24 +3,24 @@ import wrapper from "./wrapper";
 
 export const health = wrapper(async (req, res) => {
   if (req.query.full) {
-    return HealthService.fullHealth();
+    return await HealthService.fullHealth();
   } else {
-    return HealthService.health();
+    return await HealthService.health();
   }
 });
 
 export const fullHealth = wrapper(async (req, res) => {
-  return HealthService.fullHealth();
+  return await HealthService.fullHealth();
 });
 
 export const status = wrapper(async (req, res) => {
-  return HealthService.status();
+  return await HealthService.status();
 });
 
 export const livez = wrapper(async (req, res) => {
-  return HealthService.livez();
+  return await HealthService.livez();
 });
 
 export const readyz = wrapper(async (req, res) => {
-  return HealthService.readyz();
+  return await HealthService.readyz();
 });

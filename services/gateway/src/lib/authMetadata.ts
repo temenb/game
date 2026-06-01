@@ -1,18 +1,16 @@
-import * as grpc from '@grpc/grpc-js';
-import logger from '@shared/logger';
+import {Request} from "express";
+import jwt from "jsonwebtoken";
+import logger from "@shared/logger";
 
-export function extractAuthHeader(call: grpc.ServerUnaryCall<any, any>): string {
-  const authHeader = call.metadata.get('authorization')[0] as string;
-  if (!authHeader?.startsWith('Bearer ')) {
-    throw new Error('Missing or invalid Authorization header');
+export function getJwt(req: Request): string {
+  const authHeader = req.headers.authorization;
+  if (!authHeader?.startsWith("Bearer ")) {
+    throw new Error("No token provided");
   }
-  return authHeader;
-}
 
-export function forwardAuthMetadata(call: grpc.ServerUnaryCall<any, any>): grpc.Metadata {
-  const authHeader = extractAuthHeader(call);
-  const metadata = new grpc.Metadata();
+  const token = authHeader.slice(7); // убираем "Bearer "
   // logger.log(authHeader);
-  metadata.add('authorization', authHeader);
-  return metadata;
+  // logger.log(token);
+  // jwt.verify(token, process.env.JWT_ACCESS_SECRET!);
+  return token;
 }

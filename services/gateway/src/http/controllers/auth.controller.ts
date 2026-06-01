@@ -6,31 +6,31 @@ import logger from "@shared/logger";
 
 // Middleware-функции для роутов
 export const health = wrapper(async (req, res) => {
-  return AuthService.health();
+  return await AuthService.health();
 });
 
 export const status = wrapper(async (req, res) => {
-  return AuthService.status();
+  return await AuthService.status();
 });
 
 export const livez = wrapper(async (req, res) => {
-  return AuthService.livez();
+  return await AuthService.livez();
 });
 
 export const readyz = wrapper(async (req, res) => {
-  return AuthService.readyz();
+  return await AuthService.readyz();
 });
 
 export const anonymousSignIn = wrapper(async (req, res) => {
   const request = req.body as AnonymousSignInRequest;
-  logger.log(request);
-  return AuthService.anonymousSignIn(request);
+  // logger.log(request);
+  return await AuthService.anonymousSignIn(request);
 });
 
 export const refreshTokens = wrapper(async (req, res) => {
   const request = req.body as RefreshTokensRequest;
-  logger.log(request);
-  return AuthService.refreshTokens(request);
+  // logger.log(request);
+  return await AuthService.refreshTokens(request);
 });
 
 // export const register = wrapper(async (req, res) => {

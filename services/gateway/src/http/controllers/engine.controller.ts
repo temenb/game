@@ -3,17 +3,17 @@ import wrapper from "./wrapper";
 
 // Middleware-функции для роутов
 export const health = wrapper(async (req, res) => {
-  return EngineService.health();
+  return await EngineService.health();
 });
 
 export const status = wrapper(async (req, res) => {
-  return EngineService.status();
+  return await EngineService.status();
 });
 
 export const livez = wrapper(async (req, res) => {
-  return EngineService.livez();
+  return await EngineService.livez();
 });
 
 export const readyz = wrapper(async (req, res) => {
-  return EngineService.readyz();
+  return await EngineService.readyz();
 });

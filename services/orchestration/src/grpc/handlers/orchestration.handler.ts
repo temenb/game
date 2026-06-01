@@ -6,19 +6,23 @@ import {callbackError} from './callback.error';
 import logger from "@shared/logger";
 import getUserIdFromMetadata from "../../lib/getUserIdFromMetadata";
 
-// export const getMyProfile = async (
-//   call: grpc.ServerUnaryCall<EmptyGrpc.Empty, ProfileGrpc.ProfileObject>,
-//   callback: grpc.sendUnaryData<ProfileGrpc.ProfileObject>
-// ) => {
-//   try {
-//     const userId = getUserIdFromMetadata(call);
-//
-//     const response = await profileService.getProfile(userId);
-//
-//     callback(null, response);
-//
-//   } catch (err: any) {
-//     logger.log(err);
-//     callbackError(callback, err);
-//   }
-// };
+export const getMyProfile = async (
+  call: grpc.ServerUnaryCall<EmptyGrpc.Empty, ProfileGrpc.ProfileObject>,
+  callback: grpc.sendUnaryData<ProfileGrpc.ProfileObject>
+) => {
+  try {
+    const userId = getUserIdFromMetadata(call);
+
+    // if (!userId) {
+    //   return;
+    // }
+
+    const response = await profileService.getProfileByUser(userId);
+
+    callback(null, response);
+
+  } catch (err: any) {
+    logger.log(err);
+    callbackError(callback, err);
+  }
+};
