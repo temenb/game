@@ -1,11 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:front/src/config/streaming_config.dart';
+import 'package:front/src/config/gateway_config.dart';
 import 'package:logger/logger.dart';
 
 final logger = Logger();
 
-final streamingClientProvider = Provider<StreamingClient>((ref) {
-  final config = StreamingConfig.fromEnv();;
+final gatewayClientProvider = Provider<GatewayClient>((ref) {
+  final config = GatewayConfig.fromEnv();;
   logger.i(config);
   logger.i('Init started with config: $config');
   final channel = ClientChannel(
@@ -16,7 +16,7 @@ final streamingClientProvider = Provider<StreamingClient>((ref) {
     ),
   );
 
-  final gatewayClient = StreamingClient(channel);
+  final gatewayClient = GatewayClient(channel);
 
   return gatewayClient;
 });

@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:front/src/grpc/generated/battle.pbgrpc.dart';
-import 'package:grpc/grpc.dart';
 
 class BattleChannelClient {
   final BattleClient _client;

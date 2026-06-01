@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:front/app_state.dart';
 // import 'package:front/features/battle/ui/battle_screen.dart';
 import 'package:front/features/home/ui/home_screen.dart';
-import 'package:front/features/profile/ui/profile_screen.dart';
+// import 'package:front/features/profile/ui/profile_screen.dart';
 import 'package:front/features/setting/ui/settings_screen.dart';
 import 'package:front/src/localization/generated/l10n.dart';
 import 'package:front/theme.dart';
@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
         routes: {
           '/': (context) => const HomeScreen(),
           '/settings': (context) => SettingsScreen(),
-          '/profile': (context) => const ProfileScreen(),
+          // '/profile': (context) => const ProfileScreen(),
           // '/game': (context) => const BattleScreen(),
         },
       ),

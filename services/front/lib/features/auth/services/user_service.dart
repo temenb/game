@@ -1,9 +1,6 @@
 // import 'package:flutter/foundation.dart';
 // import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 // import 'package:front/features/auth/services/device_service.dart';
-// import 'package:front/src/grpc/generated/auth.pbgrpc.dart';
-// import 'package:front/src/grpc/generated/gateway.pbgrpc.dart';
-// import 'package:grpc/grpc.dart';
 //
 // class AuthService {
 //   final GatewayClient _client;

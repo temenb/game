@@ -1,5 +1,4 @@
 import 'package:front/features/auth/services/auth_service.dart';
-import 'package:front/src/grpc/generated/gateway.pbgrpc.dart';
 import 'package:logger/logger.dart';
 
 import '../models/battle.dart';

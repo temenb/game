@@ -8,7 +8,7 @@ class StreamingConfig {
 
   factory StreamingConfig.fromEnv() {
     final host = dotenv.env['STREAMING_HOST'] ?? 'localhost';
-    final port = int.tryParse(dotenv.env['STREAMING_PORT'] ?? '') ?? 50052;
+    final port = int.tryParse(dotenv.env['STREAMING_PORT'] ?? '') ?? 8080;
     return StreamingConfig(host: host, port: port);
   }
 

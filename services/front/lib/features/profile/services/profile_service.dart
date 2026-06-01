@@ -1,8 +1,5 @@
 import 'package:front/features/auth/services/auth_service.dart';
 import 'package:front/src/grpc/generated/common/empty.pb.dart' as $0;
-import 'package:front/src/grpc/generated/gateway.pbgrpc.dart';
-import 'package:front/src/grpc/generated/streaming.pbgrpc.dart';
-import 'package:grpc/grpc.dart';
 import 'package:logger/logger.dart';
 
 import '../models/profile.dart';
@@ -10,8 +7,7 @@ import '../models/profile.dart';
 final logger = Logger();
 
 class ProfileService {
-  final GatewayClient gatewayClient;
-  final StreamingClient streamingClient;
+  final ProfileClient profileClient;
   final AuthService authService;
 
   ProfileService(this.gatewayClient, this.streamingClient, this.authService);

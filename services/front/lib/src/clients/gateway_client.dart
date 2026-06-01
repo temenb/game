@@ -1,0 +1,36 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+class GatewayClient {
+  final String baseUrl;
+  final int port;
+
+  GatewayClient(this.baseUrl, this.port);
+
+  Uri buildUri(String path) {
+    return Uri.parse('http://$baseUrl:$port$path');
+  }
+
+  Future<String> post(String path, Map<String, dynamic> body) async {
+    final response = await http.post(
+      buildUri(path),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(body),
+    );
+
+    if (response.statusCode == 200) {
+      return response.body;
+    } else {
+      throw Exception("❌ POST $path failed: ${response.body}");
+    }
+  }
+
+  Future<String> get(String path) async {
+    final response = await http.get(buildUri(path));
+    if (response.statusCode == 200) {
+      return response.body;
+    } else {
+      throw Exception("❌ GET $path failed: ${response.body}");
+    }
+  }
+}

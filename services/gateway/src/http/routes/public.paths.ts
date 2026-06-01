@@ -2,6 +2,7 @@
 
 const publicPaths = [
   'auth/anonymousSignIn',
+  'auth/refreshToken',
   'health',
   'status',
   'readyz',
