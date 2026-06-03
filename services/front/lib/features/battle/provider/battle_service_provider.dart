@@ -1,10 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:front/features/auth/providers/auth_service_provider.dart';
-import 'package:front/features/battle/services/battle_service.dart';
-import 'package:front/src/providers/gateway_client_provider.dart';
+import 'package:front/features/battle/provider/battle_channel_provider.dart';
 
-final battleServiceProvider = Provider<BattleService>((ref) {
-  final client = ref.watch(gatewayClientProvider);
-  final authService = ref.watch(authServiceProvider);
-  return BattleService(client, authService);
+import '../services/battle_service.dart';
+
+final battleServiceProvider = FutureProvider<BattleService>((ref) async {
+  final battleChannel = await ref.watch(battleChannelProvider);
+  final battleService = new BattleService(battleChannel);
+  return battleService;
 });

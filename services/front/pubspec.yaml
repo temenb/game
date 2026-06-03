@@ -25,6 +25,7 @@ dependencies:
   provider: ^6.1.0
   flutter_riverpod: ^2.4.0
   logger: ^2.0.2
+  web_socket_channel: ^3.0.3
 
 
 dev_dependencies:

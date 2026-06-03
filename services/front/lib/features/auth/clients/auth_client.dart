@@ -6,7 +6,7 @@ import 'package:front/src/clients/gateway_client.dart';
 
 
 class AuthClient extends GatewayClient {
-  AuthClient(super.baseUrl, super.port);
+  AuthClient(super.config);
 
   Future<AuthObject> anonymousSignIn(String deviceId) async {
     final jsonString = await post('/auth/anonymousSignIn', {'deviceId': deviceId});

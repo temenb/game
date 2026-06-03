@@ -13,8 +13,6 @@ service Streaming {
   rpc Status (common.empty.Empty) returns (common.health.StatusInfo);
   rpc Livez (common.empty.Empty) returns (common.health.LiveStatus);
   rpc Readyz (common.empty.Empty) returns (common.health.ReadyStatus);
-
-//  rpc BattleChannel (stream BattleStreamRequest) returns (stream battle.BattleObject);
 }
 
 message BattleStreamRequest {

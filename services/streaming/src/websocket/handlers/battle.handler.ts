@@ -8,6 +8,26 @@ import BattleStreamRegistry from "../../channels/front.battle.stream";
 
 export async function battleHandler(ws: WebSocket, userId: string, payload: BattleStreamRequest) {
 
+  logger.log('battleHandler!!!!!!!!!!!111');
+
+  logger.log(userId);
+  logger.log(payload);
+
+  //
+  // const msg: BattleMessage = JSON.parse(data.toString());
+  // logger.log('📩 Message:', msg);
+  //
+  // if (msg.type === 'join') {
+  //   // логика подключения игрока
+  //   ws.send(JSON.stringify({ type: 'joined', battleId: msg.battleId, userId: msg.userId }));
+  // }
+  //
+  // if (msg.type === 'move') {
+  //   // логика хода
+  //   ws.send(JSON.stringify({ type: 'moved', battleId: msg.battleId, userId: msg.userId, cellIdx: msg.cellIdx }));
+  // }
+  //
+
   if (payload.join) {
     logger.log("Battle join event");
     const battle = await battleService.upsertBattle(userId);

@@ -8,7 +8,7 @@ final logger = Logger();
 final profileClientProvider = Provider<ProfileClient>((ref) {
   final config = GatewayConfig.fromEnv();
 
-  final profileClient = ProfileClient(config.host, config.port);
+  final profileClient = ProfileClient(config);
 
   return profileClient;
 });

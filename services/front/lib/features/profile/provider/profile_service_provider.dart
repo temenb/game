@@ -8,6 +8,6 @@ import '../services/profile_service.dart';
 final profileServiceProvider = Provider<ProfileService>((ref) {
   ref.watch(authServiceProvider);
   final config = GatewayConfig.fromEnv();
-  final profileClient = ProfileClient(config.host, config.port);
+  final profileClient = ProfileClient(config);
   return ProfileService(profileClient);
 });

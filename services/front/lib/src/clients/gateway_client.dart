@@ -1,11 +1,15 @@
 import 'dart:convert';
+import 'package:front/src/config/gateway_config.dart';
 import 'package:http/http.dart' as http;
 
 class GatewayClient {
   final String baseUrl;
   final int port;
+  final GatewayConfig config;
 
-  GatewayClient(this.baseUrl, this.port);
+  GatewayClient(this.config)
+      : baseUrl = config.host,
+        port = config.port;
 
   Uri buildUri(String path) {
     return Uri.parse('http://$baseUrl:$port$path');

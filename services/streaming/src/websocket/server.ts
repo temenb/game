@@ -6,9 +6,6 @@ import config from "../config/config";
 import logger from "@shared/logger";
 
 
-type ServerMessage =
-  | { type: 'battle'; payload: BattleStreamRequest };
-
 export const wss = new WebSocketServer({ port: config.webSocketPort });
 logger.info(`WebSocket listening on ${config.webSocketPort}`);
 
@@ -36,44 +33,38 @@ export function initWss() {
 
 
     ws.on('message', (data) => {
-      logger.log(data);
+      logger.log('📩 Raw message:', data);
       try {
-        const message: ServerMessage = JSON.parse(data.toString());
+        const request: BattleStreamRequest = JSON.parse(data.toString());
+        logger.log('Parsed BattleStreamRequest:', request);
 
-        switch (message.type) {
-          case 'battle':
-            logger.log(message);
-            battleHandler(ws, userId, message.payload);
-            break;
+        try {
+          if (url.pathname.startsWith('/battle')) {
+            // независимо от того, /battle, /battle/join, /battle/makeMove
+            battleHandler(ws, userId, request);
+          } else {
+            logger.warn(`⚠️ Unknown path: ${url.pathname}`);
+          }
+        } catch (err) {
+          logger.error('❌ Message handling error:', err);
         }
 
-        //
-        // const msg: BattleMessage = JSON.parse(data.toString());
-        // logger.log('📩 Message:', msg);
-        //
-        // if (msg.type === 'join') {
-        //   // логика подключения игрока
-        //   ws.send(JSON.stringify({ type: 'joined', battleId: msg.battleId, userId: msg.userId }));
-        // }
-        //
-        // if (msg.type === 'move') {
-        //   // логика хода
-        //   ws.send(JSON.stringify({ type: 'moved', battleId: msg.battleId, userId: msg.userId, cellIdx: msg.cellIdx }));
-        // }
-        //
-        // // широковещательная рассылка всем клиентам
-        // wss.clients.forEach((client) => {
-        //   if (client.readyState === ws.OPEN) {
-        //     client.send(JSON.stringify(msg));
-        //   }
-        // });
-      } catch (err) {
-        logger.error('❌ Message handling error:', err);
-      }
-    });
 
-    ws.on('close', () => {
-      logger.log('❌ Client is disconnected');
+      } catch (err) {
+        logger.error('❌ JSON parse error:', err);
+      }
+
+      ws.on('close', () => {
+        logger.log('❌ Client is disconnected');
+      });
+
+
+      // // широковещательная рассылка всем клиентам
+      // wss.clients.forEach((client) => {
+      //   if (client.readyState === ws.OPEN) {
+      //     client.send(JSON.stringify(msg));
+      //   }
+      // });
     });
   });
 }

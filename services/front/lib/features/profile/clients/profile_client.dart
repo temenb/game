@@ -6,7 +6,7 @@ import 'package:front/src/clients/gateway_client.dart';
 
 
 class ProfileClient extends GatewayClient {
-  ProfileClient(super.baseUrl, super.port);
+  ProfileClient(super.config);
 
   Future<ProfileObject> getMyProfile(String jwt) async {
     final jsonString = await get(
