@@ -2,7 +2,6 @@ import grpcServer from './grpc/server';
 import * as grpc from '@grpc/grpc-js';
 import logger from '@shared/logger';
 import kafkaConfig, {kafkaConsumersConfig, kafkaProducersConfig} from "./config/kafka.config";
-import {createConsumer} from '@shared/kafka';
 import {initBoss, startWorker} from "@shared/pg-boss";
 import {initRedis} from "./lib/redis-client";
 import {StoreRegistry} from "./services/store-registry";

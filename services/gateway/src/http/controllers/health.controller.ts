@@ -1,26 +1,26 @@
-import * as HealthService from "../../services/health.service";
+import * as healthService from "../../services/health.service";
 import wrapper from "./wrapper";
 
 export const health = wrapper(async (req, res) => {
   if (req.query.full) {
-    return await HealthService.fullHealth();
+    return await healthService.fullHealth();
   } else {
-    return await HealthService.health();
+    return await healthService.health();
   }
 });
 
 export const fullHealth = wrapper(async (req, res) => {
-  return await HealthService.fullHealth();
+  return await healthService.fullHealth();
 });
 
 export const status = wrapper(async (req, res) => {
-  return await HealthService.status();
+  return await healthService.status();
 });
 
 export const livez = wrapper(async (req, res) => {
-  return await HealthService.livez();
+  return await healthService.livez();
 });
 
 export const readyz = wrapper(async (req, res) => {
-  return await HealthService.readyz();
+  return await healthService.readyz();
 });

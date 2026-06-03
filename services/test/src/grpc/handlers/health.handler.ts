@@ -1,13 +1,13 @@
 import * as grpc from '@grpc/grpc-js';
-import * as HealthGrpc from '../generated/common/health';
-import * as EmptyGrpc from '../generated/common/empty';
+import * as healthGrpc from '../generated/common/health';
+import * as emptyGrpc from '../generated/common/empty';
 import * as heathService from '../../services/health.service';
 import {callbackError} from './callback.error';
 import logger from "@shared/logger";
 
 export const health = async (
-  call: grpc.ServerUnaryCall<EmptyGrpc.Empty, HealthGrpc.HealthReport>,
-  callback: grpc.sendUnaryData<HealthGrpc.HealthReport>
+  call: grpc.ServerUnaryCall<emptyGrpc.Empty, healthGrpc.HealthReport>,
+  callback: grpc.sendUnaryData<healthGrpc.HealthReport>
 ) => {
   try {
     const response = await heathService.health();
@@ -21,8 +21,8 @@ export const health = async (
 };
 
 export const status = async (
-  call: grpc.ServerUnaryCall<EmptyGrpc.Empty, HealthGrpc.StatusInfo>,
-  callback: grpc.sendUnaryData<HealthGrpc.StatusInfo>
+  call: grpc.ServerUnaryCall<emptyGrpc.Empty, healthGrpc.StatusInfo>,
+  callback: grpc.sendUnaryData<healthGrpc.StatusInfo>
 ) => {
   try {
     const response = await heathService.status();
@@ -36,8 +36,8 @@ export const status = async (
 };
 
 export const livez = async (
-  call: grpc.ServerUnaryCall<EmptyGrpc.Empty, HealthGrpc.LiveStatus>,
-  callback: grpc.sendUnaryData<HealthGrpc.LiveStatus>
+  call: grpc.ServerUnaryCall<emptyGrpc.Empty, healthGrpc.LiveStatus>,
+  callback: grpc.sendUnaryData<healthGrpc.LiveStatus>
 ) => {
   try {
     const response = await heathService.livez();
@@ -51,8 +51,8 @@ export const livez = async (
 };
 
 export const readyz = async (
-  call: grpc.ServerUnaryCall<EmptyGrpc.Empty, HealthGrpc.ReadyStatus>,
-  callback: grpc.sendUnaryData<HealthGrpc.ReadyStatus>
+  call: grpc.ServerUnaryCall<emptyGrpc.Empty, healthGrpc.ReadyStatus>,
+  callback: grpc.sendUnaryData<healthGrpc.ReadyStatus>
 ) => {
   try {
     const response = await heathService.readyz();

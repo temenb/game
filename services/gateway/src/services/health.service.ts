@@ -1,4 +1,3 @@
-import {logger} from '@shared/logger';
 import * as authClient from '../grpc/clients/auth.client';
 import * as profileClient from '../grpc/clients/profile.client';
 import * as orchestrationClient from '../grpc/clients/orchestration.client';

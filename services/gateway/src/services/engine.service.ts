@@ -1,14 +1,13 @@
-import * as EngineClient from "../grpc/clients/engine.client";
-import * as grpc from "@grpc/grpc-js";
+import * as engineClient from "../grpc/clients/engine.client";
 
 export const health = async () =>
-  await EngineClient.health();
+  await engineClient.health();
 
 export const status = async () =>
-  await EngineClient.status();
+  await engineClient.status();
 
 export const livez = async () =>
-  await EngineClient.livez();
+  await engineClient.livez();
 
 export const readyz = async () =>
-  await EngineClient.readyz();
+  await engineClient.readyz();

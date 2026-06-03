@@ -9,7 +9,7 @@ class BattleService {
   final BattleChannel battleChannel;
   BattleObject? battle;
 
-  BattleService(this.battleChannel);
+  battleService(this.battleChannel);
 
   void init() async {
     await getBattle();

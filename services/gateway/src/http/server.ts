@@ -1,12 +1,10 @@
-import express, {Request, Response, NextFunction} from 'express';
+import express, {NextFunction, Request, Response} from 'express';
 import morgan from 'morgan';
 import gatewayRoutes from './routes/gateway.routes';
 import authRoutes from './routes/auth.routes';
 import profileRoutes from './routes/profile.routes';
 import {verifyToken} from "./middlewares/auth.middleware";
-import {readyz} from "../services/auth.service";
 import publicPaths from "./routes/public.paths";
-import logger from "@shared/logger";
 
 const app = express();
 app.use(express.json());

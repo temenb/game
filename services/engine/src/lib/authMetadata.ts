@@ -1,5 +1,4 @@
 import * as grpc from '@grpc/grpc-js';
-import logger from '@shared/logger';
 
 export function extractAuthHeader(call: grpc.ServerUnaryCall<any, any>): string {
   const authHeader = call.metadata.get('authorization')[0] as string;

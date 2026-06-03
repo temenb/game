@@ -175,7 +175,7 @@ proto-generate:
 	@for dir in $(FLUTTER_SERVICES); do \
 		echo "\033[1;34m[>] Generating proto for $$dir...\033[0m"; \
 		protoc \
-			--dart_out=grpc:$(SERVICE_DIR)/$$dir/${FLUTTER_PROTO_PATH} \
+			--dart_out=$(SERVICE_DIR)/$$dir/${FLUTTER_PROTO_PATH} \
 			--proto_path=./proto \
 			$(PROTO_FILES); \
 		echo "\033[1;32m[✓] $$dir done\033[0m"; \

@@ -6,10 +6,10 @@ import '../clients/profile_client.dart';
 
 final logger = Logger();
 
-final profileClientProvider = Provider<ProfileClient>((ref) {
+final profileClientProvider = Provider<profileClient>((ref) {
   final config = GatewayConfig.fromEnv();
 
-  final profileClient = ProfileClient(config);
+  final profileClient = profileClient(config);
 
   return profileClient;
 });

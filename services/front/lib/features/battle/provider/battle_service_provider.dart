@@ -3,7 +3,7 @@ import 'package:front/features/battle/provider/battle_channel_provider.dart';
 
 import '../services/battle_service.dart';
 
-final battleServiceProvider = FutureProvider<BattleService>((ref) async {
+final battleServiceProvider = FutureProvider<battleService>((ref) async {
   final battleChannel = await ref.watch(battleChannelProvider.future);
-  return BattleService(battleChannel);
+  return battleService(battleChannel);
 });

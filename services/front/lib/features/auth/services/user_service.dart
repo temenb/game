@@ -6,7 +6,7 @@
 //   final GatewayClient _client;
 //   final _storage = const FlutterSecureStorage();
 //
-//   AuthService(this._client);
+//   authService(this._client);
 //
 //   Future<String> getOrCreateJwt() async {
 //     final existingJwt = await _storage.read(key: 'jwt');

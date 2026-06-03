@@ -1,10 +1,10 @@
-import {Battle, BattleStatus, BattleCellValue} from "@prisma/client";
+import {Battle, BattleCellValue, BattleStatus} from "@prisma/client";
 import prisma from "../lib/prisma";
+import * as battleGrpc from "../grpc/generated/battle";
 import {BattleObject} from "../grpc/generated/battle";
 import {battleToGrpc, battleToPrisma} from "../lib/battle-grpc-prisma-converters";
 import logger from "@shared/logger";
-import * as BattleGrpc from "../grpc/generated/battle";
-import * as EmptyGrpc from "../grpc/generated/common/empty";
+import * as emptyGrpc from "../grpc/generated/common/empty";
 import {NotFoundError} from "../services/battle.service";
 
 export class BattleModel {
@@ -31,7 +31,7 @@ export class BattleModel {
   static async joinBattle(
     battleId: string
     , profileId: string
-    , callback: (battle: BattleGrpc.BattleObject) => Promise<EmptyGrpc.Empty | null>
+    , callback: (battle: battleGrpc.BattleObject) => Promise<emptyGrpc.Empty | null>
   ): Promise<Battle> {
     return prisma.$transaction(async (tx) => {
       const updated = await tx.battle.updateMany({

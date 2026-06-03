@@ -1,14 +1,13 @@
-import * as TestClient from "../grpc/clients/test.client";
-import * as grpc from "@grpc/grpc-js";
+import * as orchestrationClient from "../grpc/clients/orchestration.client";
 
 export const health = async () =>
-  await TestClient.health();
+  await orchestrationClient.health();
 
 export const status = async () =>
-  await TestClient.status();
+  await orchestrationClient.status();
 
 export const livez = async () =>
-  await TestClient.livez();
+  await orchestrationClient.livez();
 
 export const readyz = async () =>
-  await TestClient.readyz();
+  await orchestrationClient.readyz();

@@ -1,32 +1,37 @@
 import * as grpc from '@grpc/grpc-js';
-import * as TestGrpc from '../generated/test';
-import * as ProfileGrpc from '../generated/profile';
-import * as HealthGrpc from '../generated/common/health';
-import * as EmptyGrpc from '../generated/common/empty';
-import logger from '@shared/logger';
+import * as orchestrationGrpc from '../generated/orchestration';
+import * as healthGrpc from '../generated/common/health';
+import * as profileGrpc from '../generated/profile';
+import * as authGrpc from '../generated/auth';
+import * as emptyGrpc from '../generated/common/empty';
 import config from '../../config/config';
 import {GrpcClientManager} from '@shared/grpc-client-manager';
 
-const testManager = new GrpcClientManager<TestGrpc.TestClient>(() => {
-  return new TestGrpc.TestClient(config.serviceTestUrl, grpc.credentials.createInsecure());
+const orchestrationManager = new GrpcClientManager<orchestrationGrpc.OrchestrationClient>(() => {
+  return new orchestrationGrpc.OrchestrationClient(config.serviceTestUrl, grpc.credentials.createInsecure());
 });
 
-export const health = (): Promise<HealthGrpc.HealthReport | null> => {
-  const grpcRequest: EmptyGrpc.Empty = {};
-  return testManager.call((client, cb) => client.health(grpcRequest, cb));
+export const health = (): Promise<healthGrpc.HealthReport | null> => {
+  const grpcRequest: emptyGrpc.Empty = {};
+  return orchestrationManager.call((client, cb) => client.health(grpcRequest, cb));
 };
 
-export const status = (): Promise<HealthGrpc.StatusInfo | null> => {
-  const grpcRequest: EmptyGrpc.Empty = {};
-  return testManager.call((client, cb) => client.status(grpcRequest, cb));
+export const status = (): Promise<healthGrpc.StatusInfo | null> => {
+  const grpcRequest: emptyGrpc.Empty = {};
+  return orchestrationManager.call((client, cb) => client.status(grpcRequest, cb));
 };
 
-export const livez = (): Promise<HealthGrpc.LiveStatus | null> => {
-  const grpcRequest: EmptyGrpc.Empty = {};
-  return testManager.call((client, cb) => client.livez(grpcRequest, cb));
+export const livez = (): Promise<healthGrpc.LiveStatus | null> => {
+  const grpcRequest: emptyGrpc.Empty = {};
+  return orchestrationManager.call((client, cb) => client.livez(grpcRequest, cb));
 };
 
-export const readyz = (): Promise<HealthGrpc.ReadyStatus | null> => {
-  const grpcRequest: EmptyGrpc.Empty = {};
-  return testManager.call((client, cb) => client.readyz(grpcRequest, cb));
+export const readyz = (): Promise<healthGrpc.ReadyStatus | null> => {
+  const grpcRequest: emptyGrpc.Empty = {};
+  return orchestrationManager.call((client, cb) => client.readyz(grpcRequest, cb));
+};
+
+export const getMyProfile = (userId: string): Promise<profileGrpc.ProfileObject | null> => {
+  const grpcRequest: authGrpc.UserIdRequest = { userId };
+  return orchestrationManager.call((client, cb) => client.getMyProfile(grpcRequest, cb));
 };

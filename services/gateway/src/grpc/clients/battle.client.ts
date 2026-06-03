@@ -1,18 +1,18 @@
 import * as grpc from '@grpc/grpc-js';
-import * as BattleGrpc from '../generated/battle';
-import * as HealthGrpc from '../generated/common/health';
-import * as EmptyGrpc from '../generated/common/empty';
+import * as battleGrpc from '../generated/battle';
+import * as healthGrpc from '../generated/common/health';
+import * as emptyGrpc from '../generated/common/empty';
 import logger from '@shared/logger';
 import config from '../../config/config';
 import {GrpcClientManager} from '@shared/grpc-client-manager';
 
-const battleManager = new GrpcClientManager<BattleGrpc.BattleClient>(() => {
-  return new BattleGrpc.BattleClient(config.serviceBattleUrl, grpc.credentials.createInsecure());
+const battleManager = new GrpcClientManager<battleGrpc.BattleClient>(() => {
+  return new battleGrpc.BattleClient(config.serviceBattleUrl, grpc.credentials.createInsecure());
 });
 
-export const health = (): Promise<HealthGrpc.HealthReport | null> => {
-  const grpcRequest: EmptyGrpc.Empty = {};
-  return battleManager.call<HealthGrpc.HealthReport>(
+export const health = (): Promise<healthGrpc.HealthReport | null> => {
+  const grpcRequest: emptyGrpc.Empty = {};
+  return battleManager.call<healthGrpc.HealthReport>(
     (client, cb) => client.health(grpcRequest, cb)
   ).catch((err) => {
     logger.error("Health check failed:", err);
@@ -20,17 +20,17 @@ export const health = (): Promise<HealthGrpc.HealthReport | null> => {
   });
 };
 
-export const status = (): Promise<HealthGrpc.StatusInfo | null> => {
-  const grpcRequest: EmptyGrpc.Empty = {};
+export const status = (): Promise<healthGrpc.StatusInfo | null> => {
+  const grpcRequest: emptyGrpc.Empty = {};
   return battleManager.call((client, cb) => client.status(grpcRequest, cb));
 };
 
-export const livez = (): Promise<HealthGrpc.LiveStatus | null> => {
-  const grpcRequest: EmptyGrpc.Empty = {};
+export const livez = (): Promise<healthGrpc.LiveStatus | null> => {
+  const grpcRequest: emptyGrpc.Empty = {};
   return battleManager.call((client, cb) => client.livez(grpcRequest, cb));
 };
 
-export const readyz = (): Promise<HealthGrpc.ReadyStatus | null> => {
-  const grpcRequest: EmptyGrpc.Empty = {};
+export const readyz = (): Promise<healthGrpc.ReadyStatus | null> => {
+  const grpcRequest: emptyGrpc.Empty = {};
   return battleManager.call((client, cb) => client.readyz(grpcRequest, cb));
 };

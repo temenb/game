@@ -1,6 +1,5 @@
 import Redis from "ioredis";
 import redisConfig from "../config/redis.config";
-import {string} from "fast-glob/out/utils";
 
 let redis: Redis | null = null;
 

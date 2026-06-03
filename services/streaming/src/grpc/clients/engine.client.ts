@@ -1,7 +1,7 @@
 import * as grpc from '@grpc/grpc-js';
 import * as engineClient from '../generated/engine';
-import * as HealthGrpc from '../generated/common/health';
-import * as EmptyGrpc from '../generated/common/empty';
+import * as healthGrpc from '../generated/common/health';
+import * as emptyGrpc from '../generated/common/empty';
 import config from '../../config/config';
 import {GrpcClientManager} from '@shared/grpc-client-manager';
 
@@ -9,27 +9,27 @@ const engineManager = new GrpcClientManager<engineClient.EngineClient>(() => {
   return new engineClient.EngineClient(config.serviceEngineUrl, grpc.credentials.createInsecure());
 });
 
-export const health = (): Promise<HealthGrpc.HealthReport | null> => {
-  const grpcRequest: EmptyGrpc.Empty = {};
+export const health = (): Promise<healthGrpc.HealthReport | null> => {
+  const grpcRequest: emptyGrpc.Empty = {};
   return engineManager.call((client, cb) => client.health(grpcRequest, cb));
 };
 
-export const status = (): Promise<HealthGrpc.StatusInfo | null> => {
-  const grpcRequest: EmptyGrpc.Empty = {};
+export const status = (): Promise<healthGrpc.StatusInfo | null> => {
+  const grpcRequest: emptyGrpc.Empty = {};
   return engineManager.call((client, cb) => client.status(grpcRequest, cb));
 };
 
-export const livez = (): Promise<HealthGrpc.LiveStatus | null> => {
-  const grpcRequest: EmptyGrpc.Empty = {};
+export const livez = (): Promise<healthGrpc.LiveStatus | null> => {
+  const grpcRequest: emptyGrpc.Empty = {};
   return engineManager.call((client, cb) => client.livez(grpcRequest, cb));
 };
 
-export const readyz = (): Promise<HealthGrpc.ReadyStatus | null> => {
-  const grpcRequest: EmptyGrpc.Empty = {};
+export const readyz = (): Promise<healthGrpc.ReadyStatus | null> => {
+  const grpcRequest: emptyGrpc.Empty = {};
   return engineManager.call((client, cb) => client.readyz(grpcRequest, cb));
 };
 
-export const battleMove = (move: engineClient.BattleMoveRequest): Promise<EmptyGrpc.Empty | null> => {
+export const battleMove = (move: engineClient.BattleMoveRequest): Promise<emptyGrpc.Empty | null> => {
   return engineManager.call((client, cb) => client.battleMove(move, cb));
 };
 

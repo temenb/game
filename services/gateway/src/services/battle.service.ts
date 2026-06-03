@@ -1,13 +1,13 @@
-import * as TestClient from "../grpc/clients/test.client";
+import * as battleClient from "../grpc/clients/battle.client";
 
 export const health = async () =>
-  await TestClient.health();
+  await battleClient.health();
 
 export const status = async () =>
-  await TestClient.status();
+  await battleClient.status();
 
 export const livez = async () =>
-  await TestClient.livez();
+  await battleClient.livez();
 
 export const readyz = async () =>
-  await TestClient.readyz();
+  await battleClient.readyz();

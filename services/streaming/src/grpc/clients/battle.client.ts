@@ -1,43 +1,43 @@
 import * as grpc from '@grpc/grpc-js';
-import * as BattleGrpc from '../generated/battle';
-import * as HealthGrpc from '../generated/common/health';
-import * as EmptyGrpc from '../generated/common/empty';
-import * as ProfileGrpc from '../generated/profile';
+import * as battleGrpc from '../generated/battle';
+import * as healthGrpc from '../generated/common/health';
+import * as emptyGrpc from '../generated/common/empty';
+import * as profileGrpc from '../generated/profile';
 import config from '../../config/config';
 import {GrpcClientManager} from '@shared/grpc-client-manager';
 import logger from "@shared/logger";
 
-const battleManager = new GrpcClientManager<BattleGrpc.BattleClient>(() => {
-  return new BattleGrpc.BattleClient(config.serviceBattleUrl, grpc.credentials.createInsecure());
+const battleManager = new GrpcClientManager<battleGrpc.BattleClient>(() => {
+  return new battleGrpc.BattleClient(config.serviceBattleUrl, grpc.credentials.createInsecure());
 });
 
-export const health = (): Promise<HealthGrpc.HealthReport | null> => {
-  const grpcRequest: EmptyGrpc.Empty = {};
+export const health = (): Promise<healthGrpc.HealthReport | null> => {
+  const grpcRequest: emptyGrpc.Empty = {};
   return battleManager.call((client, cb) => client.health(grpcRequest, cb));
 };
 
-export const status = (): Promise<HealthGrpc.StatusInfo | null> => {
-  const grpcRequest: EmptyGrpc.Empty = {};
+export const status = (): Promise<healthGrpc.StatusInfo | null> => {
+  const grpcRequest: emptyGrpc.Empty = {};
   return battleManager.call((client, cb) => client.status(grpcRequest, cb));
 };
 
-export const livez = (): Promise<HealthGrpc.LiveStatus | null> => {
-  const grpcRequest: EmptyGrpc.Empty = {};
+export const livez = (): Promise<healthGrpc.LiveStatus | null> => {
+  const grpcRequest: emptyGrpc.Empty = {};
   return battleManager.call((client, cb) => client.livez(grpcRequest, cb));
 };
 
-export const readyz = (): Promise<HealthGrpc.ReadyStatus | null> => {
-  const grpcRequest: EmptyGrpc.Empty = {};
+export const readyz = (): Promise<healthGrpc.ReadyStatus | null> => {
+  const grpcRequest: emptyGrpc.Empty = {};
   return battleManager.call((client, cb) => client.readyz(grpcRequest, cb));
 };
 
-export const getBattle = (battleId: string): Promise<BattleGrpc.BattleObject | null> => {
-  const grpcRequest: BattleGrpc.BattleIdRequest = {battleId};
+export const getBattle = (battleId: string): Promise<battleGrpc.BattleObject | null> => {
+  const grpcRequest: battleGrpc.BattleIdRequest = {battleId};
   return battleManager.call((client, cb) => client.getBattle(grpcRequest, cb));
 };
 
-export const upsertBattle = (grpcRequest: ProfileGrpc.ProfileIdRequest): Promise<BattleGrpc.BattleObject | null> => {
-  return battleManager.call<BattleGrpc.BattleObject>(
+export const upsertBattle = (grpcRequest: profileGrpc.ProfileIdRequest): Promise<battleGrpc.BattleObject | null> => {
+  return battleManager.call<battleGrpc.BattleObject>(
     (client, cb) => client.upsertBattle(grpcRequest, cb)
   ).catch((err) => {
     logger.error("Upsert battle failed:", err);

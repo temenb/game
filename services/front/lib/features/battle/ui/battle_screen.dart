@@ -90,7 +90,7 @@ class _BattleBoard extends StatelessWidget {
 // │ Stream<BattleObject>
 // │
 // ┌─────────┴──────────┐
-// │   BattleService     │
+// │   battleService     │
 // │ - методы: join,     │
 // │   makeMove, view    │
 // │ - хранит Battle     │

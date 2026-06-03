@@ -1,6 +1,6 @@
 // export const getMyProfile = async (
-//   call: grpc.ServerUnaryCall<EmptyGrpc.Empty, ProfileGrpc.ProfileObject>,
-//   callback: grpc.sendUnaryData<ProfileGrpc.ProfileObject>
+//   call: grpc.ServerUnaryCall<emptyGrpc.Empty, profileGrpc.ProfileObject>,
+//   callback: grpc.sendUnaryData<profileGrpc.ProfileObject>
 // ) => {
 //   try {
 //     const userId = getUserIdFromMetadata(call);

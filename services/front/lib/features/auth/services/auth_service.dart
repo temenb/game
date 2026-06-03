@@ -31,9 +31,7 @@ class AuthService {
 
     final refreshToken = await TokenStorage.readRefreshToken();
     if (refreshToken != null) {
-      final AuthObject response = await this.authClient.refreshTokens(
-        refreshToken,
-      );
+      final AuthObject response = await this.authClient.refreshTokens(refreshToken);
 
       final newJwt = response.accessToken;
 

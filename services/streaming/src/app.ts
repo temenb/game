@@ -5,7 +5,6 @@ import {createConsumer} from "@shared/kafka";
 import kafkaConfig, {kafkaConsumersConfig} from "./config/kafka.config";
 import {initWss} from "./websocket/server";
 import config from "./config/config";
-import {WebSocketServer} from "ws";
 
 
 const GRPC_PORT = Number(config.grpcPort);

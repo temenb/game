@@ -1,19 +1,19 @@
-import * as EngineService from "../../services/engine.service";
+import * as engineService from "../../services/engine.service";
 import wrapper from "./wrapper";
 
 // Middleware-функции для роутов
 export const health = wrapper(async (req, res) => {
-  return await EngineService.health();
+  return await engineService.health();
 });
 
 export const status = wrapper(async (req, res) => {
-  return await EngineService.status();
+  return await engineService.status();
 });
 
 export const livez = wrapper(async (req, res) => {
-  return await EngineService.livez();
+  return await engineService.livez();
 });
 
 export const readyz = wrapper(async (req, res) => {
-  return await EngineService.readyz();
+  return await engineService.readyz();
 });

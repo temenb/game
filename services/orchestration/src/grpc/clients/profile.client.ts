@@ -1,15 +1,14 @@
 import * as grpc from '@grpc/grpc-js';
-import * as ProfileGrpc from '../generated/profile';
-import * as AuthGrpc from '../generated/auth';
-import * as EmptyGrpc from '../generated/common/empty';
+import * as profileGrpc from '../generated/profile';
+import * as authGrpc from '../generated/auth';
 import config from '../../config/config';
 import {GrpcClientManager} from '@shared/grpc-client-manager';
 
-const profileManager = new GrpcClientManager<ProfileGrpc.ProfileClient>(() => {
-  return new ProfileGrpc.ProfileClient(config.serviceProfileUrl, grpc.credentials.createInsecure());
+const profileManager = new GrpcClientManager<profileGrpc.ProfileClient>(() => {
+  return new profileGrpc.ProfileClient(config.serviceProfileUrl, grpc.credentials.createInsecure());
 });
 
-export const getProfileByUser = (userId: string): Promise<ProfileGrpc.ProfileObject | null> => {
-  const grpcRequest: AuthGrpc.UserIdRequest = {userId};
+export const getProfileByUser = (userId: string): Promise<profileGrpc.ProfileObject | null> => {
+  const grpcRequest: authGrpc.UserIdRequest = {userId};
   return profileManager.call((client, cb) => client.getProfileByUser(grpcRequest, cb));
 };

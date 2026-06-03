@@ -1,36 +1,35 @@
-import * as AuthClient from '../grpc/clients/auth.client';
-import logger from "@shared/logger";
+import * as authClient from '../grpc/clients/auth.client';
 
 export const register = async (email: string, password: string) =>
-  await AuthClient.register(email, password);
+  await authClient.register(email, password);
 
 export const login = async (email: string, password: string) =>
-  await AuthClient.login(email, password);
+  await authClient.login(email, password);
 
 export const refreshTokens = async (token: string) =>
-  await AuthClient.refreshTokens(token);
+  await authClient.refreshTokens(token);
 
 export const logout = async (userId: string) =>
-  await AuthClient.logout(userId);
+  await authClient.logout(userId);
 
 export const forgotPassword = async (email: string) =>
-  await AuthClient.forgotPassword(email);
+  await authClient.forgotPassword(email);
 
 export const resetPassword = async (token: string, newPassword: string) =>
-  await AuthClient.resetPassword(token, newPassword);
+  await authClient.resetPassword(token, newPassword);
 
 export const health = async () =>
-  await AuthClient.health();
+  await authClient.health();
 
 export const status = async () =>
-  await AuthClient.status();
+  await authClient.status();
 
 export const livez = async () =>
-  await AuthClient.livez();
+  await authClient.livez();
 
 export const readyz = async () =>
-  await AuthClient.readyz();
+  await authClient.readyz();
 
 export const anonymousSignIn = async (deviceId: string) => {
-  return await AuthClient.anonymousSignIn(deviceId);
+  return await authClient.anonymousSignIn(deviceId);
 }

@@ -1,17 +1,17 @@
-import * as ProfileClient from "../grpc/clients/profile.client";
+import * as profileClient from "../grpc/clients/profile.client";
 import * as profileGrpc from "../grpc/generated/profile";
 
 export const health = async () =>
-  await ProfileClient.health();
+  await profileClient.health();
 
 export const status = async () =>
-  await ProfileClient.status();
+  await profileClient.status();
 
 export const livez = async () =>
-  await ProfileClient.livez();
+  await profileClient.livez();
 
 export const readyz = async () =>
-  await ProfileClient.readyz();
+  await profileClient.readyz();
 
 export const getProfileByUser = async (userId: string): Promise<profileGrpc.ProfileObject | null> =>
-  await ProfileClient.getProfileByUser(userId);
+  await profileClient.getProfileByUser(userId);

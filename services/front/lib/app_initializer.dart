@@ -7,7 +7,7 @@ import 'package:logger/logger.dart';
 final logger = Logger();
 
 class AppInitializer {
-  static Future<AppContext> initialize(AuthService authService) async {
+  static Future<AppContext> initialize(authService authService) async {
     logger.i("Приложение запущено"); // info
 
     // final jwt = await authService.getOrCreateJwt();

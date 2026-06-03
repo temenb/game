@@ -1,4 +1,4 @@
-import * as BattleGrpc from "../../src/grpc/generated/battle";
+import * as battleGrpc from "../../src/grpc/generated/battle";
 import config from "../../src/config/config";
 import jwt from "jsonwebtoken";
 import WebSocket from "ws";
@@ -73,7 +73,7 @@ describe("Gateway Service", () => {
 
     const start = new Promise<void>(async (resolve) => {
       let counter = 0;
-      const gameplay = async (battleObject?: BattleGrpc.BattleObject | null) => {
+      const gameplay = async (battleObject?: battleGrpc.BattleObject | null) => {
         console.log(battleObject);
 
         console.log('=====================================================================step ', counter);
@@ -115,13 +115,13 @@ describe("Gateway Service", () => {
       };
 
 
-      ws1.on("message", (data: BattleGrpc.BattleObject) => {
+      ws1.on("message", (data: battleGrpc.BattleObject) => {
         console.log("------------------------------------------------------------------------------=1=- Got battle update:");
         const battleObject = JSON.parse(data.toString()).payload.message;
         gameplay(battleObject);
       });
 
-      ws2.on("message", (data: BattleGrpc.BattleObject) => {
+      ws2.on("message", (data: battleGrpc.BattleObject) => {
         console.log("------------------------------------------------------------------------------=2=- Got battle update:");
         const battleObject = JSON.parse(data.toString()).payload.message;
         gameplay(battleObject);

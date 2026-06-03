@@ -1,6 +1,4 @@
 import {Request} from "express";
-import jwt from "jsonwebtoken";
-import logger from "@shared/logger";
 
 export function getJwt(req: Request): string {
   const authHeader = req.headers.authorization;
