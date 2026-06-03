@@ -1,9 +1,6 @@
-import { WebSocket } from 'ws';
-import * as grpc from '@grpc/grpc-js';
-import * as BattleGrpc from '../grpc/generated/battle';
-import * as StreamingGrpc from '../grpc/generated/streaming';
+import {WebSocket} from 'ws';
+import * as battleGrpc from '../grpc/generated/battle';
 import logger from "@shared/logger";
-import {BattleObject} from "../grpc/generated/battle";
 
 export default class BattleStreamRegistry {
   private static battleStreams = new Map<string, Set<WebSocket>>();
@@ -14,7 +11,7 @@ export default class BattleStreamRegistry {
     NodeJS.Timeout
   >();
 
-  private static heartbeatTimeoutMs = 40000;
+  private static heartbeatTimeoutMs = 360000;
 
   static setBattleStream = (
     battleId: string,
@@ -87,6 +84,24 @@ export default class BattleStreamRegistry {
     return this.battleStreams.get(battleId);
   }
 
+  static writeBattleStreams(battle: battleGrpc.BattleObject) {
+    const streams = BattleStreamRegistry.getBattleStreams(battle.id);
+    if (!streams) {
+      logger.log(`No active streams found for battleId=${battle.id}`, battle);
+      throw new Error(`No active streams found for battleId=${battle.id}`);
+    }
+
+
+    logger.log('Update streams for battle: ' + battle.id, battle);
+    logger.log('Streams count: ' + streams.size);
+    let count = 0;
+    for (const stream of streams) {
+      logger.log('Streams update ' + ++count);
+      const buffer = battleGrpc.BattleObject.encode(battle).finish();
+      stream.send(buffer);
+    }
+  }
+
   private static resetHeartbeat(call: WebSocket) {
     this.clearHeartbeat(call);
     const timer = setTimeout(() => {
@@ -101,24 +116,6 @@ export default class BattleStreamRegistry {
     if (timer) {
       clearTimeout(timer);
       this.heartbeatTimers.delete(call);
-    }
-  }
-
-  static writeBattleStreams(battle: BattleGrpc.BattleObject) {
-    const streams = BattleStreamRegistry.getBattleStreams(battle.id);
-    if (!streams) {
-      logger.log(`No active streams found for battleId=${battle.id}`, battle);
-      throw new Error(`No active streams found for battleId=${battle.id}`);
-    }
-
-
-    logger.log('Update streams for battle: ' + battle.id, battle);
-    logger.log('Streams count: ' + streams.size);
-    let count = 0;
-    for (const stream of streams) {
-      logger.log('Streams update ' + ++count);
-      const buffer = BattleObject.encode(battle).finish();
-      stream.send(buffer);
     }
   }
 }

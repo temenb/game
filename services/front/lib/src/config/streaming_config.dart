@@ -12,8 +12,5 @@ class StreamingConfig {
     return StreamingConfig(host: host, port: port);
   }
 
-  const StreamingConfig({
-    required this.host,
-    required this.port,
-  });
+  const StreamingConfig({required this.host, required this.port});
 }

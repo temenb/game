@@ -1,18 +1,18 @@
-import * as EngineClient from "../grpc/clients/engine.client";
-import * as EngineGrpc from '../grpc/generated/engine';
+import * as engineClient from "../grpc/clients/engine.client";
+import * as engineGrpc from '../grpc/generated/engine';
 
 export const health = async () =>
-  await EngineClient.health();
+  await engineClient.health();
 
 export const status = async () =>
-  await EngineClient.status();
+  await engineClient.status();
 
 export const livez = async () =>
-  await EngineClient.livez();
+  await engineClient.livez();
 
 export const readyz = async () =>
-  await EngineClient.readyz();
+  await engineClient.readyz();
 
 export const makeMove = async (move: EngineGrpc.BattleMoveRequest) =>
-  await EngineClient.battleMove(move);
+  await engineClient.battleMove(move);
 

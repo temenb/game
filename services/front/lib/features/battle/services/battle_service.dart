@@ -11,7 +11,7 @@ class BattleService {
 
   BattleService(this.battleChannel);
 
-  void init() async{
+  void init() async {
     await getBattle();
   }
 
@@ -20,7 +20,12 @@ class BattleService {
       this.battle = await battleChannel.join();
     }
 
-    return new BattleObject(response.id, response.players, response.cells, response.status, response.winner);
+    return new BattleObject(
+      response.id,
+      response.players,
+      response.cells,
+      response.status,
+      response.winner,
+    );
   }
-
 }

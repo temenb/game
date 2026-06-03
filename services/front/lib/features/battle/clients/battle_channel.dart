@@ -1,14 +1,13 @@
 import 'dart:async';
-import 'dart:convert';
+
 import 'package:front/src/clients/streaming_channel.dart';
 import 'package:front/src/grpc/generated/battle.pb.dart';
-import 'package:front/src/grpc/generated/common/empty.pb.dart';
 import 'package:front/src/grpc/generated/engine.pb.dart';
 import 'package:front/src/grpc/generated/profile.pb.dart';
 import 'package:front/src/grpc/generated/streaming.pb.dart';
 import 'package:logger/logger.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:web_socket_channel/status.dart' as status;
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 final logger = Logger();
 
@@ -17,16 +16,17 @@ class BattleChannel extends StreamingChannel {
   late StreamController<BattleObject> _controller;
   final pathname = 'battle';
 
-
   BattleChannel(super.config, super.jwt) {
-    final uri = Uri.parse('ws://${config.host}:${config.port}/$pathname?token=$jwt');
+    final uri = Uri.parse(
+      'ws://${config.host}:${config.port}/$pathname?token=$jwt',
+    );
     logger.i('Connecting Channel to $uri');
 
     _channel = WebSocketChannel.connect(uri);
     _controller = StreamController<BattleObject>.broadcast();
 
     _channel.stream.listen(
-          (message) {
+      (message) {
         try {
           final battle = BattleObject.fromBuffer(message);
           logger.d(battle);
@@ -48,8 +48,7 @@ class BattleChannel extends StreamingChannel {
 
   /// Отправить событие "join"
   void join(String profileId) {
-    final joinReq = ProfileIdRequest()
-      ..profileId = profileId;
+    final joinReq = ProfileIdRequest()..profileId = profileId;
     final req = BattleStreamRequest()..join = joinReq;
     _channel.sink.add(req.writeToBuffer());
     logger.i('Sent join event');

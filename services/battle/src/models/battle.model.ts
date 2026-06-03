@@ -11,7 +11,7 @@ export class BattleModel {
   static async findBattleByUser(profileId: string): Promise<Battle | null> {
     return prisma.battle.findFirst({
       where: {
-        players: { has: profileId },
+        players: {has: profileId},
         status: BattleStatus.Active,
       },
     });
@@ -23,7 +23,7 @@ export class BattleModel {
       where: {
         playersCount: 1,
         status: BattleStatus.Active,
-        NOT: { players: { has: profileId } },
+        NOT: {players: {has: profileId}},
       },
     });
   }
@@ -38,11 +38,11 @@ export class BattleModel {
         where: {
           id: battleId,
           playersCount: 1, // гарантируем, что пока один игрок
-          status: { not: BattleStatus.Finished },
+          status: {not: BattleStatus.Finished},
         },
         data: {
-          players: { push: profileId },
-          playersCount: { increment: 1 },
+          players: {push: profileId},
+          playersCount: {increment: 1},
         },
       });
 
@@ -52,7 +52,7 @@ export class BattleModel {
       }
 
       const battle = await tx.battle.findUnique({
-        where: { id: battleId },
+        where: {id: battleId},
       });
 
       if (!battle) {
@@ -90,7 +90,7 @@ export class BattleModel {
   static async updateBattle(battleObj: BattleObject): Promise<Battle> {
     const battle = battleToPrisma(battleObj);
     const updated = await prisma.battle.update({
-      where: { id: battle.id },
+      where: {id: battle.id},
       data: {
         cells: battle.cells,
         status: battle.status,

@@ -1,15 +1,10 @@
 import type {WebSocket} from "ws";
-import {BattleStreamRequest} from "../../grpc/generated/streaming";
+import * as streamingGrpc from "../../grpc/generated/streaming";
 import * as battleService from "../../services/battle.service";
 import * as engineService from "../../services/engine.service";
 import logger from "@shared/logger";
 import BattleStreamRegistry from "../../channels/front.battle.stream";
 import {ErrorObject} from "../../grpc/generated/common/error";
-import * as ProfileClient from '../../grpc/clients/profile.client';
-import {BattleObject} from "../../grpc/generated/battle";
-import jwt from "jsonwebtoken";
-import config from "../../config/config";
-import {ProfileService} from "../../grpc/generated/profile";
 import * as profileService from "../../services/profile.service";
 
 
@@ -26,7 +21,7 @@ async function isAllowedUser(userId: string, profileId: string) {
   }
 }
 
-export async function battleHandler(ws: WebSocket, userId: string, payload: BattleStreamRequest) {
+export async function battleHandler(ws: WebSocket, userId: string, payload: streamingGrpc.BattleStreamRequest) {
 
   //
   // const msg: BattleMessage = JSON.parse(data.toString());

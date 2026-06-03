@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'package:front/features/auth/services/auth_service.dart';
+
 import 'package:front/src/config/streaming_config.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
-import 'package:web_socket_channel/status.dart' as status;
 import 'package:logger/logger.dart';
+import 'package:web_socket_channel/status.dart' as status;
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 final logger = Logger();
 
@@ -17,12 +17,14 @@ class StreamingChannel {
   final _controller = StreamController<String>.broadcast();
 
   StreamingChannel(this.config, this.jwt) {
-    final uri = Uri.parse('ws://${config.host}:${config.port}/$pathname?token=$jwt');
+    final uri = Uri.parse(
+      'ws://${config.host}:${config.port}/$pathname?token=$jwt',
+    );
     logger.i('Connecting to $uri');
     _channel = WebSocketChannel.connect(uri);
 
     _subscription = _channel.stream.listen(
-          (message) {
+      (message) {
         logger.i('Received: $message');
         _controller.add(message);
       },

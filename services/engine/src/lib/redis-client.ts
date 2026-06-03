@@ -11,7 +11,7 @@ export async function initRedis(
 ): Promise<void> {
   if (redis) return;
 
-  redis = new Redis({ host, port, password });
+  redis = new Redis({host, port, password});
 
   return new Promise<void>((resolve, reject) => {
     redis!.on("connect", () => {

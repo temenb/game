@@ -1,20 +1,20 @@
 import * as grpc from '@grpc/grpc-js';
-import * as BattleGrpc from '../grpc/generated/battle';
-import * as StreamingGrpc from '../grpc/generated/streaming';
+import * as battleGrpc from '../grpc/generated/battle';
+import * as streamingGrpc from '../grpc/generated/streaming';
 import logger from "@shared/logger";
 
 export default class BattleStreamRegistry {
   private static battleStreams = new Map<
-    string, Set<grpc.ServerDuplexStream<StreamingGrpc.BattleStreamRequest, BattleGrpc.BattleObject>>
+    string, Set<grpc.ServerDuplexStream<streamingGrpc.BattleStreamRequest, battleGrpc.BattleObject>>
   >();
 
   private static callToBattle = new Map<
-    grpc.ServerDuplexStream<StreamingGrpc.BattleStreamRequest, BattleGrpc.BattleObject>,
+    grpc.ServerDuplexStream<streamingGrpc.BattleStreamRequest, battleGrpc.BattleObject>,
     string
   >();
 
   private static heartbeatTimers = new Map<
-    grpc.ServerDuplexStream<StreamingGrpc.BattleStreamRequest, BattleGrpc.BattleObject>,
+    grpc.ServerDuplexStream<streamingGrpc.BattleStreamRequest, battleGrpc.BattleObject>,
     NodeJS.Timeout
   >();
 
@@ -22,7 +22,7 @@ export default class BattleStreamRegistry {
 
   static setBattleStream = (
     battleId: string,
-    call: grpc.ServerDuplexStream<StreamingGrpc.BattleStreamRequest, BattleGrpc.BattleObject>
+    call: grpc.ServerDuplexStream<streamingGrpc.BattleStreamRequest, battleGrpc.BattleObject>
   ) => {
     if (!this.battleStreams.has(battleId)) {
       this.battleStreams.set(battleId, new Set());
@@ -59,10 +59,10 @@ export default class BattleStreamRegistry {
   };
 
 
-  static deleteBattleStream(call: grpc.ServerDuplexStream<StreamingGrpc.BattleStreamRequest, BattleGrpc.BattleObject>): void;
+  static deleteBattleStream(call: grpc.ServerDuplexStream<streamingGrpc.BattleStreamRequest, battleGrpc.BattleObject>): void;
   static deleteBattleStream(battleId: string): void;
   static deleteBattleStream(
-    arg: grpc.ServerDuplexStream<StreamingGrpc.BattleStreamRequest, BattleGrpc.BattleObject> | string
+    arg: grpc.ServerDuplexStream<streamingGrpc.BattleStreamRequest, battleGrpc.BattleObject> | string
   ) {
     if (typeof arg === "string") {
       const battleId = arg;
@@ -95,28 +95,11 @@ export default class BattleStreamRegistry {
 
   static getBattleStreams(
     battleId: string
-  ): Set<grpc.ServerDuplexStream<StreamingGrpc.BattleStreamRequest, BattleGrpc.BattleObject>> | undefined {
+  ): Set<grpc.ServerDuplexStream<streamingGrpc.BattleStreamRequest, battleGrpc.BattleObject>> | undefined {
     return this.battleStreams.get(battleId);
   }
 
-  private static resetHeartbeat(call: grpc.ServerDuplexStream<StreamingGrpc.BattleStreamRequest, BattleGrpc.BattleObject>) {
-    this.clearHeartbeat(call);
-    const timer = setTimeout(() => {
-      logger.warn("Heartbeat timeout, cleaning stream");
-      this.deleteBattleStream(call);
-    }, this.heartbeatTimeoutMs);
-    this.heartbeatTimers.set(call, timer);
-  }
-
-  private static clearHeartbeat(call: grpc.ServerDuplexStream<StreamingGrpc.BattleStreamRequest, BattleGrpc.BattleObject>) {
-    const timer = this.heartbeatTimers.get(call);
-    if (timer) {
-      clearTimeout(timer);
-      this.heartbeatTimers.delete(call);
-    }
-  }
-
-  static writeBattleStreams(battle: BattleGrpc.BattleObject) {
+  static writeBattleStreams(battle: battleGrpc.BattleObject) {
     const streams = BattleStreamRegistry.getBattleStreams(battle.id);
     if (!streams) {
       logger.log(`No active streams found for battleId=${battle.id}`, battle);
@@ -131,6 +114,23 @@ export default class BattleStreamRegistry {
       logger.log('Streams update ' + ++count);
 
       stream.write(battle);
+    }
+  }
+
+  private static resetHeartbeat(call: grpc.ServerDuplexStream<streamingGrpc.BattleStreamRequest, battleGrpc.BattleObject>) {
+    this.clearHeartbeat(call);
+    const timer = setTimeout(() => {
+      logger.warn("Heartbeat timeout, cleaning stream");
+      this.deleteBattleStream(call);
+    }, this.heartbeatTimeoutMs);
+    this.heartbeatTimers.set(call, timer);
+  }
+
+  private static clearHeartbeat(call: grpc.ServerDuplexStream<streamingGrpc.BattleStreamRequest, battleGrpc.BattleObject>) {
+    const timer = this.heartbeatTimers.get(call);
+    if (timer) {
+      clearTimeout(timer);
+      this.heartbeatTimers.delete(call);
     }
   }
 }

@@ -1,13 +1,7 @@
-import * as grpc from '@grpc/grpc-js';
-import * as AuthGrpc from "../../src/grpc/generated/auth";
 import * as BattleGrpc from "../../src/grpc/generated/battle";
-import * as GatewayGrpc from "../../src/grpc/generated/gateway";
 import config from "../../src/config/config";
 import jwt from "jsonwebtoken";
 import WebSocket from "ws";
-import {GatewayClient} from "../../src/grpc/generated/gateway";
-import {StreamingClient} from "../../src/grpc/generated/streaming";
-import net from "net";
 import * as http from "node:http";
 
 async function gatewayRequest(uri: string, request: object): Promise<any> {
@@ -54,8 +48,8 @@ describe("Gateway Service", () => {
     console.log(deviceId1);
     console.log(deviceId2);
 
-    const auth1 = await gatewayRequest("auth/anonymousSignIn", { deviceId: deviceId1 });
-    const auth2 = await gatewayRequest("auth/anonymousSignIn", { deviceId: deviceId2 });
+    const auth1 = await gatewayRequest("auth/anonymousSignIn", {deviceId: deviceId1});
+    const auth2 = await gatewayRequest("auth/anonymousSignIn", {deviceId: deviceId2});
 
 
     console.log(auth1);
@@ -77,7 +71,6 @@ describe("Gateway Service", () => {
     const ws2 = new WebSocket(`ws://${config.webSocketStreaming}?token=${auth2.accessToken}`);
 
 
-
     const start = new Promise<void>(async (resolve) => {
       let counter = 0;
       const gameplay = async (battleObject?: BattleGrpc.BattleObject | null) => {
@@ -85,19 +78,34 @@ describe("Gateway Service", () => {
 
         console.log('=====================================================================step ', counter);
         if (!battleObject) {
-          ws1.send(JSON.stringify({ type: "battle", payload: { join: {} } }));
+          ws1.send(JSON.stringify({type: "battle", payload: {join: {}}}));
         } else if (counter === 1) {
-          ws2.send(JSON.stringify({ type: "battle", payload: { join: {} } }));
+          ws2.send(JSON.stringify({type: "battle", payload: {join: {}}}));
         } else if (counter === 5) {
-          ws1.send(JSON.stringify({ type: "battle", payload: { move: { battleId: battleObject.id, userId: payload1.sub, cellIdx: 4 } } }));
+          ws1.send(JSON.stringify({
+            type: "battle",
+            payload: {move: {battleId: battleObject.id, userId: payload1.sub, cellIdx: 4}}
+          }));
         } else if (counter === 7) {
-          ws2.send(JSON.stringify({ type: "battle", payload: { move: { battleId: battleObject.id, userId: payload2.sub, cellIdx: 1 } } }));
+          ws2.send(JSON.stringify({
+            type: "battle",
+            payload: {move: {battleId: battleObject.id, userId: payload2.sub, cellIdx: 1}}
+          }));
         } else if (counter === 9) {
-          ws1.send(JSON.stringify({ type: "battle", payload: { move: { battleId: battleObject.id, userId: payload1.sub, cellIdx: 0 } } }));
+          ws1.send(JSON.stringify({
+            type: "battle",
+            payload: {move: {battleId: battleObject.id, userId: payload1.sub, cellIdx: 0}}
+          }));
         } else if (counter === 11) {
-          ws2.send(JSON.stringify({ type: "battle", payload: { move: { battleId: battleObject.id, userId: payload2.sub, cellIdx: 2 } } }));
+          ws2.send(JSON.stringify({
+            type: "battle",
+            payload: {move: {battleId: battleObject.id, userId: payload2.sub, cellIdx: 2}}
+          }));
         } else if (counter === 13) {
-          ws1.send(JSON.stringify({ type: "battle", payload: { move: { battleId: battleObject.id, userId: payload1.sub, cellIdx: 8 } } }));
+          ws1.send(JSON.stringify({
+            type: "battle",
+            payload: {move: {battleId: battleObject.id, userId: payload1.sub, cellIdx: 8}}
+          }));
         } else if (counter > 14) {
           resolve();
         }

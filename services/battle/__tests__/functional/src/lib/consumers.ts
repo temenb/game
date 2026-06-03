@@ -1,6 +1,6 @@
 import crypto from "crypto";
-import { prisma } from "../lib/prisma";
-import { battleUpdated } from "../services/battleUpdated";
+import {prisma} from "../lib/prisma";
+import {battleUpdated} from "../services/battleUpdated";
 import {BattleCellValue, BattleStatus} from "@prisma/client";
 
 let userId1: string;
@@ -34,7 +34,7 @@ test("успешно обновляет баттл", async () => {
 
   await battleUpdated("battle.updated", 0, message);
 
-  const updated = await prisma.battle.findUnique({ where: { id: battle.id } });
+  const updated = await prisma.battle.findUnique({where: {id: battle.id}});
 
   expect(updated?.status).toBe(BattleStatus.Finished);
   expect(updated?.winner).toBe(userId1);

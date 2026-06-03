@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:front/features/profile/provider/profile_provider.dart';
-import 'package:logger/logger.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -33,4 +32,3 @@ class ProfileScreen extends ConsumerWidget {
     );
   }
 }
-

@@ -13,8 +13,5 @@ class GatewayConfig {
     return GatewayConfig(host: host, port: port);
   }
 
-  const GatewayConfig({
-    required this.host,
-    required this.port,
-  });
+  const GatewayConfig({required this.host, required this.port});
 }

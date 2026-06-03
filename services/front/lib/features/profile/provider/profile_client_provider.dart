@@ -1,7 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../clients/profile_client.dart';
 import 'package:front/src/config/gateway_config.dart';
 import 'package:logger/logger.dart';
+
+import '../clients/profile_client.dart';
 
 final logger = Logger();
 

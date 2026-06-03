@@ -1,12 +1,12 @@
 import * as grpc from '@grpc/grpc-js';
-import * as EngineGrpc from '../generated/engine';
+import * as engineClient from '../generated/engine';
 import * as HealthGrpc from '../generated/common/health';
 import * as EmptyGrpc from '../generated/common/empty';
 import config from '../../config/config';
 import {GrpcClientManager} from '@shared/grpc-client-manager';
 
-const engineManager = new GrpcClientManager<EngineGrpc.EngineClient>(() => {
-  return new EngineGrpc.EngineClient(config.serviceEngineUrl, grpc.credentials.createInsecure());
+const engineManager = new GrpcClientManager<engineClient.EngineClient>(() => {
+  return new engineClient.EngineClient(config.serviceEngineUrl, grpc.credentials.createInsecure());
 });
 
 export const health = (): Promise<HealthGrpc.HealthReport | null> => {
@@ -29,7 +29,7 @@ export const readyz = (): Promise<HealthGrpc.ReadyStatus | null> => {
   return engineManager.call((client, cb) => client.readyz(grpcRequest, cb));
 };
 
-export const battleMove = (move: EngineGrpc.BattleMoveRequest): Promise<EmptyGrpc.Empty | null> => {
+export const battleMove = (move: engineClient.BattleMoveRequest): Promise<EmptyGrpc.Empty | null> => {
   return engineManager.call((client, cb) => client.battleMove(move, cb));
 };
 

@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:front/features/battle/clients/battle_channel.dart';
 import 'package:front/features/battle/provider/battle_channel_provider.dart';
 import 'package:front/features/profile/provider/profile_provider.dart';
 import 'package:front/src/grpc/generated/battle.pb.dart';

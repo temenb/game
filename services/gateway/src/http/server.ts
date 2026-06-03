@@ -19,11 +19,11 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms'))
 // app.use(cookieParser());
 
 const withAuth = (req: Request, res: Response, next: NextFunction) => {
-    const isPublic = publicPaths.some(path => req.path.startsWith('/' + path));
-    // logger.log('req.path',req.path);
-    // logger.log('isPublic',isPublic);
-    if (isPublic) return next();
-    return verifyToken(req, res, next)
+  const isPublic = publicPaths.some(path => req.path.startsWith('/' + path));
+  // logger.log('req.path',req.path);
+  // logger.log('isPublic',isPublic);
+  if (isPublic) return next();
+  return verifyToken(req, res, next)
 };
 app.use(withAuth);
 

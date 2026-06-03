@@ -1,5 +1,3 @@
-
-
 const publicPaths = [
   'auth/anonymousSignIn',
   'auth/refreshToken',

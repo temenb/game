@@ -28,7 +28,7 @@ export const battleNew = async (
   callback: grpc.sendUnaryData<EmptyGrpc.Empty>
 ) => {
   try {
-    const battle:BattleGrpc.BattleObject = call.request.battle as BattleGrpc.BattleObject;
+    const battle: BattleGrpc.BattleObject = call.request.battle as BattleGrpc.BattleObject;
 
     await battleService.battleNew(battle);
     callback(null, {});

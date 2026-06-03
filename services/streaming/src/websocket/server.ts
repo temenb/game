@@ -1,12 +1,12 @@
-import { WebSocketServer, WebSocket} from 'ws';
-import {BattleStreamRequest} from "../grpc/generated/streaming";
+import {WebSocketServer} from 'ws';
+import * as streamingGrpc from "../grpc/generated/streaming";
 import {battleHandler} from "./handlers/battle.handler";
 import jwt from "jsonwebtoken";
 import config from "../config/config";
 import logger from "@shared/logger";
 
 
-export const wss = new WebSocketServer({ port: config.webSocketPort });
+export const wss = new WebSocketServer({port: config.webSocketPort});
 logger.info(`WebSocket listening on ${config.webSocketPort}`);
 
 export function initWss() {
@@ -35,7 +35,7 @@ export function initWss() {
       logger.log('📩 Raw message:', data);
       try {
         const buffer = new Uint8Array(data as ArrayBuffer);
-        const request = BattleStreamRequest.decode(buffer);
+        const request = streamingGrpc.BattleStreamRequest.decode(buffer);
 
         try {
           if (url.pathname.startsWith('/battle')) {

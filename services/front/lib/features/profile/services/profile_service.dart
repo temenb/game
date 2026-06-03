@@ -12,7 +12,7 @@ class ProfileService {
   ProfileService(this.profileClient);
 
   Future<ProfileObject> getProfile() async {
-    final jwt = await TokenStorage.readJwt()?? '';
+    final jwt = await TokenStorage.readJwt() ?? '';
     return await profileClient.getMyProfile(jwt);
   }
 }

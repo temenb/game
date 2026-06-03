@@ -7,4 +7,3 @@ final battleServiceProvider = FutureProvider<BattleService>((ref) async {
   final battleChannel = await ref.watch(battleChannelProvider.future);
   return BattleService(battleChannel);
 });
-
