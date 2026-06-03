@@ -16,9 +16,13 @@ service Profile {
   rpc UpsertProfile (auth.UserIdRequest) returns (ProfileObject);
 }
 
+message ProfileIdRequest {
+  string profile_id = 1;
+}
+
 message ProfileObject {
   string id = 1;
-  string owner_id = 2;
+  string user_id = 2;
   string nickname = 3;
   int64 level = 4;
   int64 rating = 5;

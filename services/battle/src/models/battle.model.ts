@@ -8,29 +8,29 @@ import * as EmptyGrpc from "../grpc/generated/common/empty";
 import {NotFoundError} from "../services/battle.service";
 
 export class BattleModel {
-  static async findBattleByUser(userId: string): Promise<Battle | null> {
+  static async findBattleByUser(profileId: string): Promise<Battle | null> {
     return prisma.battle.findFirst({
       where: {
-        players: { has: userId },
+        players: { has: profileId },
         status: BattleStatus.Active,
       },
     });
   }
 
 
-  static async findAvailableBattle(userId: string): Promise<Battle | null> {
+  static async findAvailableBattle(profileId: string): Promise<Battle | null> {
     return prisma.battle.findFirst({
       where: {
         playersCount: 1,
         status: BattleStatus.Active,
-        NOT: { players: { has: userId } },
+        NOT: { players: { has: profileId } },
       },
     });
   }
 
   static async joinBattle(
     battleId: string
-    , userId: string
+    , profileId: string
     , callback: (battle: BattleGrpc.BattleObject) => Promise<EmptyGrpc.Empty | null>
   ): Promise<Battle> {
     return prisma.$transaction(async (tx) => {
@@ -41,7 +41,7 @@ export class BattleModel {
           status: { not: BattleStatus.Finished },
         },
         data: {
-          players: { push: userId },
+          players: { push: profileId },
           playersCount: { increment: 1 },
         },
       });
@@ -73,13 +73,13 @@ export class BattleModel {
     });
   }
 
-  static async createBattle(userId: string): Promise<Battle> {
+  static async createBattle(profileId: string): Promise<Battle> {
 
 
-    logger.log('create battle for user', userId);
+    logger.log('create battle for profile', profileId);
     return prisma.battle.create({
       data: {
-        players: [userId],
+        players: [profileId],
         cells: Array(9).fill(BattleCellValue.EMPTY),
         playersCount: 1,
         status: BattleStatus.Active,

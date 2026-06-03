@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:front/features/battle/provider/battle_channel_provider.dart';
-import 'package:front/features/battle/provider/battle_service_provider.dart';
+import 'package:front/features/battle/provider/battle_stream_provider.dart';
 import 'package:front/src/grpc/generated/battle.pb.dart';
 
 class BattleScreen extends ConsumerWidget {
@@ -9,9 +8,7 @@ class BattleScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final battleService = ref.watch(battleServiceProvider);
-    battleService.init();
-    final battleAsync = ref.watch(battleChannelProvider);
+    final battleAsync = ref.watch(battleStreamProvider);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Battle: Tic Tac Toe')),
@@ -81,3 +78,40 @@ class _BattleBoard extends StatelessWidget {
     }
   }
 }
+
+// ┌────────────────────┐
+// │      UI Layer      │
+// │  BattleScreen      │
+// │  - подписка на     │
+// │    battleProvider  │
+// │  - вызывает join() │
+// └─────────▲──────────┘
+// │
+// │ Stream<BattleObject>
+// │
+// ┌─────────┴──────────┐
+// │   BattleService     │
+// │ - методы: join,     │
+// │   makeMove, view    │
+// │ - хранит Battle     │
+// │   состояние         │
+// └─────────▲──────────┘
+// │
+// │
+// ┌─────────┴──────────┐
+// │   BattleChannel     │
+// │ - WebSocket/gRPC    │
+// │ - StreamController  │
+// │ - battles: Stream   │
+// │ - join(): запрос    │
+// │   на сервер         │
+// └─────────▲──────────┘
+// │
+// │ ws://host:port?token=jwt
+// │
+// ┌─────────┴──────────┐
+// │   Server Backend    │
+// │ - принимает join    │
+// │ - рассылает события │
+// │   BattleObject      │
+// └────────────────────┘

@@ -31,16 +31,14 @@ export function initWss() {
       ws.close();
     }
 
-
     ws.on('message', (data) => {
       logger.log('📩 Raw message:', data);
       try {
-        const request: BattleStreamRequest = JSON.parse(data.toString());
-        logger.log('Parsed BattleStreamRequest:', request);
+        const buffer = new Uint8Array(data as ArrayBuffer);
+        const request = BattleStreamRequest.decode(buffer);
 
         try {
           if (url.pathname.startsWith('/battle')) {
-            // независимо от того, /battle, /battle/join, /battle/makeMove
             battleHandler(ws, userId, request);
           } else {
             logger.warn(`⚠️ Unknown path: ${url.pathname}`);

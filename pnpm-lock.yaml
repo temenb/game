@@ -434,6 +434,88 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
+  services/orchestration:
+    dependencies:
+      '@bufbuild/protobuf':
+        specifier: ^2.11.0
+        version: 2.11.0
+      '@grpc/grpc-js':
+        specifier: ^1.14.3
+        version: 1.14.3
+      '@prisma/client':
+        specifier: ^6.19.3
+        version: 6.19.3(prisma@6.19.3)(typescript@5.9.3)
+      '@shared/kafka':
+        specifier: workspace:*
+        version: link:../../shared/kafka
+      '@shared/logger':
+        specifier: workspace:*
+        version: link:../../shared/logger
+      bcrypt:
+        specifier: ^6.0.0
+        version: 6.0.0
+      jsonwebtoken:
+        specifier: ^9.0.3
+        version: 9.0.3
+      kafkajs:
+        specifier: ^2.2.4
+        version: 2.2.4
+      morgan:
+        specifier: ^1.10.1
+        version: 1.10.1
+    devDependencies:
+      '@types/amqplib':
+        specifier: ^0.10.8
+        version: 0.10.8
+      '@types/bcrypt':
+        specifier: ^6.0.0
+        version: 6.0.0
+      '@types/jest':
+        specifier: ^30.0.0
+        version: 30.0.0
+      '@types/jsonwebtoken':
+        specifier: ^9.0.10
+        version: 9.0.10
+      '@types/morgan':
+        specifier: ^1.9.10
+        version: 1.9.10
+      '@types/supertest':
+        specifier: ^6.0.3
+        version: 6.0.3
+      fast-glob:
+        specifier: ^3.3.3
+        version: 3.3.3
+      jest:
+        specifier: ^30.3.0
+        version: 30.3.0(@types/node@24.12.0)(ts-node@10.9.2)
+      nodemon:
+        specifier: ^3.1.14
+        version: 3.1.14
+      prisma:
+        specifier: ^6.19.3
+        version: 6.19.3(typescript@5.9.3)
+      rimraf:
+        specifier: ^4.4.1
+        version: 4.4.1
+      supertest:
+        specifier: ^7.2.2
+        version: 7.2.2
+      ts-jest:
+        specifier: ^29.4.9
+        version: 29.4.9(@babel/core@7.29.0)(jest@30.3.0)(typescript@5.9.3)
+      ts-node:
+        specifier: ^10.9.2
+        version: 10.9.2(@types/node@24.12.0)(typescript@5.9.3)
+      ts-node-dev:
+        specifier: ^2.0.0
+        version: 2.0.0(@types/node@24.12.0)(typescript@5.9.3)
+      tsconfig-paths:
+        specifier: ^4.2.0
+        version: 4.2.0
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
   services/profile:
     dependencies:
       '@bufbuild/protobuf':
@@ -606,9 +688,6 @@ importers:
       '@bufbuild/protobuf':
         specifier: ^2.11.0
         version: 2.11.0
-      '@shared/grpc-client-manager':
-        specifier: workspace:*
-        version: link:../../shared/grpc-client-manager
       '@shared/logger':
         specifier: workspace:*
         version: link:../../shared/logger
@@ -621,12 +700,6 @@ importers:
       jsonwebtoken:
         specifier: ^9.0.3
         version: 9.0.3
-      morgan:
-        specifier: ^1.10.1
-        version: 1.10.1
-      pg-boss:
-        specifier: ^12.15.0
-        version: 12.15.0
       ws:
         specifier: ^8.21.0
         version: 8.21.0
@@ -637,12 +710,6 @@ importers:
       '@grpc/proto-loader':
         specifier: ^0.8.1
         version: 0.8.1
-      '@types/amqplib':
-        specifier: ^0.10.8
-        version: 0.10.8
-      '@types/cookie-parser':
-        specifier: ^1.4.10
-        version: 1.4.10(@types/express@5.0.6)
       '@types/cors':
         specifier: ^2.8.19
         version: 2.8.19
@@ -652,9 +719,6 @@ importers:
       '@types/jsonwebtoken':
         specifier: ^9.0.10
         version: 9.0.10
-      '@types/morgan':
-        specifier: ^1.9.10
-        version: 1.9.10
       '@types/supertest':
         specifier: ^6.0.3
         version: 6.0.3
@@ -1210,7 +1274,7 @@ packages:
     engines: {node: ^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0}
     dependencies:
       '@jest/types': 30.3.0
-      '@types/node': 25.6.0
+      '@types/node': 24.12.0
       chalk: 4.1.2
       jest-message-util: 30.3.0
       jest-util: 30.3.0
@@ -1441,7 +1505,7 @@ packages:
       '@jest/schemas': 30.0.5
       '@types/istanbul-lib-coverage': 2.0.6
       '@types/istanbul-reports': 3.0.4
-      '@types/node': 25.6.0
+      '@types/node': 24.12.0
       '@types/yargs': 17.0.35
       chalk: 4.1.2
     dev: true
@@ -1759,7 +1823,7 @@ packages:
   /@types/amqplib@0.10.8:
     resolution: {integrity: sha512-vtDp8Pk1wsE/AuQ8/Rgtm6KUZYqcnTgNvEHwzCkX8rL7AGsC6zqAfKAAJhUZXFhM/Pp++tbnUHiam/8vVpPztA==}
     dependencies:
-      '@types/node': 25.6.0
+      '@types/node': 24.12.0
     dev: true
 
   /@types/babel__core@7.20.5:
@@ -1794,7 +1858,7 @@ packages:
   /@types/bcrypt@6.0.0:
     resolution: {integrity: sha512-/oJGukuH3D2+D+3H4JWLaAsJ/ji86dhRidzZ/Od7H/i8g+aCmvkeCc6Ni/f9uxGLSQVCRZkX2/lqEFG2BvWtlQ==}
     dependencies:
-      '@types/node': 25.6.0
+      '@types/node': 24.12.0
     dev: true
 
   /@types/body-parser@1.19.6:
@@ -1885,7 +1949,7 @@ packages:
     resolution: {integrity: sha512-asx5hIG9Qmf/1oStypjanR7iKTv0gXQ1Ov/jfrX6kS/EO0OFni8orbmGCn0672NHR3kXHwpAwR+B368ZGN/2rA==}
     dependencies:
       '@types/ms': 2.1.0
-      '@types/node': 25.6.0
+      '@types/node': 24.12.0
     dev: true
 
   /@types/methods@1.1.4:
@@ -1895,7 +1959,7 @@ packages:
   /@types/morgan@1.9.10:
     resolution: {integrity: sha512-sS4A1zheMvsADRVfT0lYbJ4S9lmsey8Zo2F7cnbYjWHP67Q0AwMYuuzLlkIM2N8gAbb9cubhIVFwcIN2XyYCkA==}
     dependencies:
-      '@types/node': 25.6.0
+      '@types/node': 24.12.0
     dev: true
 
   /@types/ms@2.1.0:
@@ -3789,7 +3853,7 @@ packages:
     engines: {node: ^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0}
     dependencies:
       '@jest/types': 30.3.0
-      '@types/node': 25.6.0
+      '@types/node': 24.12.0
       anymatch: 3.1.3
       fb-watchman: 2.0.2
       graceful-fs: 4.2.11
@@ -3840,7 +3904,7 @@ packages:
     engines: {node: ^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0}
     dependencies:
       '@jest/types': 30.3.0
-      '@types/node': 25.6.0
+      '@types/node': 24.12.0
       jest-util: 30.3.0
     dev: true
 
@@ -3894,7 +3958,7 @@ packages:
       '@jest/test-result': 30.3.0
       '@jest/transform': 30.3.0
       '@jest/types': 30.3.0
-      '@types/node': 25.6.0
+      '@types/node': 24.12.0
       chalk: 4.1.2
       emittery: 0.13.1
       exit-x: 0.2.2
@@ -3926,7 +3990,7 @@ packages:
       '@jest/test-result': 30.3.0
       '@jest/transform': 30.3.0
       '@jest/types': 30.3.0
-      '@types/node': 25.6.0
+      '@types/node': 24.12.0
       chalk: 4.1.2
       cjs-module-lexer: 2.2.0
       collect-v8-coverage: 1.0.3
@@ -3979,7 +4043,7 @@ packages:
     engines: {node: ^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0}
     dependencies:
       '@jest/types': 30.3.0
-      '@types/node': 25.6.0
+      '@types/node': 24.12.0
       chalk: 4.1.2
       ci-info: 4.4.0
       graceful-fs: 4.2.11
@@ -4004,7 +4068,7 @@ packages:
     dependencies:
       '@jest/test-result': 30.3.0
       '@jest/types': 30.3.0
-      '@types/node': 25.6.0
+      '@types/node': 24.12.0
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       emittery: 0.13.1

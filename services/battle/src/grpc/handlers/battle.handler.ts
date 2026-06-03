@@ -1,5 +1,6 @@
 import * as grpc from '@grpc/grpc-js';
 import * as BattleGrpc from '../generated/battle';
+import * as ProfileGrpc from '../generated/profile';
 import * as BattleService from '../../services/battle.service';
 import {callbackError} from './callback.error';
 import {battleToGrpc, battleToPrisma} from '../../lib/battle-grpc-prisma-converters';
@@ -8,13 +9,13 @@ import {BattleModel} from "../../models/battle.model";
 
 
 export async function upsertBattle(
-  call: grpc.ServerUnaryCall<BattleGrpc.UpsertBattleRequest, BattleGrpc.BattleObject>,
+  call: grpc.ServerUnaryCall<ProfileGrpc.ProfileIdRequest, BattleGrpc.BattleObject>,
   callback: grpc.sendUnaryData<BattleGrpc.BattleObject>
 ) {
-    const {userId} = call.request;
+    const {profileId} = call.request;
 
     try {
-      const battle = await BattleService.upsertBattle(userId);
+      const battle = await BattleService.upsertBattle(profileId);
 
       if (!battle) {
         throw new Error("Battle not found");

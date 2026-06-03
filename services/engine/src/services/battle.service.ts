@@ -29,14 +29,14 @@ export const battleNew = async (battle: BattleObject) => {
 };
 
 function getSymbolForUser(battle: BattleObject, move: BattleMoveRequest): BattleCellValue {
-  const idx = battle.players.indexOf(move.userId);
+  const idx = battle.players.indexOf(move.profileId);
   if (idx === -1) throw new Error("User is not found in the battle");
 
   return idx === 0 ? BattleCellValue.CELL_X : BattleCellValue.CELL_O;
 }
 
 function verifyTurn(battle: BattleObject, move: BattleMoveRequest) {
-  if (move.userId != battle.players[turn(battle)]) {
+  if (move.profileId != battle.players[turn(battle)]) {
     throw new Error(`Not your turn`);
   }
 }
@@ -91,7 +91,7 @@ export const makeMove = async (move: BattleMoveRequest) => {
   if (isWin(battle) || isDraw(battle)) {
     battle.status = BattleStatus.FINISHED;
     if (isWin(battle)) {
-      battle.winner = move.userId;
+      battle.winner = move.profileId;
     }
   }
 

@@ -15,10 +15,10 @@ export class NotFoundError extends Error {
   }
 }
 
-export async function upsertBattle(userId: string): Promise<Battle> {
-  const existingMyBattle = await BattleModel.findBattleByUser(userId);
+export async function upsertBattle(profileId: string): Promise<Battle> {
+  const existingMyBattle = await BattleModel.findBattleByUser(profileId);
 
-  logger.log('upsert battle for user', userId);
+  logger.log('upsert battle for user', profileId);
 
   if (existingMyBattle) {
     return existingMyBattle;
@@ -27,15 +27,16 @@ export async function upsertBattle(userId: string): Promise<Battle> {
   let attempts = 3;
 
   while (attempts > 0) {
-    const existingSomebodiesBattle = await BattleModel.findAvailableBattle(userId);
+    const existingSomebodiesBattle = await BattleModel.findAvailableBattle(profileId);
 
     if (existingSomebodiesBattle) {
       try {
 
         logger.log('join battle', existingSomebodiesBattle);
         const battleNew = async (battle: BattleObject) => await EngineClient.battleNew(battle);
-        return await BattleModel.joinBattle(existingSomebodiesBattle.id, userId, battleNew);
+        return await BattleModel.joinBattle(existingSomebodiesBattle.id, profileId, battleNew);
       } catch (e) {
+        logger.log(e);
         // await enqueueEventTx(kafkaProducersConfig.topicBattleStarted, battleToGrpc(battle), tx);
 
         // export const makeMove = (move: EngineGrpc.BattleMoveRequest): Promise<EmptyGrpc.Empty | null> => {
@@ -47,9 +48,9 @@ export async function upsertBattle(userId: string): Promise<Battle> {
     }
 
 
-    return BattleModel.createBattle(userId);
+    return BattleModel.createBattle(profileId);
   }
 
-  return BattleModel.createBattle(userId);
+  return BattleModel.createBattle(profileId);
 }
 

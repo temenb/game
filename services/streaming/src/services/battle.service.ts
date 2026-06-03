@@ -2,6 +2,7 @@ import * as BattleClient from "../grpc/clients/battle.client";
 import BattleStreamRegistry from "../channels/front.battle.stream";
 import {BattleObject, BattleStatus} from "../grpc/generated/battle";
 import logger from "@shared/logger";
+import * as ProfileGrpc from "../grpc/generated/profile";
 
 export const health = async () =>
   await BattleClient.health();
@@ -15,8 +16,8 @@ export const livez = async () =>
 export const readyz = async () =>
   await BattleClient.readyz();
 
-export const upsertBattle = async (userId: string) =>
-  await BattleClient.upsertBattle(userId);
+export const upsertBattle = async (req: ProfileGrpc.ProfileIdRequest) =>
+  await BattleClient.upsertBattle(req);
 
 export const updateBattle = async (battle: BattleObject) => {
   logger.log('update battle: battle');

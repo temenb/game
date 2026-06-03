@@ -3,6 +3,7 @@ import * as grpc from '@grpc/grpc-js';
 import * as BattleGrpc from '../grpc/generated/battle';
 import * as StreamingGrpc from '../grpc/generated/streaming';
 import logger from "@shared/logger";
+import {BattleObject} from "../grpc/generated/battle";
 
 export default class BattleStreamRegistry {
   private static battleStreams = new Map<string, Set<WebSocket>>();
@@ -13,7 +14,7 @@ export default class BattleStreamRegistry {
     NodeJS.Timeout
   >();
 
-  private static heartbeatTimeoutMs = 25000;
+  private static heartbeatTimeoutMs = 40000;
 
   static setBattleStream = (
     battleId: string,
@@ -116,10 +117,8 @@ export default class BattleStreamRegistry {
     let count = 0;
     for (const stream of streams) {
       logger.log('Streams update ' + ++count);
-      stream.send(JSON.stringify({
-        type: "battle",
-        payload: { message: battle }
-      }));
+      const buffer = BattleObject.encode(battle).finish();
+      stream.send(buffer);
     }
   }
 }

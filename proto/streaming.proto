@@ -3,7 +3,7 @@ syntax = "proto3";
 import "common/health.proto";
 import "common/empty.proto";
 //import "battle.proto";
-//import "profile.proto";
+import "profile.proto";
 import "engine.proto";
 
 package streaming;
@@ -17,7 +17,7 @@ service Streaming {
 
 message BattleStreamRequest {
   oneof event {
-    common.empty.Empty       join = 1;
+    profile.ProfileIdRequest join = 1;
     engine.BattleMoveRequest move = 2;
   }
 }

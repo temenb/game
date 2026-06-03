@@ -11,6 +11,10 @@ class BattleService {
 
   BattleService(this.battleChannel);
 
+  void init() async{
+    await getBattle();
+  }
+
   Future<BattleObject> getBattle() async {
     if (this.battle == null) {
       this.battle = await battleChannel.join();

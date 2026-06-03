@@ -2,7 +2,7 @@ import * as grpc from '@grpc/grpc-js';
 import * as BattleGrpc from '../generated/battle';
 import * as HealthGrpc from '../generated/common/health';
 import * as EmptyGrpc from '../generated/common/empty';
-import * as AuthGrpc from '../generated/auth';
+import * as ProfileGrpc from '../generated/profile';
 import config from '../../config/config';
 import {GrpcClientManager} from '@shared/grpc-client-manager';
 import logger from "@shared/logger";
@@ -36,8 +36,7 @@ export const getBattle = (battleId: string): Promise<BattleGrpc.BattleObject | n
   return battleManager.call((client, cb) => client.getBattle(grpcRequest, cb));
 };
 
-export const upsertBattle = (userId: string): Promise<BattleGrpc.BattleObject | null> => {
-  const grpcRequest: AuthGrpc.UserIdRequest = { userId };
+export const upsertBattle = (grpcRequest: ProfileGrpc.ProfileIdRequest): Promise<BattleGrpc.BattleObject | null> => {
   return battleManager.call<BattleGrpc.BattleObject>(
     (client, cb) => client.upsertBattle(grpcRequest, cb)
   ).catch((err) => {

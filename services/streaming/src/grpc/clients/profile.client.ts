@@ -31,7 +31,7 @@ export const readyz = (): Promise<HealthGrpc.ReadyStatus | null> => {
   return profileManager.call((client, cb) => client.readyz(grpcRequest, cb));
 };
 
-export const getMyProfile = (userId: string): Promise<ProfileGrpc.ProfileObject | null> => {
+export const getProfileByUser = (userId: string): Promise<ProfileGrpc.ProfileObject | null> => {
   const grpcRequest: AuthGrpc.UserIdRequest = {userId};
   return profileManager.call((client, cb) => client.getProfileByUser(grpcRequest, cb));
 };

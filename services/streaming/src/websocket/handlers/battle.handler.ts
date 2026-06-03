@@ -1,17 +1,32 @@
-import type { WebSocket } from "ws";
+import type {WebSocket} from "ws";
 import {BattleStreamRequest} from "../../grpc/generated/streaming";
-import getUserIdFromMetadata from "../../lib/getUserIdFromMetadata";
 import * as battleService from "../../services/battle.service";
 import * as engineService from "../../services/engine.service";
 import logger from "@shared/logger";
 import BattleStreamRegistry from "../../channels/front.battle.stream";
+import {ErrorObject} from "../../grpc/generated/common/error";
+import * as ProfileClient from '../../grpc/clients/profile.client';
+import {BattleObject} from "../../grpc/generated/battle";
+import jwt from "jsonwebtoken";
+import config from "../../config/config";
+import {ProfileService} from "../../grpc/generated/profile";
+import * as profileService from "../../services/profile.service";
+
+
+async function isAllowedUser(userId: string, profileId: string) {
+
+  const profile = await profileService.getProfileByUser(userId);
+
+  if (!profile) {
+    throw new Error("Profile not found");
+  }
+
+  if (profile.id !== profileId) {
+    throw new Error("Access deined");
+  }
+}
 
 export async function battleHandler(ws: WebSocket, userId: string, payload: BattleStreamRequest) {
-
-  logger.log('battleHandler!!!!!!!!!!!111');
-
-  logger.log(userId);
-  logger.log(payload);
 
   //
   // const msg: BattleMessage = JSON.parse(data.toString());
@@ -30,13 +45,16 @@ export async function battleHandler(ws: WebSocket, userId: string, payload: Batt
 
   if (payload.join) {
     logger.log("Battle join event");
-    const battle = await battleService.upsertBattle(userId);
+    const battle = await battleService.upsertBattle(payload.join);
 
     if (!battle) {
-      ws.send(JSON.stringify({
+      const error = ErrorObject.create({
         type: "error",
-        payload: { message: "Battle not found" }
-      }));
+        message: "Battle not found"
+      });
+      const buffer = ErrorObject.encode(error).finish();
+      ws.send(buffer);
+
       return;
     }
     BattleStreamRegistry.setBattleStream(battle.id, ws);
@@ -46,11 +64,16 @@ export async function battleHandler(ws: WebSocket, userId: string, payload: Batt
 
   if (payload.move) {
     logger.log("Battle move event");
-    if (userId != payload.move.userId) {
-      ws.send(JSON.stringify({
+
+    try {
+      isAllowedUser(userId, payload.move.profileId)
+    } catch (error) {
+      const errObj = ErrorObject.create({
         type: "error",
-        payload: { message: "Unknown error" }
-      }));
+        message: "Battle not found"
+      });
+      const buffer = ErrorObject.encode(errObj).finish();
+      ws.send(buffer);
       return;
     }
     engineService.makeMove(payload.move);

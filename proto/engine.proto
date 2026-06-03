@@ -20,7 +20,7 @@ service Engine {
 
 message BattleMoveRequest {
   string battleId = 1;
-  string userId   = 2;
+  string profileId   = 2;
   int32 cellIdx = 3;
 }
 

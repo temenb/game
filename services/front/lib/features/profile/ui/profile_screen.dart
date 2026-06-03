@@ -21,7 +21,7 @@ class ProfileScreen extends ConsumerWidget {
               Text('ID: ${profile.id}', style: const TextStyle(fontSize: 18)),
               const SizedBox(height: 8),
               Text(
-                'Nickname: ${profile.name}',
+                'Nickname: ${profile.nickname}',
                 style: const TextStyle(fontSize: 18),
               ),
             ],
