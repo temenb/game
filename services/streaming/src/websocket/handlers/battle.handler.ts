@@ -3,7 +3,7 @@ import * as streamingGrpc from "../../grpc/generated/streaming";
 import * as battleService from "../../services/battle.service";
 import * as engineService from "../../services/engine.service";
 import logger from "@shared/logger";
-import BattleStreamRegistry from "../../channels/front.battle.stream";
+import FrontBattleStreamRegistry from "../../channels/front.battle.stream";
 import {ErrorObject} from "../../grpc/generated/common/error";
 import * as profileService from "../../services/profile.service";
 
@@ -52,9 +52,9 @@ export async function battleHandler(ws: WebSocket, userId: string, payload: stre
 
       return;
     }
-    BattleStreamRegistry.setBattleStream(battle.id, ws);
+    FrontBattleStreamRegistry.setBattleStream(battle.id, ws);
     logger.log("Battle stream was set:" + battle.id);
-    BattleStreamRegistry.writeBattleStreams(battle);
+    FrontBattleStreamRegistry.writeBattleStreams(battle);
   }
 
   if (payload.move) {
@@ -74,7 +74,7 @@ export async function battleHandler(ws: WebSocket, userId: string, payload: stre
     engineService.makeMove(payload.move);
   }
 
-  // if (event.leave) {
+  // if (payload.leave) {
   //   const battleId = event.leave.battleId;
   //   const streams = battleStreams.get(battleId);
   //   if (streams) {
@@ -86,7 +86,7 @@ export async function battleHandler(ws: WebSocket, userId: string, payload: stre
   //   call.end();
   // }
   //
-  // if (event.end) {
+  // if (payload.end) {
   //   const battleId = event.end.battleId;
   //   const streams = battleStreams.get(battleId);
   //   if (streams) {
@@ -97,8 +97,8 @@ export async function battleHandler(ws: WebSocket, userId: string, payload: stre
   //   }
   // }
   //
-  // if (event.ping) {
-  //   call.write({ ping: true } as any); // можно вернуть простое подтверждение
-  // }
+  if (payload.ping) {
+    FrontBattleStreamRegistry.writeDataStreams('', 'ping', {message: 'pong'});
+  }
 }
 

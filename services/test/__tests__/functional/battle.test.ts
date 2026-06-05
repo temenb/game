@@ -1,22 +1,40 @@
 import * as battleGrpc from "../../src/grpc/generated/battle";
+import * as profileGrpc from "../../src/grpc/generated/profile";
+import * as streamingGrpc from "../../src/grpc/generated/streaming";
 import config from "../../src/config/config";
 import jwt from "jsonwebtoken";
 import WebSocket from "ws";
 import * as http from "node:http";
+import logger from "@shared/logger";
+import {BattleStreamRequest} from "../../src/grpc/generated/streaming";
 
-async function gatewayRequest(uri: string, request: object): Promise<any> {
+function delay(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function gatewayRequest(uri: string, request: object, method?: string, jwt?: string): Promise<any> {
   return new Promise((resolve, reject) => {
     const data = JSON.stringify(request);
+
+    let headers: Record<string, string | number> = {
+      "Content-Type": "application/json",
+      "Content-Length": Buffer.byteLength(data),
+    };
+
+    if (jwt) {
+      headers["Authorization"] = "Bearer " + jwt;
+    }
+
+    if (!method) {
+      method = 'GET';
+    }
 
     const options = {
       hostname: config.httpGatewayHost,
       port: Number(config.httpGatewayPort),
       path: `/${uri}`,
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Content-Length": Buffer.byteLength(data),
-      },
+      method: method,
+      headers,
     };
 
     const req = http.request(options, (res) => {
@@ -24,6 +42,7 @@ async function gatewayRequest(uri: string, request: object): Promise<any> {
       res.on("data", (chunk) => (body += chunk));
       res.on("end", () => {
         try {
+          console.log(body);
           const response = JSON.parse(body);
           resolve(response);
         } catch (err) {
@@ -48,8 +67,8 @@ describe("Gateway Service", () => {
     console.log(deviceId1);
     console.log(deviceId2);
 
-    const auth1 = await gatewayRequest("auth/anonymousSignIn", {deviceId: deviceId1});
-    const auth2 = await gatewayRequest("auth/anonymousSignIn", {deviceId: deviceId2});
+    const auth1 = await gatewayRequest("auth/anonymousSignIn", {deviceId: deviceId1}, "POST");
+    const auth2 = await gatewayRequest("auth/anonymousSignIn", {deviceId: deviceId2}, "POST");
 
 
     console.log(auth1);
@@ -67,8 +86,15 @@ describe("Gateway Service", () => {
 
     //------------------------------------------------------------------------------------------------------------------
 
-    const ws1 = new WebSocket(`ws://${config.webSocketStreaming}?token=${auth1.accessToken}`);
-    const ws2 = new WebSocket(`ws://${config.webSocketStreaming}?token=${auth2.accessToken}`);
+    await delay(5000);
+
+    const profile1 = await gatewayRequest("profile/getMyProfile", {}, "GET", auth1.accessToken);
+    const profile2 = await gatewayRequest("profile/getMyProfile", {}, "GET", auth2.accessToken);
+
+    console.log(profile1);
+
+    const ws1 = new WebSocket(`ws://${config.webSocketStreaming}/battle?token=${auth1.accessToken}`);
+    const ws2 = new WebSocket(`ws://${config.webSocketStreaming}/battle?token=${auth2.accessToken}`);
 
 
     const start = new Promise<void>(async (resolve) => {
@@ -78,35 +104,34 @@ describe("Gateway Service", () => {
 
         console.log('=====================================================================step ', counter);
         if (!battleObject) {
-          ws1.send(JSON.stringify({type: "battle", payload: {join: {}}}));
+          const req = streamingGrpc.BattleStreamRequest.create({join: { profileId: profile1.id }});
+          const buffer = streamingGrpc.BattleStreamRequest.encode(req).finish();
+          ws1.send(buffer);
         } else if (counter === 1) {
-          ws2.send(JSON.stringify({type: "battle", payload: {join: {}}}));
+          const req = streamingGrpc.BattleStreamRequest.create({join: { profileId: profile2.id }});
+          const buffer = streamingGrpc.BattleStreamRequest.encode(req).finish();
+          ws2.send(buffer);
         } else if (counter === 5) {
-          ws1.send(JSON.stringify({
-            type: "battle",
-            payload: {move: {battleId: battleObject.id, userId: payload1.sub, cellIdx: 4}}
-          }));
+          const req = streamingGrpc.BattleStreamRequest.create({move: { battleId: battleObject.id, profileId: profile1.id, cellIdx: 4 }});
+          const buffer = streamingGrpc.BattleStreamRequest.encode(req).finish();
+          ws1.send(buffer);
         } else if (counter === 7) {
-          ws2.send(JSON.stringify({
-            type: "battle",
-            payload: {move: {battleId: battleObject.id, userId: payload2.sub, cellIdx: 1}}
-          }));
+          const req = streamingGrpc.BattleStreamRequest.create({move: {battleId: battleObject.id, profileId: profile2.id, cellIdx: 1}});
+          const buffer = streamingGrpc.BattleStreamRequest.encode(req).finish();
+          ws2.send(buffer);
         } else if (counter === 9) {
-          ws1.send(JSON.stringify({
-            type: "battle",
-            payload: {move: {battleId: battleObject.id, userId: payload1.sub, cellIdx: 0}}
-          }));
+          const req = streamingGrpc.BattleStreamRequest.create({move: { battleId: battleObject.id, profileId: profile1.id, cellIdx: 0 }});
+          const buffer = streamingGrpc.BattleStreamRequest.encode(req).finish();
+          ws1.send(buffer);
         } else if (counter === 11) {
-          ws2.send(JSON.stringify({
-            type: "battle",
-            payload: {move: {battleId: battleObject.id, userId: payload2.sub, cellIdx: 2}}
-          }));
+          const req = streamingGrpc.BattleStreamRequest.create({move: {battleId: battleObject.id, profileId: profile2.id, cellIdx: 2}});
+          const buffer = streamingGrpc.BattleStreamRequest.encode(req).finish();
+          ws2.send(buffer);
         } else if (counter === 13) {
-          ws1.send(JSON.stringify({
-            type: "battle",
-            payload: {move: {battleId: battleObject.id, userId: payload1.sub, cellIdx: 8}}
-          }));
-        } else if (counter > 14) {
+          const req = streamingGrpc.BattleStreamRequest.create({move: {battleId: battleObject.id, profileId: profile1.id, cellIdx: 8}});
+          const buffer = streamingGrpc.BattleStreamRequest.encode(req).finish();
+          ws1.send(buffer);
+        } else if (counter >= 15) {
           resolve();
         }
         console.log("-------------------------------------------------------------------------------------------------------------------------------");
@@ -115,15 +140,24 @@ describe("Gateway Service", () => {
       };
 
 
-      ws1.on("message", (data: battleGrpc.BattleObject) => {
+      ws1.on("message", (data: streamingGrpc.BattleStreamResponse) => {
         console.log("------------------------------------------------------------------------------=1=- Got battle update:");
-        const battleObject = JSON.parse(data.toString()).payload.message;
+        const buffer = new Uint8Array(data as ArrayBuffer);
+        const res = streamingGrpc.BattleStreamResponse.decode(buffer);
+
+        // console.log(res)
+        const battleObject = battleGrpc.BattleObject.create(res.battle);
+
         gameplay(battleObject);
       });
 
-      ws2.on("message", (data: battleGrpc.BattleObject) => {
+      ws2.on("message", (data: streamingGrpc.BattleStreamResponse) => {
         console.log("------------------------------------------------------------------------------=2=- Got battle update:");
-        const battleObject = JSON.parse(data.toString()).payload.message;
+        const buffer = new Uint8Array(data as ArrayBuffer);
+        const res = streamingGrpc.BattleStreamResponse.decode(buffer);
+
+        // console.log(res);
+        const battleObject = battleGrpc.BattleObject.create(res.battle);
         gameplay(battleObject);
       });
 
@@ -147,7 +181,7 @@ describe("Gateway Service", () => {
 
 
     // });
-  }, 20000);
+  }, 30000);
 
 });
 

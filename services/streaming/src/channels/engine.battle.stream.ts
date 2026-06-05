@@ -3,7 +3,7 @@ import * as battleGrpc from '../grpc/generated/battle';
 import * as streamingGrpc from '../grpc/generated/streaming';
 import logger from "@shared/logger";
 
-export default class BattleStreamRegistry {
+export default class EngineBattleStreamRegistry {
   private static battleStreams = new Map<
     string, Set<grpc.ServerDuplexStream<streamingGrpc.BattleStreamRequest, battleGrpc.BattleObject>>
   >();
@@ -100,7 +100,7 @@ export default class BattleStreamRegistry {
   }
 
   static writeBattleStreams(battle: battleGrpc.BattleObject) {
-    const streams = BattleStreamRegistry.getBattleStreams(battle.id);
+    const streams = EngineBattleStreamRegistry.getBattleStreams(battle.id);
     if (!streams) {
       logger.log(`No active streams found for battleId=${battle.id}`, battle);
       throw new Error(`No active streams found for battleId=${battle.id}`);

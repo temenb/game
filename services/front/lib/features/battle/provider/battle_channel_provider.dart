@@ -6,10 +6,8 @@ import 'package:logger/logger.dart';
 
 final logger = Logger();
 
-final battleChannelProvider = FutureProvider<BattleChannel>((ref) async {
+final battleChannelProvider = FutureProvider.family<BattleChannel, String>((ref, jwt) async {
   final config = StreamingConfig.fromEnv();
-  final authService = await ref.watch(authServiceProvider.future);
-  final jwt = await authService.getOrCreateJwt();
 
   final battleChannel = BattleChannel(config, jwt);
   logger.i("✅ BattleChannel initialized with JWT");

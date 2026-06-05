@@ -1,5 +1,5 @@
 import * as battleClient from "../grpc/clients/battle.client";
-import BattleStreamRegistry from "../channels/front.battle.stream";
+import FrontBattleStreamRegistry from "../channels/front.battle.stream";
 import {BattleObject, BattleStatus} from "../grpc/generated/battle";
 import logger from "@shared/logger";
 import * as profileGrpc from "../grpc/generated/profile";
@@ -21,11 +21,11 @@ export const upsertBattle = async (req: profileGrpc.ProfileIdRequest) =>
 
 export const updateBattle = async (battle: BattleObject) => {
   logger.log('update battle: battle');
-  BattleStreamRegistry.writeBattleStreams(battle);
+  FrontBattleStreamRegistry.writeBattleStreams(battle);
 
   if (battle.winner || battle.status != BattleStatus.ACTIVE) {
     logger.log(`Battle ${battle.id} finished. Closing streams...`);
-    BattleStreamRegistry.deleteBattleStream(battle.id);
+    FrontBattleStreamRegistry.deleteBattleStream(battle.id);
     logger.log(`Removed battle ${battle.id} from activeBattleStreams`);
   }
 };

@@ -1,24 +1,56 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:front/features/auth/providers/auth_service_provider.dart';
 import 'package:front/features/battle/provider/battle_stream_provider.dart';
+import 'package:front/features/profile/provider/profile_provider.dart';
 import 'package:front/src/grpc/generated/battle.pb.dart';
 
 class BattleScreen extends ConsumerWidget {
   const BattleScreen({super.key});
 
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final battleAsync = ref.watch(battleStreamProvider);
+    final profileAsync = ref.watch(profileProvider);
+    return profileAsync.when(
+      data: (profile) {
+        final authAsync = ref.watch(authServiceProvider);
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Battle: Tic Tac Toe')),
-      body: battleAsync.when(
-        data: (battle) => _BattleBoard(battle: battle),
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, stack) => Center(child: Text('Ошибка: $err')),
-      ),
+        return authAsync.when(
+          data: (authService) {
+            return FutureBuilder<String>(
+              future: authService.getOrCreateJwt(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) return CircularProgressIndicator();
+                final jwt = snapshot.data!;
+                final battleAsync = ref.watch(battleStreamProvider(BattleParams(jwt, profile.id)));
+
+                return battleAsync.when(
+                  data: (battle) {
+                    return Scaffold(
+                      appBar: AppBar(title: const Text('Battle: Tic Tac Toe')),
+                      body: battleAsync.when(
+                        data: (battle) => _BattleBoard(battle: battle),
+                        loading: () => const Center(child: CircularProgressIndicator()),
+                        error: (err, stack) => Center(child: Text('Ошибка: $err')),
+                      ),
+                    );
+                  },
+                  loading: () => CircularProgressIndicator(),
+                  error: (e, _) => Text("Error: $e"),
+                );
+              },
+            );
+          },
+          loading: () => CircularProgressIndicator(),
+          error: (e, _) => Text("Error: $e"),
+        );
+      },
+      loading: () => CircularProgressIndicator(),
+      error: (e, _) => Text("Error: $e"),
     );
   }
+
 }
 
 class _BattleBoard extends StatelessWidget {
@@ -79,39 +111,3 @@ class _BattleBoard extends StatelessWidget {
   }
 }
 
-// ┌────────────────────┐
-// │      UI Layer      │
-// │  BattleScreen      │
-// │  - подписка на     │
-// │    battleProvider  │
-// │  - вызывает join() │
-// └─────────▲──────────┘
-// │
-// │ Stream<BattleObject>
-// │
-// ┌─────────┴──────────┐
-// │   battleService     │
-// │ - методы: join,     │
-// │   makeMove, view    │
-// │ - хранит Battle     │
-// │   состояние         │
-// └─────────▲──────────┘
-// │
-// │
-// ┌─────────┴──────────┐
-// │   BattleChannel     │
-// │ - WebSocket/gRPC    │
-// │ - StreamController  │
-// │ - battles: Stream   │
-// │ - join(): запрос    │
-// │   на сервер         │
-// └─────────▲──────────┘
-// │
-// │ ws://host:port?token=jwt
-// │
-// ┌─────────┴──────────┐
-// │   Server Backend    │
-// │ - принимает join    │
-// │ - рассылает события │
-// │   BattleObject      │
-// └────────────────────┘

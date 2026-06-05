@@ -1,8 +1,10 @@
 import {WebSocket} from 'ws';
+import * as emptyGrpc from '../grpc/generated/common/empty';
 import * as battleGrpc from '../grpc/generated/battle';
+import * as streamingGrpc from '../grpc/generated/streaming';
 import logger from "@shared/logger";
 
-export default class BattleStreamRegistry {
+export default class FrontBattleStreamRegistry {
   private static battleStreams = new Map<string, Set<WebSocket>>();
   private static socketToBattle = new Map<WebSocket, string>();
 
@@ -84,20 +86,75 @@ export default class BattleStreamRegistry {
     return this.battleStreams.get(battleId);
   }
 
-  static writeBattleStreams(battle: battleGrpc.BattleObject) {
-    const streams = BattleStreamRegistry.getBattleStreams(battle.id);
+  static getRandomBattleStream(): WebSocket | undefined {
+    for (const streams of this.battleStreams.values()) {
+      for (const stream of streams) {
+        return stream; // вернёт первый найденный
+      }
+    }
+    return undefined;
+    // const allStreams: WebSocket[] = [];
+    //
+    // for (const streams of this.battleStreams.values()) {
+    //   allStreams.push(...streams);
+    // }
+    //
+    // if (allStreams.length === 0) return undefined;
+    //
+    // const randomIndex = Math.floor(Math.random() * allStreams.length);
+    // return allStreams[randomIndex];
+  }
+
+  static encodeResponse(type: string, data?: any) {
+    switch (type) {
+      case 'battle':
+        return streamingGrpc.BattleStreamResponse.encode({ battle: data }).finish();
+      case 'ping':
+        return streamingGrpc.BattleStreamResponse.encode({ battle: data }).finish();
+      default:
+        logger.error(`Unknown type: ${type}`);
+        return undefined;
+    }
+  }
+
+  static _writeBattleStreams(battleId: string, type: string, data: object) {
+    const streams = FrontBattleStreamRegistry.getBattleStreams(battleId);
     if (!streams) {
-      logger.log(`No active streams found for battleId=${battle.id}`, battle);
-      throw new Error(`No active streams found for battleId=${battle.id}`);
+      logger.log(`No active streams found for battleId=${battleId}`, data);
+      throw new Error(`No active streams found for battleId=${battleId}`);
     }
 
-
-    logger.log('Update streams for battle: ' + battle.id, battle);
+    logger.log('Update ' + type + ' streams for battle: ' + battleId, data);
     logger.log('Streams count: ' + streams.size);
     let count = 0;
     for (const stream of streams) {
       logger.log('Streams update ' + ++count);
-      const buffer = battleGrpc.BattleObject.encode(battle).finish();
+      const buffer = FrontBattleStreamRegistry.encodeResponse(type, data);
+      if (buffer) {
+        stream.send(buffer);
+      }
+    }
+  }
+
+  static writeBattleStreams(battle: battleGrpc.BattleObject) {
+    FrontBattleStreamRegistry._writeBattleStreams(battle.id, 'battle', battle);
+  }
+
+  static writeDataStreams(battleId: string, type: string, data: object) {
+    FrontBattleStreamRegistry._writeBattleStreams(battleId, type, data);
+  }
+
+  static pingChannel() {
+    const stream = FrontBattleStreamRegistry.getRandomBattleStream();
+
+    if (!stream) {
+      logger.warn('Cannot ping. No streams awailable')
+      return;
+    }
+
+
+    const buffer = FrontBattleStreamRegistry.encodeResponse('ping');
+    if (buffer) {
       stream.send(buffer);
     }
   }

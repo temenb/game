@@ -2,7 +2,7 @@ syntax = "proto3";
 
 import "common/health.proto";
 import "common/empty.proto";
-//import "battle.proto";
+import "battle.proto";
 import "profile.proto";
 import "engine.proto";
 
@@ -11,13 +11,28 @@ package streaming;
 service Streaming {
   rpc Health (common.empty.Empty) returns (common.health.HealthReport);
   rpc Status (common.empty.Empty) returns (common.health.StatusInfo);
-  rpc Livez (common.empty.Empty) returns (common.health.LiveStatus);
+  rpc Livez  (common.empty.Empty) returns (common.health.LiveStatus);
   rpc Readyz (common.empty.Empty) returns (common.health.ReadyStatus);
 }
 
 message BattleStreamRequest {
   oneof event {
-    profile.ProfileIdRequest join = 1;
-    engine.BattleMoveRequest move = 2;
+    profile.ProfileIdRequest join  = 1;
+    engine.BattleMoveRequest move  = 2;
+    common.empty.Empty       ping  = 3;
+    battle.BattleIdRequest   leave = 4;
+    common.empty.Empty       end   = 5;
   }
+}
+
+message BattleStreamResponse {
+  oneof event {
+    battle.BattleObject battle  = 1;
+    common.empty.Empty  ping    = 1;
+  }
+}
+
+message DataStreamResponse {
+  string type = 1;
+  string data = 2;
 }
