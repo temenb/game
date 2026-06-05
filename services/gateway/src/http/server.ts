@@ -5,15 +5,17 @@ import authRoutes from './routes/auth.routes';
 import profileRoutes from './routes/profile.routes';
 import {verifyToken} from "./middlewares/auth.middleware";
 import publicPaths from "./routes/public.paths";
+import cors from 'cors'
+import cookieParser from "cookie-parser";
 
 const app = express();
 app.use(express.json());
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms'));
-// app.use(cors({
-//     origin: '*', // ['http://localhost:8080']
-//     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-//     allowedHeaders: ['Content-Type', 'Authorization'],
-// }));
+app.use(cors({
+    origin: '*', // ['http://localhost:8080']
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 // app.use(cookieParser());
 
 const withAuth = (req: Request, res: Response, next: NextFunction) => {

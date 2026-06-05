@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:front/features/battle/provider/battle_channel_provider.dart';
-import 'package:front/features/battle/provider/battle_stream_provider.dart';
-import 'package:front/features/profile/provider/profile_provider.dart';
+import '../../battle/providers/battle_channel_provider.dart';
+import '../../battle/providers/battle_stream_provider.dart';
+import '../../profile/providers/profile_provider.dart';
 
 import '../services/battle_service.dart';
 

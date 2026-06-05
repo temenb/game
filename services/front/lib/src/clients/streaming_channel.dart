@@ -18,7 +18,7 @@ abstract class StreamingChannel {
 
   final _controller = StreamController<String>.broadcast();
 
-  messageHandler(String message) {
+  messageHandler(List<int> message) {
     logger.i('Received: $message');
     try {
       // final resp = BattleObject.fromBuffer(message);

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:front/app_state.dart';
+import 'package:front/features/auth/providers/auth_service_provider.dart';
 import 'package:front/features/battle/ui/battle_screen.dart';
 import 'package:front/features/home/ui/home_screen.dart';
 import 'package:front/features/profile/ui/profile_screen.dart';
@@ -20,24 +21,32 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ProviderScope(
-      child: MaterialApp(
-        title: 'Front App',
-        theme: appTheme,
-        locale: state.locale,
-        localizationsDelegates: [
-          S.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: S.delegate.supportedLocales,
-        routes: {
-          '/': (context) => const HomeScreen(),
-          '/settings': (context) => SettingsScreen(),
-          '/profile': (context) => const ProfileScreen(),
-          '/game': (context) => const BattleScreen(),
-        },
-      ),
+        child: Consumer(
+            builder: (context, ref, _) {
+              ref.watch(authServiceProvider).whenData((authService) {
+                authService.getOrCreateJwt();
+              });
+
+              return MaterialApp(
+                title: 'Front App',
+                theme: appTheme,
+                locale: state.locale,
+                localizationsDelegates: [
+                  S.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+                supportedLocales: S.delegate.supportedLocales,
+                routes: {
+                  '/': (context) => const HomeScreen(),
+                  '/settings': (context) => SettingsScreen(),
+                  '/profile': (context) => const ProfileScreen(),
+                  '/game': (context) => const BattleScreen(),
+                },
+              );
+            }
+        )
     );
   }
 }

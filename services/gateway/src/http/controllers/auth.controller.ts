@@ -1,6 +1,7 @@
 import * as authService from "../../services/auth.service";
 import wrapper from "./wrapper";
 import {AnonymousSignInRequest, RefreshTokensRequest} from "../../grpc/generated/auth";
+import logger from "@shared/logger";
 
 // Middleware-функции для роутов
 export const health = wrapper(async (req, res) => {
@@ -21,7 +22,7 @@ export const readyz = wrapper(async (req, res) => {
 
 export const anonymousSignIn = wrapper(async (req, res) => {
   const request = req.body as AnonymousSignInRequest;
-  // logger.log(request);
+  logger.log(request);
   return await authService.anonymousSignIn(request);
 });
 

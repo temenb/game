@@ -19,11 +19,16 @@ class BattleChannel extends StreamingChannel {
   late String profileId;
   final pathname = 'battle';
 
-  messageHandler(String message) {
+  messageHandler(List<int> message) {
     logger.i('Received: $message');
     try {
-      // final resp = BattleObject.fromBuffer(message);
-      // _controller.add(resp);
+      final resp = BattleStreamResponse.fromBuffer(message);
+      if (resp.hasBattle()) {
+        final battle = resp.battle;
+        _controller.add(battle);
+      } else {
+        logger.e('Battle handling went wrong: battle');
+      }
     } catch (e) {
       logger.e('Failed to parse: $e');
     }

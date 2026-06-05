@@ -1,7 +1,5 @@
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:front/src/grpc/generated/auth.pb.dart';
-import 'package:front/src/helpers/token_storage.dart';
-import 'package:jwt_decode/jwt_decode.dart';
+import 'package:front/src/storages/token_storage.dart';
 import 'package:logger/logger.dart';
 
 import '../clients/auth_client.dart';
@@ -10,35 +8,26 @@ import '../services/device_service.dart';
 final logger = Logger();
 
 class AuthService {
-  final _storage = const FlutterSecureStorage();
   final AuthClient authClient;
+  final TokenStorage tokenStorage;
 
-  AuthService(this.authClient);
+  AuthService(this.authClient, this.tokenStorage);
 
-  Future<void> init() async {
-    await getOrCreateJwt();
-  }
-
-  Future<void> clearJwt() async {
-    await TokenStorage.deleteJwt();
+  Future<void> clearJwt(TokenStorage tokenStorage) async {
+    await tokenStorage.deleteAccessToken();
   }
 
   Future<String> getOrCreateJwt() async {
-    final existingJwt = await TokenStorage.readJwt();
-    if (existingJwt != null && !Jwt.isExpired(existingJwt)) {
-      return existingJwt;
-    }
-
-    final refreshToken = await TokenStorage.readRefreshToken();
+    final refreshToken = await tokenStorage.readRefreshToken();
     if (refreshToken != null) {
       final AuthObject response = await this.authClient.refreshTokens(refreshToken);
 
       final newJwt = response.accessToken;
 
-      await TokenStorage.saveJwt(newJwt);
+      await tokenStorage.saveAccessToken(newJwt);
 
       if (response.hasRefreshToken()) {
-        await TokenStorage.saveRefreshToken(response.refreshToken);
+        await tokenStorage.saveRefreshToken(response.refreshToken);
       }
       return newJwt;
     }
@@ -47,7 +36,7 @@ class AuthService {
     final response = await this.authClient.anonymousSignIn(deviceId);
     final newJwt = response.accessToken;
 
-    await TokenStorage.saveJwt(newJwt);
+    await tokenStorage.saveAccessToken(newJwt);
     return newJwt;
   }
 }

@@ -1,20 +1,21 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:front/features/battle/provider/battle_channel_provider.dart';
-import 'package:front/features/profile/provider/profile_provider.dart';
+import '../../../src/providers/jwt_provider.dart';
 import 'package:front/src/grpc/generated/battle.pb.dart';
 
+import '../../battle/providers/battle_channel_provider.dart';
+
 class BattleParams {
-  final String jwt;
   final String profileId;
 
-  BattleParams(this.jwt, this.profileId);
+  BattleParams(this.profileId);
 }
 
 final battleStreamProvider = StreamProvider.family<BattleObject, BattleParams>((
   ref,
   params,
 ) async* {
-  final battleChannel = await ref.read(battleChannelProvider(params.jwt).future);
+  logger.e('battleStreamProvider');
+  final battleChannel = await ref.watch(battleChannelProvider.future);
   battleChannel.join(params.profileId);
 
   yield* battleChannel.battles;
