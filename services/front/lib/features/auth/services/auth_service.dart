@@ -18,9 +18,16 @@ class AuthService {
   }
 
   Future<String> getOrCreateJwt() async {
+    final jwt = await tokenStorage.readAccessToken();
+    if (jwt != null && jwt!.isNotEmpty) {
+      return jwt;
+    }
+
     final refreshToken = await tokenStorage.readRefreshToken();
-    if (refreshToken != null) {
-      final AuthObject response = await this.authClient.refreshTokens(refreshToken);
+    if (refreshToken != null && refreshToken!.isNotEmpty) {
+      final AuthObject response = await this.authClient.refreshTokens(
+        refreshToken,
+      );
 
       final newJwt = response.accessToken;
 
@@ -34,9 +41,8 @@ class AuthService {
 
     final deviceId = await DeviceService.getDeviceId();
     final response = await this.authClient.anonymousSignIn(deviceId);
-    final newJwt = response.accessToken;
+    await tokenStorage.saveAuthObject(response);
 
-    await tokenStorage.saveAccessToken(newJwt);
-    return newJwt;
+    return response.accessToken;
   }
 }

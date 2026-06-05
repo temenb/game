@@ -4,7 +4,7 @@ import 'package:logger/logger.dart';
 
 final logger = Logger();
 
-final SecureStorageProvider = Provider<SecureStorage>((ref) {
+final secureStorageProvider = Provider<SecureStorage>((ref) {
   final secureStorage = SecureStorage();
 
   return secureStorage;

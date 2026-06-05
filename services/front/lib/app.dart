@@ -1,52 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:front/app_state.dart';
-import 'package:front/features/auth/providers/auth_service_provider.dart';
-import 'package:front/features/battle/ui/battle_screen.dart';
-import 'package:front/features/home/ui/home_screen.dart';
-import 'package:front/features/profile/ui/profile_screen.dart';
-import 'package:front/features/setting/ui/settings_screen.dart';
+import 'package:front/router.dart';
 import 'package:front/src/localization/generated/l10n.dart';
+import 'package:front/src/providers/jwt_provider.dart';
+import 'package:front/src/providers/locale_provider.dart';
 import 'package:front/theme.dart';
 
 class MyApp extends StatelessWidget {
-  final AppState state;
-
-  // final SettingService settings;
-
-  // const MyApp({required this.state, required this.settings, super.key});
-  const MyApp({required this.state, super.key});
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return ProviderScope(
-        child: Consumer(
-            builder: (context, ref, _) {
-              ref.watch(authServiceProvider).whenData((authService) {
-                authService.getOrCreateJwt();
-              });
+      child: Consumer(
+        builder: (context, ref, _) {
+          ref.watch(jwtProvider);
+          final localeAsync = ref.watch(localeProvider);
 
-              return MaterialApp(
-                title: 'Front App',
-                theme: appTheme,
-                locale: state.locale,
-                localizationsDelegates: [
-                  S.delegate,
-                  GlobalMaterialLocalizations.delegate,
-                  GlobalWidgetsLocalizations.delegate,
-                  GlobalCupertinoLocalizations.delegate,
-                ],
-                supportedLocales: S.delegate.supportedLocales,
-                routes: {
-                  '/': (context) => const HomeScreen(),
-                  '/settings': (context) => SettingsScreen(),
-                  '/profile': (context) => const ProfileScreen(),
-                  '/game': (context) => const BattleScreen(),
-                },
-              );
-            }
-        )
+          return localeAsync.when(
+            data: (locale) => MaterialApp(
+              title: 'Front App',
+              theme: appTheme,
+              locale: Locale(locale),
+              localizationsDelegates: [
+                S.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: S.delegate.supportedLocales,
+              initialRoute: '/battle',
+              routes: appRouter,
+            ),
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (err, stack) => Center(child: Text('Locale error: $err')),
+          );
+        },
+      ),
     );
   }
 }

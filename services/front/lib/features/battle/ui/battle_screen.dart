@@ -18,7 +18,7 @@ class BattleScreen extends ConsumerWidget {
     return profileAsync.when(
       data: (profile) {
         debugPrint("Profile state: $profileAsync");
-        final battleAsync = ref.watch(battleStreamProvider(BattleParams(profile.id)));
+        // final battleAsync = ref.watch(battleStreamProvider(BattleParams(profile.id)));
 
         return Scaffold(
           appBar: AppBar(title: const Text('Battle: Tic Tac Toe'))

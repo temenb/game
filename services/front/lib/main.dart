@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:front/app.dart';
-import 'package:front/app_state.dart';
 import 'package:logger/logger.dart';
 
 final logger = Logger();
@@ -30,9 +29,7 @@ Future<void> main() async {
 
       await dotenv.load(fileName: ".env");
 
-      final appState = AppState();
-
-      runApp(ProviderScope(child: MyApp(state: appState)));
+      runApp(ProviderScope(child: MyApp()));
     },
     (error, stack) {
       debugPrint('Uncaught async error: $error\n$stack');

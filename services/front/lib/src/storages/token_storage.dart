@@ -1,3 +1,5 @@
+import 'package:front/src/grpc/generated/auth.pb.dart';
+
 import './secure_storage.dart';
 
 class TokenStorage extends SecureStorage {
@@ -6,13 +8,20 @@ class TokenStorage extends SecureStorage {
   String? _accessToken;
   String? _refreshToken;
 
+  Future<void> saveAuthObject(AuthObject authObject) async {
+    await Future.wait([
+      saveAccessToken(authObject.accessToken),
+      saveRefreshToken(authObject.refreshToken),
+    ]);
+  }
+
   Future<void> saveAccessToken(String accessToken) async {
     _accessToken = accessToken;
     await save(this.accessTokenKey, accessToken);
   }
 
   Future<String?> readAccessToken() async {
-    if (_accessToken != null && _accessToken != '' ) {
+    if (_accessToken != null && _accessToken != '') {
       return _accessToken;
     }
     _accessToken = await read(this.accessTokenKey);
@@ -30,7 +39,7 @@ class TokenStorage extends SecureStorage {
   }
 
   Future<String?> readRefreshToken() async {
-    if (_refreshToken != null && _refreshToken != '' ) {
+    if (_refreshToken != null && _refreshToken != '') {
       return _refreshToken;
     }
     return await read(this.refreshTokenKey);

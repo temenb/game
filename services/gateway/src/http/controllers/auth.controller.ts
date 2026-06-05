@@ -23,7 +23,12 @@ export const readyz = wrapper(async (req, res) => {
 export const anonymousSignIn = wrapper(async (req, res) => {
   const request = req.body as AnonymousSignInRequest;
   logger.log(request);
-  return await authService.anonymousSignIn(request);
+
+
+
+
+  await authService.anonymousSignIn(request);
+  return authService.anonymousSignIn(request)
 });
 
 export const refreshTokens = wrapper(async (req, res) => {
