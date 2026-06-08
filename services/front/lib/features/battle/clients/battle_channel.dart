@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:front/features/battle/params/battle_params.dart';
 import 'package:front/src/clients/streaming_channel.dart';
+import 'package:front/src/config/streaming_config.dart';
 import 'package:front/src/grpc/generated/battle.pb.dart';
 import 'package:front/src/grpc/generated/common/empty.pb.dart';
 import 'package:front/src/grpc/generated/engine.pb.dart';
@@ -12,7 +14,7 @@ import 'package:logger/logger.dart';
 final logger = Logger();
 
 class BattleChannel extends StreamingChannel<BattleObject> {
-  late String profileId;
+  late BattleParams battleParams;
   final pathname = 'battle';
 
   messageHandler(List<int> message) {
@@ -42,7 +44,8 @@ class BattleChannel extends StreamingChannel<BattleObject> {
     }
   }
 
-  BattleChannel(super.config, super.jwt);
+  BattleChannel(StreamingConfig config, this.battleParams)
+      : super(config, battleParams.jwt);
 
   /// Отправить событие "join"
   void join(String profileId) {
