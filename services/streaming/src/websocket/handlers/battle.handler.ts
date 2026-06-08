@@ -22,22 +22,6 @@ async function isAllowedUser(userId: string, profileId: string) {
 }
 
 export async function battleHandler(ws: WebSocket, userId: string, payload: streamingGrpc.BattleStreamRequest) {
-
-  //
-  // const msg: BattleMessage = JSON.parse(data.toString());
-  // logger.log('📩 Message:', msg);
-  //
-  // if (msg.type === 'join') {
-  //   // логика подключения игрока
-  //   ws.send(JSON.stringify({ type: 'joined', battleId: msg.battleId, userId: msg.userId }));
-  // }
-  //
-  // if (msg.type === 'move') {
-  //   // логика хода
-  //   ws.send(JSON.stringify({ type: 'moved', battleId: msg.battleId, userId: msg.userId, cellIdx: msg.cellIdx }));
-  // }
-  //
-
   if (payload.join) {
     logger.log("Battle join event");
     const battle = await battleService.upsertBattle(payload.join);
@@ -54,7 +38,11 @@ export async function battleHandler(ws: WebSocket, userId: string, payload: stre
     }
     FrontBattleStreamRegistry.setBattleStream(battle.id, ws);
     logger.log("Battle stream was set:" + battle.id);
-    FrontBattleStreamRegistry.writeBattleStreams(battle);
+    try {
+      FrontBattleStreamRegistry.writeBattleStreams(battle);
+    } catch (e) {
+      logger.error(String(e));
+    }
   }
 
   if (payload.move) {
@@ -98,7 +86,11 @@ export async function battleHandler(ws: WebSocket, userId: string, payload: stre
   // }
   //
   if (payload.ping) {
-    FrontBattleStreamRegistry.writeDataStreams('', 'ping', {message: 'pong'});
+    try {
+      FrontBattleStreamRegistry.writeDataStreams('', 'ping', {message: 'pong'});
+    } catch (e) {
+      logger.error(String(e));
+    }
   }
 }
 

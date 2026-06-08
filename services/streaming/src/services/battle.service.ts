@@ -21,7 +21,11 @@ export const upsertBattle = async (req: profileGrpc.ProfileIdRequest) =>
 
 export const updateBattle = async (battle: BattleObject) => {
   logger.log('update battle: battle');
-  FrontBattleStreamRegistry.writeBattleStreams(battle);
+  try {
+    FrontBattleStreamRegistry.writeBattleStreams(battle);
+  } catch (e) {
+    logger.error(String(e));
+  }
 
   if (battle.winner || battle.status != BattleStatus.ACTIVE) {
     logger.log(`Battle ${battle.id} finished. Closing streams...`);

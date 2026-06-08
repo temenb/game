@@ -3,7 +3,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:front/router.dart';
 import 'package:front/src/localization/generated/l10n.dart';
-import 'package:front/src/providers/jwt_provider.dart';
 import 'package:front/src/providers/locale_provider.dart';
 import 'package:front/theme.dart';
 
@@ -15,7 +14,8 @@ class MyApp extends StatelessWidget {
     return ProviderScope(
       child: Consumer(
         builder: (context, ref, _) {
-          ref.watch(jwtProvider);
+          // final secureStorage = ref.watch(secureStorageProvider);
+          // secureStorage.deleteAll();
           final localeAsync = ref.watch(localeProvider);
 
           return localeAsync.when(

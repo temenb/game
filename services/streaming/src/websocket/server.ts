@@ -4,6 +4,7 @@ import {battleHandler} from "./handlers/battle.handler";
 import jwt from "jsonwebtoken";
 import config from "../config/config";
 import logger from "@shared/logger";
+import extractUserIdFromJwt from "../lib/extractUserIdFromJwt";
 
 
 export const wss = new WebSocketServer({port: config.webSocketPort});
@@ -13,22 +14,17 @@ export function initWss() {
   wss.on('connection', (ws, req) => {
 
     const url = new URL(req.url!, `http://${req.headers.host}`);
-    const token = url.searchParams.get('token');
-
-    if (!token) {
-      logger.error("❌ Token is missing");
-      ws.close();
-      return;
-    }
-
     let userId: string;
+
     try {
-      const payload = jwt.verify(token, config.jwtAccessSecret);
-      userId = String(payload.sub);
-      logger.log("✅ Authorized:", userId);
-    } catch (err) {
-      logger.error("❌ JWT token is invalid");
+      const token = url.searchParams.get('token');
+      if (!token) {
+        throw new Error("❌ Token is missing");
+      }
+      userId = extractUserIdFromJwt(token);
+    } catch (e) {
       ws.close();
+      logger.error("❌ JWT token is invalid")
     }
 
     ws.on('message', (data) => {

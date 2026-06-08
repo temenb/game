@@ -8,17 +8,41 @@ class BattleParams {
   final String profileId;
 
   BattleParams(this.profileId);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is BattleParams &&
+              profileId == other.profileId;
+
+  @override
+  int get hashCode => profileId.hashCode;
 }
 
-final battleStreamProvider = StreamProvider.family<BattleObject, BattleParams>((
-  ref,
-  params,
-) async* {
-  logger.e('battleStreamProvider');
-  final battleChannel = await ref.watch(battleChannelProvider.future);
-  battleChannel.join(params.profileId);
+final battleStreamProvider = StreamProvider.family<BattleObject, BattleParams>((ref, params) async* {
+  // logger.i('battleStreamProvider');
 
-  yield* battleChannel.battles;
+  final battleChannel = await ref.watch(
+    battleChannelProvider.future,
+  );
+  logger.i('battleChannel created');
+
+  try {
+    logger.i('before watch');
+
+    battleChannel.join(params.profileId);
+
+    logger.i('after watch');
+  } catch (e, st) {
+    logger.e('watch failed', error: e, stackTrace: st);
+    rethrow;
+  }
+
+  logger.i('Joined to stream');
+
+  yield* battleChannel.messages;
 
   ref.onDispose(() => battleChannel.close());
+
 });
+

@@ -86,7 +86,7 @@ describe("Gateway Service", () => {
 
     //------------------------------------------------------------------------------------------------------------------
 
-    await delay(5000);
+    // await delay(5000);
 
     const profile1 = await gatewayRequest("profile/getMyProfile", {}, "GET", auth1.accessToken);
     const profile2 = await gatewayRequest("profile/getMyProfile", {}, "GET", auth2.accessToken);

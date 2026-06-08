@@ -7,24 +7,36 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 
 final logger = Logger();
 
-abstract class StreamingChannel {
+abstract class StreamingChannel<T> {
   final StreamingConfig config;
   late WebSocketChannel _channel;
   late StreamSubscription _subscription;
   Timer? _heartbeat;
-  final String jwt;
+  late String jwt;
   final pathname = '';
   final heartbeatTimer = 30;
+  final _controller = StreamController<T>.broadcast();
 
-  final _controller = StreamController<String>.broadcast();
+  WebSocketChannel get channel => _channel;
 
   messageHandler(List<int> message) {
     logger.i('Received: $message');
     try {
-      // final resp = BattleObject.fromBuffer(message);
-      // _controller.add(resp);
+      // final resp = T.fromBuffer(message);
+      // safeAdd(resp.data);
     } catch (e) {
       logger.e('Failed to parse: $e');
+    }
+  }
+
+  void safeAdd(T data) {
+    if (!_controller.isClosed) {
+      try {
+        _controller.add(data);
+        logger.i("Battle added safely");
+      } catch (e, st) {
+        logger.e("safeAdd failed: $e\n$st");
+      }
     }
   }
 
@@ -52,12 +64,27 @@ abstract class StreamingChannel {
   }
 
   StreamingChannel(this.config, this.jwt) {
+
     connect();
+
+    _controller.stream.listen(
+          (data) {
+        logger.i("Controller event: data = $data");
+      },
+      onError: (err, st) {
+        logger.e("Controller event: error = $err\n$st");
+      },
+      onDone: () {
+        logger.w("Controller event: stream DONE (closed)");
+      },
+      cancelOnError: false,
+    );
+
   }
 
-  Stream<String> get messages => _controller.stream;
+  Stream<T> get messages => _controller.stream;
 
-  void send(String message) {
+  void send(T message) {
     logger.i('Sending: $message');
     _channel.sink.add(message);
   }
@@ -68,6 +95,7 @@ abstract class StreamingChannel {
   }
 
   Future<void> close() async {
+    logger.i('WebSocket is going to close');
     await _subscription.cancel();
     await _channel.sink.close(status.normalClosure);
     await _controller.close();
