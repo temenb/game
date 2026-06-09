@@ -45,7 +45,7 @@ async function createKafkaConsumers() {
 
 async function startRedis() {
   await initRedis();
-  logger.log('startRedis');
+  // logger.log('startRedis');
   await StoreRegistry.init();
 }
 

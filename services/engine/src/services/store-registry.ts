@@ -15,11 +15,11 @@ export class StoreRegistry {
   static async init(): Promise<void> {
     const redis = getRedis();
 
-    logger.log('StoreClass');
+    // logger.log('StoreClass');
 
     for (const {class: StoreClass, key} of Object.values(stores)) {
-      logger.log(StoreClass);
-      logger.log(key);
+      // logger.log(StoreClass);
+      // logger.log(key);
       const storeObj = new StoreClass(redis);
       this.addStore(key, storeObj);
     }

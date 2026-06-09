@@ -1,7 +1,6 @@
 import {WebSocketServer} from 'ws';
 import * as streamingGrpc from "../grpc/generated/streaming";
 import {battleHandler} from "./handlers/battle.handler";
-import jwt from "jsonwebtoken";
 import config from "../config/config";
 import logger from "@shared/logger";
 import extractUserIdFromJwt from "../lib/extractUserIdFromJwt";
@@ -13,22 +12,27 @@ logger.info(`WebSocket listening on ${config.webSocketPort}`);
 export function initWss() {
   wss.on('connection', (ws, req) => {
 
+    logger.info('New websocket connection established');
+
     const url = new URL(req.url!, `http://${req.headers.host}`);
     let userId: string;
 
+    const token = url.searchParams.get('token');
+    if (!token) {
+      ws.close();
+      logger.error("❌ Token is missing");
+      return;
+    }
     try {
-      const token = url.searchParams.get('token');
-      if (!token) {
-        throw new Error("❌ Token is missing");
-      }
       userId = extractUserIdFromJwt(token);
     } catch (e) {
       ws.close();
       logger.error("❌ JWT token is invalid")
+      return;
     }
 
     ws.on('message', (data) => {
-      logger.log('📩 Raw message:', data);
+      // logger.log('📩 Raw message:', data);
       try {
         const buffer = new Uint8Array(data as ArrayBuffer);
         const request = streamingGrpc.BattleStreamRequest.decode(buffer);
@@ -43,22 +47,21 @@ export function initWss() {
           logger.error('❌ Message handling error:', err);
         }
 
-
       } catch (err) {
         logger.error('❌ JSON parse error:', err);
       }
-
-      ws.on('close', () => {
-        logger.log('❌ Client is disconnected');
-      });
+    });
 
 
-      // // широковещательная рассылка всем клиентам
-      // wss.clients.forEach((client) => {
-      //   if (client.readyState === ws.OPEN) {
-      //     client.send(JSON.stringify(msg));
-      //   }
-      // });
+    // // широковещательная рассылка всем клиентам
+    // wss.clients.forEach((client) => {
+    //   if (client.readyState === ws.OPEN) {
+    //     client.send(JSON.stringify(msg));
+    //   }
+    // });
+
+    ws.on('close', () => {
+      logger.log('❌ Client is disconnected');
     });
   });
 }

@@ -27,11 +27,9 @@ export async function enqueueEventTx(
   tx: any
 ): Promise<number | null> {
   const jobName = pgBossKafkaEventPrefix + topic;
-  logger.log('enqueueEventTx ' + jobName);
-  const result = await tx.$executeRawUnsafe(`
+  // logger.log('enqueueEventTx ' + jobName);
+  return await tx.$executeRawUnsafe(`
       insert into pgboss.job (name, data)
       values ($1, $2::jsonb) returning id
   `, jobName, JSON.stringify(data));
-
-  return result;
 }

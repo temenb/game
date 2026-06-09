@@ -31,10 +31,10 @@ export const readyz = (): Promise<healthGrpc.ReadyStatus | null> => {
   return battleManager.call((client, cb) => client.readyz(grpcRequest, cb));
 };
 
-export const getBattle = (battleId: string): Promise<battleGrpc.BattleObject | null> => {
-  const grpcRequest: battleGrpc.BattleIdRequest = {battleId};
-  return battleManager.call((client, cb) => client.getBattle(grpcRequest, cb));
-};
+// export const getBattle = (battleId: string): Promise<battleGrpc.BattleObject | null> => {
+//   const grpcRequest: battleGrpc.BattleIdRequest = {battleId};
+//   return battleManager.call((client, cb) => client.getBattle(grpcRequest, cb));
+// };
 
 export const upsertBattle = (grpcRequest: profileGrpc.ProfileIdRequest): Promise<battleGrpc.BattleObject | null> => {
   return battleManager.call<battleGrpc.BattleObject>(

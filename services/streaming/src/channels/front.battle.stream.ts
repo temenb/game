@@ -26,7 +26,7 @@ export default class FrontBattleStreamRegistry {
 
     this.socketToBattle.set(socket, battleId);
 
-    logger.log('battleStreams keys:', this.battleStreams.keys());
+    // logger.log('battleStreams keys:', this.battleStreams.keys());
 
 
     socket.on("close", () => {
@@ -124,11 +124,11 @@ export default class FrontBattleStreamRegistry {
       throw new Error(`No active streams found for battleId=${battleId}`);
     }
 
-    logger.log('Update ' + type + ' streams for battle: ' + battleId, data);
-    logger.log('Streams count: ' + streams.size);
+    // logger.log('Update ' + type + ' streams for battle: ' + battleId, data);
+    // logger.log('Streams count: ' + streams.size);
     let count = 0;
     for (const stream of streams) {
-      logger.log('Streams update ' + ++count);
+      // logger.log('Streams update ' + ++count);
       const buffer = FrontBattleStreamRegistry.encodeResponse(type, data);
       if (buffer) {
         stream.send(buffer);
@@ -142,21 +142,6 @@ export default class FrontBattleStreamRegistry {
 
   static writeDataStreams(battleId: string, type: string, data: object) {
     FrontBattleStreamRegistry._writeBattleStreams(battleId, type, data);
-  }
-
-  static pingChannel() {
-    const stream = FrontBattleStreamRegistry.getRandomBattleStream();
-
-    if (!stream) {
-      logger.warn('Cannot ping. No streams awailable')
-      return;
-    }
-
-
-    const buffer = FrontBattleStreamRegistry.encodeResponse('ping');
-    if (buffer) {
-      stream.send(buffer);
-    }
   }
 
   private static resetHeartbeat(call: WebSocket) {

@@ -66,6 +66,7 @@ class BattleChannel extends StreamingChannel<BattleObject> {
       ..profileId = profileId;
 
     final req = BattleStreamRequest()..move = moveReq;
+    logger.d(req);
     channel.sink.add(req.writeToBuffer());
     logger.i('Sent profile: $profileId at $cellIdx');
   }

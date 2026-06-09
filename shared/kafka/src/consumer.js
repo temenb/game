@@ -1,12 +1,8 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createConsumer = createConsumer;
 const register_1 = require("./register");
 const kafkajs_1 = require("kafkajs");
-const logger_1 = __importDefault(require("@shared/logger"));
 async function createConsumer(config, consumerConfig) {
     const kafka = (0, register_1.getKafkaInstance)(config);
     const admin = kafka.admin();
@@ -15,10 +11,10 @@ async function createConsumer(config, consumerConfig) {
     // Проверка существования топика
     const metadata = await admin.fetchTopicMetadata();
     const topicExists = metadata.topics.some(t => t.name === consumerConfig.topic);
-    logger_1.default.log('createConsumer kafka config = ');
-    logger_1.default.log(config);
-    logger_1.default.log('kafka.createConsumer consumer config = ');
-    logger_1.default.log(consumerConfig);
+    // logger.log('createConsumer kafka config = ');
+    // logger.log(config);
+    // logger.log('kafka.createConsumer consumer config = ');
+    // logger.log(consumerConfig);
     if (!topicExists) {
         await admin.createTopics({
             topics: [{ topic: consumerConfig.topic, numPartitions: 1 }],

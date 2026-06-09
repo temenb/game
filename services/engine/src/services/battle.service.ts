@@ -1,7 +1,7 @@
 import {kafkaProducersConfig} from "../config/kafka.config";
 import {StoreRegistry, stores} from "./store-registry";
-import {BattleCellValue, BattleObject, BattleStatus} from "../grpc/generated/battle";
-import {BattleMoveRequest} from "../grpc/generated/engine";
+import * as battleGrpc from "../grpc/generated/battle";
+import * as engineGrpc from "../grpc/generated/engine";
 import {BattleStateStore} from "../stores/battleStateStore";
 import {enqueueEvent} from "@shared/pg-boss/src/enqueueEvent";
 import logger from "@shared/logger";
@@ -17,10 +17,10 @@ export function battleStore(): BattleStateStore {
   return battleStore;
 }
 
-export const battleNew = async (battle: BattleObject) => {
+export const battleNew = async (battle: battleGrpc.BattleObject) => {
   logger.log('New battle started', battle)
-  battle.cells = Array(9).fill(BattleCellValue.CELL_EMPTY);
-  battle.status = BattleStatus.ACTIVE;
+  battle.cells = Array(9).fill(battleGrpc.BattleCellValue.CELL_EMPTY);
+  battle.status = battleGrpc.BattleStatus.ACTIVE;
   battle.winner = "";
 
   await battleStore().set(battle);
@@ -28,32 +28,32 @@ export const battleNew = async (battle: BattleObject) => {
 
 };
 
-function getSymbolForUser(battle: BattleObject, move: BattleMoveRequest): BattleCellValue {
+function getSymbolForUser(battle: battleGrpc.BattleObject, move: engineGrpc.BattleMoveRequest): battleGrpc.BattleCellValue {
   const idx = battle.players.indexOf(move.profileId);
   if (idx === -1) throw new Error("User is not found in the battle");
 
-  return idx === 0 ? BattleCellValue.CELL_X : BattleCellValue.CELL_O;
+  return idx === 0 ? battleGrpc.BattleCellValue.CELL_X : battleGrpc.BattleCellValue.CELL_O;
 }
 
-function verifyTurn(battle: BattleObject, move: BattleMoveRequest) {
+function verifyTurn(battle: battleGrpc.BattleObject, move: engineGrpc.BattleMoveRequest) {
   if (move.profileId != battle.players[turn(battle)]) {
     throw new Error(`Not your turn`);
   }
 }
 
-function turn(battle: BattleObject) {
+function turn(battle: battleGrpc.BattleObject) {
   return battle.cells.filter(
-    cell => cell !== BattleCellValue.CELL_EMPTY
+    cell => cell !== battleGrpc.BattleCellValue.CELL_EMPTY
   ).length % battle.players.length;
 }
 
-function verifyCell(battle: BattleObject, move: BattleMoveRequest) {
-  if (battle.cells[move.cellIdx] != BattleCellValue.CELL_EMPTY) {
+function verifyCell(battle: battleGrpc.BattleObject, move: engineGrpc.BattleMoveRequest) {
+  if (battle.cells[move.cellIdx] != battleGrpc.BattleCellValue.CELL_EMPTY) {
     throw new Error(`Cell is not empty`);
   }
 }
 
-function isWin(battle: BattleObject): boolean {
+function isWin(battle: battleGrpc.BattleObject): boolean {
   const winningCombos = [
     [0, 1, 2], [3, 4, 5], [6, 7, 8],
     [0, 3, 6], [1, 4, 7], [2, 5, 8],
@@ -62,7 +62,7 @@ function isWin(battle: BattleObject): boolean {
 
   for (const [a, b, c] of winningCombos) {
     if (
-      battle.cells[a] !== BattleCellValue.CELL_EMPTY &&
+      battle.cells[a] !== battleGrpc.BattleCellValue.CELL_EMPTY &&
       battle.cells[a] === battle.cells[b] &&
       battle.cells[a] === battle.cells[c]
     ) {
@@ -72,14 +72,23 @@ function isWin(battle: BattleObject): boolean {
   return false;
 }
 
-function isDraw(battle: BattleObject): boolean {
-  return !battle.cells.includes(BattleCellValue.CELL_EMPTY);
+function isDraw(battle: battleGrpc.BattleObject): boolean {
+  return !battle.cells.includes(battleGrpc.BattleCellValue.CELL_EMPTY);
 }
 
-export const makeMove = async (move: BattleMoveRequest) => {
+// export const refreshBattle = async  (battleId: string): battleGrpc.BattleObject {
+//   return await  battleClient.getBattle()
+// }
+
+export const makeMove = async (move: engineGrpc.BattleMoveRequest) => {
   const battle = await battleStore().get(move.battleId);
 
   if (!battle) {
+    // battle = battleService
+    
+    
+    
+    
     throw new Error(`Battle ${move.battleId} not found`);
   }
 
@@ -89,13 +98,13 @@ export const makeMove = async (move: BattleMoveRequest) => {
   battle.cells[move.cellIdx] = getSymbolForUser(battle, move);
 
   if (isWin(battle) || isDraw(battle)) {
-    battle.status = BattleStatus.FINISHED;
+    battle.status = battleGrpc.BattleStatus.FINISHED;
     if (isWin(battle)) {
       battle.winner = move.profileId;
     }
   }
 
-  if (battle.status == BattleStatus.FINISHED) {
+  if (battle.status == battleGrpc.BattleStatus.FINISHED) {
     await battleStore().remove(battle.id);
   } else {
     await battleStore().set(battle);

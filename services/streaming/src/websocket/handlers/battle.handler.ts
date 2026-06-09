@@ -23,7 +23,7 @@ async function isAllowedUser(userId: string, profileId: string) {
 
 export async function battleHandler(ws: WebSocket, userId: string, payload: streamingGrpc.BattleStreamRequest) {
   if (payload.join) {
-    logger.log("Battle join event");
+    // logger.log("Battle join event");
     const battle = await battleService.upsertBattle(payload.join);
 
     if (!battle) {
@@ -37,7 +37,7 @@ export async function battleHandler(ws: WebSocket, userId: string, payload: stre
       return;
     }
     FrontBattleStreamRegistry.setBattleStream(battle.id, ws);
-    logger.log("Battle stream was set:" + battle.id);
+    // logger.log("Battle stream was set:" + battle.id);
     try {
       FrontBattleStreamRegistry.writeBattleStreams(battle);
     } catch (e) {
@@ -46,20 +46,24 @@ export async function battleHandler(ws: WebSocket, userId: string, payload: stre
   }
 
   if (payload.move) {
-    logger.log("Battle move event");
+    // logger.log("Battle move event");
 
     try {
-      isAllowedUser(userId, payload.move.profileId)
+      await isAllowedUser(userId, payload.move.profileId)
     } catch (error) {
       const errObj = ErrorObject.create({
         type: "error",
-        message: "Battle not found"
+        message: String(error)
       });
       const buffer = ErrorObject.encode(errObj).finish();
       ws.send(buffer);
       return;
     }
     engineService.makeMove(payload.move);
+  }
+
+  if (payload.ping) {
+    ///just ignore
   }
 
   // if (payload.leave) {
@@ -84,13 +88,5 @@ export async function battleHandler(ws: WebSocket, userId: string, payload: stre
   //     battleStreams.delete(battleId);
   //   }
   // }
-  //
-  if (payload.ping) {
-    try {
-      FrontBattleStreamRegistry.writeDataStreams('', 'ping', {message: 'pong'});
-    } catch (e) {
-      logger.error(String(e));
-    }
-  }
 }
 

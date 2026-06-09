@@ -18,7 +18,7 @@ export class NotFoundError extends Error {
 export async function upsertBattle(profileId: string): Promise<Battle> {
   const existingMyBattle = await BattleModel.findBattleByUser(profileId);
 
-  logger.log('upsert battle for user', profileId);
+  // logger.log('upsert battle for profile: ', profileId);
 
   if (existingMyBattle) {
     return existingMyBattle;
@@ -32,7 +32,7 @@ export async function upsertBattle(profileId: string): Promise<Battle> {
     if (existingSomebodiesBattle) {
       try {
 
-        logger.log('join battle', existingSomebodiesBattle);
+        // logger.log('join battle', existingSomebodiesBattle);
         const battleNew = async (battle: BattleObject) => await engineClient.battleNew(battle);
         return await BattleModel.joinBattle(existingSomebodiesBattle.id, profileId, battleNew);
       } catch (e) {

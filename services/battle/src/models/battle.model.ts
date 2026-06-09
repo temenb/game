@@ -59,8 +59,8 @@ export class BattleModel {
         throw new NotFoundError("Unknown error");
       }
 
-      logger.log('battle started');
-      logger.log(battle);
+      // logger.log('battle started');
+      // logger.log(battle);
 
       callback(battleToGrpc(battle));
       return battle;
@@ -76,7 +76,7 @@ export class BattleModel {
   static async createBattle(profileId: string): Promise<Battle> {
 
 
-    logger.log('create battle for profile', profileId);
+    // logger.log('create battle for profile', profileId);
     return prisma.battle.create({
       data: {
         players: [profileId],
@@ -99,8 +99,8 @@ export class BattleModel {
       },
     });
 
-    logger.log("battle updated");
-    logger.log(updated);
+    // logger.log("battle updated");
+    // logger.log(updated);
     return updated;
   }
 }

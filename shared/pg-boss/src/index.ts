@@ -49,7 +49,7 @@ export async function startWorker(kafkaConfig: KafkaConfig, topic: string) {
 
   await boss().createQueue(pgBossKafkaEventPrefix + topic);
 
-  logger.log('startWorker ' + pgBossKafkaEventPrefix + topic);
+  // logger.log('startWorker ' + pgBossKafkaEventPrefix + topic);
   await boss().work(pgBossKafkaEventPrefix + topic, async (job: Job) => {
     try {
 
@@ -59,7 +59,7 @@ export async function startWorker(kafkaConfig: KafkaConfig, topic: string) {
       const topic = name.replace(pgBossKafkaEventPrefix, '');
 
       await producer.send(topic, data);
-      logger.log('pgBoss ' + topic + ' event successfully done');
+      // logger.log('pgBoss ' + topic + ' event successfully done');
 
       return true;
     } catch (err) {

@@ -11,7 +11,7 @@ class BattleService {
 
   BattleService(this.jwt, this.profileId, this.channel);
 
-  makeMove(battleId, profileId, cellIdx) {
-    channel.move(battleId, profileId, cellIdx);
+  makeMove(battleId, cellIdx) {
+    channel.move(profileId, battleId, cellIdx);
   }
 }

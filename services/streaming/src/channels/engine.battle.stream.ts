@@ -31,7 +31,7 @@ export default class EngineBattleStreamRegistry {
 
     this.callToBattle.set(call, battleId);
 
-    logger.log('battleStreams keys:', this.battleStreams.keys());
+    // logger.log('battleStreams keys:', this.battleStreams.keys());
 
 
     call.on("end", () => {
@@ -107,11 +107,11 @@ export default class EngineBattleStreamRegistry {
     }
 
 
-    logger.log('Update streams for battle: ' + battle.id, battle);
-    logger.log('Streams count: ' + streams.size);
+    // logger.log('Update streams for battle: ' + battle.id, battle);
+    // logger.log('Streams count: ' + streams.size);
     let count = 0;
     for (const stream of streams) {
-      logger.log('Streams update ' + ++count);
+      // logger.log('Streams update ' + ++count);
 
       stream.write(battle);
     }

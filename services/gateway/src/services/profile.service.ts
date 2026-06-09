@@ -15,7 +15,5 @@ export const readyz = async () =>
   await profileClient.readyz();
 
 export const getMyProfile = async (jwt: string) => {
-  const ddd = await orchestrationClient.getMyProfile(jwt);
-  logger.log(ddd);
-  return ddd;
+  return await orchestrationClient.getMyProfile(jwt);
 }

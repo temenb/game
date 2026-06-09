@@ -9,10 +9,10 @@ export const getUserIdFromMetadata = (
   call: grpc.ServerUnaryCall<any, any>
 ): string => {
 
-  logger.log('getUserIdFromMetadata');
+  // logger.log('getUserIdFromMetadata');
 
   const authHeader = call.metadata.get('authorization')[0] as string;
-  logger.log(call.metadata.get('authorization'));
+  // logger.log(call.metadata.get('authorization'));
   if (!authHeader?.startsWith('Bearer ')) {
     throw new Error('Missing or invalid Authorization header');
   }
@@ -24,7 +24,7 @@ export const getUserIdFromMetadata = (
     throw new Error('JWT payload missing sub');
   }
 
-  logger.log(payload.sub);
+  // logger.log(payload.sub);
 
   return payload.sub;
 };

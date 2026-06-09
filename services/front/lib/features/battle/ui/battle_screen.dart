@@ -91,9 +91,50 @@ class _BattleBoard extends StatelessWidget {
         Text('Игроки: ${battle.players.join(" vs ")}'),
         Text('Статус: ${battle.status}'),
         if (battle.winner.isNotEmpty) Text('Победитель: ${battle.winner}'),
-        //допиши
+        const SizedBox(height: 8),
+        Expanded(
+          child: GridView.builder(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+            ),
+            itemCount: 9,
+            itemBuilder: (context, index) {
+
+              debugPrint("Cells raw: ${battle.cells}");
+              final cellValue = safeCellAt(battle.cells, index);
+              return GestureDetector(
+                onTap: () {
+                  battleService.makeMove(battle.id, index);
+                },
+                child: Container(
+                  margin: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.white), // белая рамка
+                    color: Colors.grey[900],
+                  ),
+                  child: Center(
+                    child: Text(
+                      _renderCell(cellValue),
+                      style: TextStyle(
+                        fontSize: 32,
+                        color: _cellColor(cellValue), // цвет зависит от значения
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
       ],
     );
+  }
+
+  BattleCellValue safeCellAt(List<BattleCellValue> cells, int index) {
+    if (index >= 0 && index < cells.length) {
+      return cells[index];
+    }
+    return BattleCellValue.CELL_EMPTY;
   }
 
   String _renderCell(BattleCellValue value) {
@@ -105,6 +146,18 @@ class _BattleBoard extends StatelessWidget {
       case BattleCellValue.CELL_EMPTY:
       default:
         return '';
+    }
+  }
+
+  Color _cellColor(BattleCellValue value) {
+    switch (value) {
+      case BattleCellValue.CELL_X:
+        return Colors.red;   // X красный
+      case BattleCellValue.CELL_O:
+        return Colors.blue;  // O синий
+      case BattleCellValue.CELL_EMPTY:
+      default:
+        return Colors.white; // пустая клетка белая
     }
   }
 }
