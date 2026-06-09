@@ -12,7 +12,7 @@ logger.info(`WebSocket listening on ${config.webSocketPort}`);
 export function initWss() {
   wss.on('connection', (ws, req) => {
 
-    logger.info('New websocket connection established');
+    // logger.info('New websocket connection established');
 
     const url = new URL(req.url!, `http://${req.headers.host}`);
     let userId: string;
@@ -61,7 +61,7 @@ export function initWss() {
     // });
 
     ws.on('close', () => {
-      logger.log('❌ Client is disconnected');
+      // logger.log('❌ Client is disconnected');
     });
   });
 }

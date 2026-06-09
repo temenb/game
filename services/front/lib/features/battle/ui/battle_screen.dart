@@ -3,9 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:front/features/battle/params/battle_params.dart';
 import 'package:front/features/battle/providers/battle_service_provider.dart';
 import 'package:front/features/battle/services/battle_service.dart';
-import 'package:front/features/profile/params/profile_params.dart';
-import 'package:front/features/profile/providers/profile_provider.dart';
+import 'package:front/features/profile/providers/my_profile_provider.dart';
+import 'package:front/features/profile/widgets/player_name.dart';
 import 'package:front/src/grpc/generated/battle.pb.dart';
+import 'package:front/src/grpc/generated/profile.pb.dart';
+import 'package:front/src/params/client_params.dart';
 import 'package:front/src/providers/jwt_provider.dart';
 
 import '../../battle/providers/battle_stream_provider.dart';
@@ -19,19 +21,16 @@ class BattleScreen extends ConsumerWidget {
 
     return jwtAsync.when(
       data: (jwt) {
-        final ProfileParams profileParams = ProfileParams(jwt);
-        final profileAsync = ref.watch(profileProvider(profileParams));
+        final ClientParams clientParams = ClientParams(jwt);
+        final profileAsync = ref.watch(myProfileProvider(clientParams));
         return profileAsync.when(
           data: (profile) {
-            final battleParams = BattleParams(jwt, profile.id);
+            final battleParams = BattleParams(clientParams, profile.id);
             final battleServiceAsync = ref.watch(
               battleServiceProvider(battleParams),
             );
             return battleServiceAsync.when(
               data: (battleService) {
-                // debugPrint("Profile state: $profileAsync");
-                // debugPrint("Profile state: $profileAsync");
-
                 final battleAsync = ref.watch(
                   battleStreamProvider(battleParams),
                 );
@@ -46,7 +45,9 @@ class BattleScreen extends ConsumerWidget {
                         ),
                         body: _BattleBoard(
                           battle: battle,
+                          profile: profile,
                           battleService: battleService,
+                          // profileService: profileService,
                         ),
                       );
                     } catch (e, st) {
@@ -69,7 +70,7 @@ class BattleScreen extends ConsumerWidget {
             );
           },
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (e, _) => Text("Profile Service error: $e"),
+          error: (e, _) => Text("Profile error: $e"),
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
@@ -82,15 +83,28 @@ class _BattleBoard extends StatelessWidget {
   final BattleObject battle;
   final BattleService battleService;
 
-  const _BattleBoard({required this.battle, required this.battleService});
+  // final ProfileService profileService;
+  final ProfileObject profile;
+
+  // final WidgetRef ref;
+
+  const _BattleBoard({
+    required this.profile,
+    required this.battle,
+    required this.battleService,
+    // required this.profileService,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text('Игроки: ${battle.players.join(" vs ")}'),
+        Text(
+          'Игроки: ${(battle.players.map((id) => PlayerName(profileId: id)).toList()).join(" vs ")}',
+        ),
         Text('Статус: ${battle.status}'),
-        if (battle.winner.isNotEmpty) Text('Победитель: ${battle.winner}'),
+        if (battle.winner.isNotEmpty)
+          Text('Победитель: ${PlayerName(profileId: battle.winner)}'),
         const SizedBox(height: 8),
         Expanded(
           child: GridView.builder(
@@ -99,12 +113,13 @@ class _BattleBoard extends StatelessWidget {
             ),
             itemCount: 9,
             itemBuilder: (context, index) {
-
               debugPrint("Cells raw: ${battle.cells}");
               final cellValue = safeCellAt(battle.cells, index);
               return GestureDetector(
                 onTap: () {
-                  battleService.makeMove(battle.id, index);
+                  if (battleService.canMove(battle)) {
+                    battleService.makeMove(battle, index);
+                  }
                 },
                 child: Container(
                   margin: const EdgeInsets.all(4),
@@ -117,7 +132,9 @@ class _BattleBoard extends StatelessWidget {
                       _renderCell(cellValue),
                       style: TextStyle(
                         fontSize: 32,
-                        color: _cellColor(cellValue), // цвет зависит от значения
+                        color: _cellColor(
+                          cellValue,
+                        ), // цвет зависит от значения
                       ),
                     ),
                   ),
@@ -152,9 +169,9 @@ class _BattleBoard extends StatelessWidget {
   Color _cellColor(BattleCellValue value) {
     switch (value) {
       case BattleCellValue.CELL_X:
-        return Colors.red;   // X красный
+        return Colors.red; // X красный
       case BattleCellValue.CELL_O:
-        return Colors.blue;  // O синий
+        return Colors.blue; // O синий
       case BattleCellValue.CELL_EMPTY:
       default:
         return Colors.white; // пустая клетка белая

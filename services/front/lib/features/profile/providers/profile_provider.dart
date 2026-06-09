@@ -4,10 +4,18 @@ import 'package:front/src/grpc/generated/profile.pb.dart';
 
 import './profile_service_provider.dart';
 
-final profileProvider = FutureProvider.family<ProfileObject, ProfileParams>(
-  (ref, params) async {
-    final service = await ref.read(profileServiceProvider(params).future);
+final profileProvider = FutureProvider.family<ProfileObject, ProfileParams>((
+  ref,
+  params,
+) async {
+  final service = await ref.read(profileServiceProvider(params.clientParams));
 
-    return service.getProfile();
-  },
-);
+  final profileId = params.profileId;
+  final profile = await service.getProfile(profileId);
+
+  if (profile == null) {
+    throw Exception("Profile $profileId not found");
+  }
+
+  return profile;
+});

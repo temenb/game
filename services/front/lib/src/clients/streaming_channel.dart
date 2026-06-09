@@ -44,7 +44,7 @@ abstract class StreamingChannel<T> {
     final uri = Uri.parse(
       'ws://${config.host}:${config.port}/$pathname?token=$jwt',
     );
-    logger.i('Connecting to $uri');
+    // logger.i('Connecting to $uri');
     _channel = WebSocketChannel.connect(uri);
 
     _subscription = _channel.stream.listen(
@@ -64,12 +64,11 @@ abstract class StreamingChannel<T> {
   }
 
   StreamingChannel(this.config, this.jwt) {
-
     connect();
 
     _controller.stream.listen(
-          (data) {
-        logger.i("Controller event: data = $data");
+      (data) {
+        // logger.i("Controller event: data = $data");
       },
       onError: (err, st) {
         logger.e("Controller event: error = $err\n$st");
@@ -79,13 +78,12 @@ abstract class StreamingChannel<T> {
       },
       cancelOnError: false,
     );
-
   }
 
   Stream<T> get messages => _controller.stream;
 
   void send(T message) {
-    logger.i('Sending: $message');
+    // logger.i('Sending: $message');
     _channel.sink.add(message);
   }
 
@@ -95,7 +93,7 @@ abstract class StreamingChannel<T> {
   }
 
   Future<void> close() async {
-    logger.i('WebSocket is going to close');
+    // logger.i('WebSocket is going to close');
     await _subscription.cancel();
     await _channel.sink.close(status.normalClosure);
     await _controller.close();

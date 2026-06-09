@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:front/features/profile/params/profile_params.dart';
+import 'package:front/features/profile/providers/my_profile_provider.dart';
+import 'package:front/src/params/client_params.dart';
 import 'package:front/src/providers/jwt_provider.dart';
-
-import '../providers/profile_provider.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -14,8 +13,8 @@ class ProfileScreen extends ConsumerWidget {
 
     return jwtAsync.when(
       data: (jwt) {
-        final profileParams = ProfileParams(jwt);
-        final profileAsync = ref.watch(profileProvider(profileParams));
+        final clientParams = ClientParams(jwt);
+        final profileAsync = ref.watch(myProfileProvider(clientParams));
 
         return Scaffold(
           appBar: AppBar(title: const Text('Profile')),

@@ -4,31 +4,29 @@ import 'package:front/src/grpc/generated/battle.pb.dart';
 
 import '../../battle/providers/battle_channel_provider.dart';
 
-
-final battleStreamProvider = StreamProvider.family<BattleObject, BattleParams>((ref, params) async* {
+final battleStreamProvider = StreamProvider.family<BattleObject, BattleParams>((
+  ref,
+  params,
+) async* {
   // logger.i('battleStreamProvider');
 
-  final battleChannel = await ref.watch(
-    battleChannelProvider(params).future,
-  );
-  logger.i('battleChannel created');
+  final battleChannel = await ref.watch(battleChannelProvider(params).future);
+  // logger.i('battleChannel created');
 
   try {
-    logger.i('before watch');
+    // logger.i('before watch');
 
-    battleChannel.join(params.profileId);
+    battleChannel.join();
 
-    logger.i('after watch');
+    // logger.i('after watch');
   } catch (e, st) {
     logger.e('watch failed', error: e, stackTrace: st);
     rethrow;
   }
 
-  logger.i('Joined to stream');
+  // logger.i('Joined to stream');
 
   yield* battleChannel.messages;
 
   ref.onDispose(() => battleChannel.close());
-
 });
-

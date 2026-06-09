@@ -1,16 +1,18 @@
+import 'package:front/src/params/client_params.dart';
+
 class BattleParams {
-  final String jwt;
+  final ClientParams clientParams;
   final String profileId;
 
-  BattleParams(this.jwt, this.profileId);
+  BattleParams(this.clientParams, this.profileId);
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is BattleParams &&
-              jwt == other.jwt &&
-              profileId == other.profileId;
+      other is BattleParams &&
+          clientParams == other.clientParams &&
+          profileId == other.profileId;
 
   @override
-  int get hashCode => Object.hash(jwt, profileId);
+  int get hashCode => Object.hash(clientParams, profileId);
 }

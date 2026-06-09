@@ -22,10 +22,8 @@ export const readyz = wrapper(async (req, res) => {
 
 export const anonymousSignIn = wrapper(async (req, res) => {
   const request = req.body as AnonymousSignInRequest;
-  logger.log(request);
 
-
-
+  // logger.log(request);
 
   await authService.anonymousSignIn(request);
   return authService.anonymousSignIn(request)

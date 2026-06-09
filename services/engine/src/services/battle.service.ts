@@ -18,7 +18,7 @@ export function battleStore(): BattleStateStore {
 }
 
 export const battleNew = async (battle: battleGrpc.BattleObject) => {
-  logger.log('New battle started', battle)
+  // logger.log('New battle started', battle)
   battle.cells = Array(9).fill(battleGrpc.BattleCellValue.CELL_EMPTY);
   battle.status = battleGrpc.BattleStatus.ACTIVE;
   battle.winner = "";

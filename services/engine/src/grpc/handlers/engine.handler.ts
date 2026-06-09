@@ -17,7 +17,7 @@ export const battleMove = async (
     await battleService.makeMove(battleMoveRequest);
     callback(null, {});
   } catch (err: any) {
-    logger.log(err);
+    // logger.log(err);
     callbackError(callback, err);
   }
 };
@@ -32,7 +32,7 @@ export const battleNew = async (
     await battleService.battleNew(battle);
     callback(null, {});
   } catch (err: any) {
-    logger.log(err);
+    // logger.log(err);
     callbackError(callback, err);
   }
 };

@@ -1,9 +1,6 @@
 import 'dart:async';
-import 'dart:io';
 
-import 'package:front/features/battle/params/battle_params.dart';
 import 'package:front/src/clients/streaming_channel.dart';
-import 'package:front/src/config/streaming_config.dart';
 import 'package:front/src/grpc/generated/battle.pb.dart';
 import 'package:front/src/grpc/generated/common/empty.pb.dart';
 import 'package:front/src/grpc/generated/engine.pb.dart';
@@ -14,11 +11,11 @@ import 'package:logger/logger.dart';
 final logger = Logger();
 
 class BattleChannel extends StreamingChannel<BattleObject> {
-  late BattleParams battleParams;
+  late String profileId;
   final pathname = 'battle';
 
   messageHandler(List<int> message) {
-    logger.i('Received: $message');
+    // logger.i('Received: $message');
     // try {
     //   // final resp = BattleObject.fromBuffer(message);
     //   // _controller.add(resp);
@@ -28,47 +25,46 @@ class BattleChannel extends StreamingChannel<BattleObject> {
 
     try {
       final resp = BattleStreamResponse.fromBuffer(message);
-      logger.i(resp);
+      // logger.i(resp);
       if (resp.hasBattle()) {
         final battle = resp.battle;
-        logger.i('before battle added to controller');
+        // logger.i('before battle added to controller');
         safeAdd(battle);
-        logger.i('battle added to controller');
+        // logger.i('battle added to controller');
 
-        logger.i('battle added to controller');
+        // logger.i('battle added to controller');
       } else {
-        logger.e('Battle handling went wrong: battle');
+        logger.e('Battle handling went wrong: $resp');
       }
     } catch (e) {
       logger.e('Failed to parse: $e');
     }
   }
 
-  BattleChannel(StreamingConfig config, this.battleParams)
-      : super(config, battleParams.jwt);
+  BattleChannel(super.config, this.profileId, super.jwt);
 
   /// Отправить событие "join"
-  void join(String profileId) {
-    logger.i('Join event');
+  void join() {
+    // logger.i('Join event');
     final joinReq = ProfileIdRequest()..profileId = profileId;
     final req = BattleStreamRequest()..join = joinReq;
-    logger.i(req);
+    // logger.i(req);
     channel.sink.add(req.writeToBuffer());
-    logger.i('Sent join event');
+    // logger.i('Sent join event');
   }
 
   /// Отправить ход
-  void move(String profileId, String battleId, int cellIdx) {
-    logger.i('Move event');
+  void move(String battleId, int cellIdx) {
+    // logger.i('Move event');
     final moveReq = BattleMoveRequest()
       ..battleId = battleId
       ..cellIdx = cellIdx
       ..profileId = profileId;
 
     final req = BattleStreamRequest()..move = moveReq;
-    logger.d(req);
+    // logger.d(req);
     channel.sink.add(req.writeToBuffer());
-    logger.i('Sent profile: $profileId at $cellIdx');
+    // logger.i('Sent profile: $profileId at $cellIdx');
   }
 
   /// Закрыть канал
