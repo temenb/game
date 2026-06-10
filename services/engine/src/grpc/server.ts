@@ -11,9 +11,7 @@ server.addService(EngineService, {
   livez: healthHandler.livez,
   readyz: healthHandler.readyz,
 
-  BattleChannel: engineHandler.battleChannel,
-  // battleMove: engineHandler.battleMove,
-  // battleNew: engineHandler.battleNew,
+  battleChannel: engineHandler.battleChannel,
 });
 
 export default server;

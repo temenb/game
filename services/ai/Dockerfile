@@ -8,12 +8,12 @@ COPY turbo.json  ./
 COPY package.json ./
 COPY pnpm-workspace.yaml ./
 COPY tsconfig.json ./
-COPY services/test/package*.json ./services/test/
-COPY services/test/jest.config.js ./services/test/
-COPY services/test/tsconfig.json ./services/test/
-COPY services/test/src ./services/test/src/
-COPY services/test/__tests__ ./services/test/__tests__/
-COPY services/test/.env ./services/test/.env
+COPY services/ai/package*.json ./services/ai/
+COPY services/ai/jest.config.js ./services/ai/
+COPY services/ai/tsconfig.json ./services/ai/
+COPY services/ai/src ./services/ai/src/
+COPY services/ai/__tests__ ./services/ai/__tests__/
+COPY services/ai/.env ./services/ai/.env
 
 USER root
 

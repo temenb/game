@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+import "common/health.proto";
+import "common/empty.proto";
+
+package ai;
+
+service Auth {
+  rpc Health (common.empty.Empty) returns (common.health.HealthReport);
+  rpc Status (common.empty.Empty) returns (common.health.StatusInfo);
+  rpc Livez (common.empty.Empty) returns (common.health.LiveStatus);
+  rpc Readyz (common.empty.Empty) returns (common.health.ReadyStatus);
+}
+
+
+streaming
+redis
+ai
+postgres
+gateway
+kafka-ui
+battle
+orchestration
+engine
+auth
+profile
+

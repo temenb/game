@@ -38,6 +38,7 @@ export async function battleChannel(
         }
 
         if (event.ping) {
+          // logger.info('Streaming-engine stream Ping');
           // heartbeat — можно просто игнорировать или логировать
         }
       } catch (err: any) {

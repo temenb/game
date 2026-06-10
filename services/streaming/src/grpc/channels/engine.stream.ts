@@ -1,6 +1,7 @@
 import * as engineGrpc from '../generated/engine';
 import config from "../../config/config";
 import * as grpc from '@grpc/grpc-js';
+import logger from "@shared/logger";
 
 
 class EngineStream {
@@ -9,6 +10,7 @@ class EngineStream {
   private reconnectDelay = 1000; // стартовый backoff
   private maxDelay = 30000;
   private heartbeatInterval: NodeJS.Timeout | null = null;
+  private heartbeatPeriod = 5000;
 
   getEngineStream = () => {
     if (!this.stream) {
@@ -19,25 +21,35 @@ class EngineStream {
   }
 
   connect = () => {
+    if (this.stream) {
+      logger.log('Garbage stream was canceled...')
+      this.stream.cancel?.();
+      this.stopHeartbeat();
+    }
+
+    logger.log('Connection stream engine...')
+
     this.client = new engineGrpc.EngineClient(
       config.serviceEngineUrl,
       grpc.credentials.createInsecure()
     );
+
     this.stream = this.client.battleChannel();
 
     this.stream.on('data', (update) => {
+      this.reconnectDelay = 1000
       // транслируем обновления игрокам
     });
 
     this.stream.on('error', (err) => {
-      console.error('Stream error:', err);
+      console.error('Stream error:');
       this.scheduleReconnect();
     });
 
     this.stream.on('end', () => {
       console.warn('Stream ended');
-      this.scheduleReconnect();
     });
+
 
     this.startHeartbeat();
 
@@ -53,8 +65,11 @@ class EngineStream {
   }
 
   scheduleReconnect = () => {
+    // logger.log('scheduleReconnect', this.reconnectDelay);
+    this.stopHeartbeat();
     setTimeout(() => {
       this.reconnectDelay = Math.min(this.reconnectDelay * 2, this.maxDelay);
+
       this.connect();
     }, this.reconnectDelay);
   }
@@ -63,11 +78,12 @@ class EngineStream {
     this.stopHeartbeat();
     this.heartbeatInterval = setInterval(() => {
       if (this.stream) {
+        // logger.log('ping engine stream');
         this.stream.write({
           ping: {timestamp: Date.now()}
         });
       }
-    }, 5000); // каждые 5 секунд
+    }, this.heartbeatPeriod); // каждые 5 секунд
   }
 
   stopHeartbeat = () => {
