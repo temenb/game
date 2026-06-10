@@ -7,6 +7,7 @@ export const config = {
   serviceEngineUrl: process.env.SERVICE_ENGINE_URL || 'engine:50051',
   serviceStreamingUrl: process.env.SERVICE_STREAMING_URL || 'streaming:50051',
   serviceOrchestrationUrl: process.env.SERVICE_ORCHESTRATION_URL || 'orchestration:50051',
+  serviceAiUrl: process.env.SERVICE_AI_URL || 'ai:50051',
   rabbitHost: process.env.RABBIT_HOST || 'rabbit',
   rabbitUser: process.env.RABBIT_USER || 'user',
   rabbitPass: process.env.RABBIT_PASS || 'password',

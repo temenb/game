@@ -18,11 +18,11 @@ service Streaming {
 
 message BattleStreamRequest {
   oneof event {
-    profile.ProfileIdRequest join  = 1;
-    engine.BattleMoveRequest move  = 2;
-    common.empty.Empty       ping  = 3;
-    battle.BattleIdRequest   leave = 4;
-    common.empty.Empty       end   = 5;
+    profile.ProfileIdRequest  join  = 1;
+    engine.BattleMoveRequest  move  = 2;
+    common.empty.Empty        ping  = 3;
+    engine.BattleLeaveRequest leave = 4;
+    common.empty.Empty        end   = 5;
   }
 }
 

@@ -5,13 +5,11 @@ const httpGateway = httpGatewayHost + ':' + httpGatewayPort;
 
 
 export const config = {
+  grpcPort: Number(process.env.GRPC_PORT) || 50051,
   httpGatewayHost: httpGatewayHost,
   httpGatewayPort: httpGatewayPort,
   httpGateway: httpGateway,
   webSocketStreaming: process.env.WEBSOCKET_STREAMING,
-  jwtAccessSecret: process.env.JWT_ACCESS_SECRET || "your_access_secret",
 };
 
 export default config;
-
-

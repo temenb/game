@@ -9,6 +9,7 @@ import 'package:front/src/grpc/generated/battle.pb.dart';
 import 'package:front/src/grpc/generated/profile.pb.dart';
 import 'package:front/src/params/client_params.dart';
 import 'package:front/src/providers/jwt_provider.dart';
+import 'package:front/widgets/turn_timer.dart';
 
 import '../../battle/providers/battle_stream_provider.dart';
 
@@ -37,6 +38,46 @@ class BattleScreen extends ConsumerWidget {
 
                 return battleAsync.when(
                   data: (battle) {
+                    if (battle.status == BattleStatus.FINISHED) {
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (_) => AlertDialog(
+                            title: const Text("Матч завершён"),
+                            content: battle.winner.isEmpty
+                                ? const Text("Ничья")
+                                : Row(
+                                    children: [
+                                      const Text("Победитель: "),
+                                      PlayerName(profileId: battle.winner),
+                                    ],
+                                  ),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  // начать новую игру
+                                  // battleService.startNewBattle(profile.id);
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text("Играть ещё"),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  // выйти в меню
+                                  Navigator.of(context).pop();
+                                  Navigator.of(
+                                    context,
+                                  ).pushReplacementNamed("/");
+                                },
+                                child: const Text("Выйти в меню"),
+                              ),
+                            ],
+                          ),
+                        );
+                      });
+                    }
+
                     try {
                       debugPrint("Battle state: $battle");
                       return Scaffold(
@@ -47,7 +88,6 @@ class BattleScreen extends ConsumerWidget {
                           battle: battle,
                           profile: profile,
                           battleService: battleService,
-                          // profileService: profileService,
                         ),
                       );
                     } catch (e, st) {
@@ -104,15 +144,24 @@ class _BattleBoard extends StatelessWidget {
           children: [
             for (int i = 0; i < battle.players.length; i++) ...[
               PlayerName(profileId: battle.players[i]),
-              if (i < battle.players.length - 1)
-                const Text(' vs '),
+              if (i < battle.players.length - 1) const Text(' vs '),
             ],
           ],
         ),
 
-        Text('Статус: ${battle.status}'),
-        if (battle.winner.isNotEmpty)
-          Text('Победитель: ${PlayerName(profileId: battle.winner)}'),
+        Text('Status: ${battle.status}'),
+
+        battle.winner.isNotEmpty
+            ? Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('Winner: '),
+                  PlayerName(profileId: battle.winner),
+                ],
+              )
+            : (battleService.canMove(battle)
+                  ? TurnTimer(seconds: 20)
+                  : const Text('Not your turn')),
         const SizedBox(height: 8),
         Expanded(
           child: GridView.builder(

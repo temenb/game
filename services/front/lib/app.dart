@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
                 GlobalCupertinoLocalizations.delegate,
               ],
               supportedLocales: S.delegate.supportedLocales,
-              initialRoute: '/battle',
+              initialRoute: '/',
               routes: appRouter,
             ),
             loading: () => const Center(child: CircularProgressIndicator()),

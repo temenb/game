@@ -67,6 +67,19 @@ class BattleChannel extends StreamingChannel<BattleObject> {
     // logger.i('Sent profile: $profileId at $cellIdx');
   }
 
+  /// Отправить ход
+  void leave(String battleId) {
+    // logger.i('Move event');
+    final leaveReq = BattleLeaveRequest()
+      ..battleId = battleId
+      ..profileId = profileId;
+
+    final req = BattleStreamRequest()..leave = leaveReq;
+    // logger.d(req);
+    channel.sink.add(req.writeToBuffer());
+    // logger.i('Sent profile: $profileId at $cellIdx');
+  }
+
   /// Закрыть канал
   Future<void> ping() async {
     final req = BattleStreamRequest()..ping = Empty();

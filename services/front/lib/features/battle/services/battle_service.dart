@@ -16,6 +16,10 @@ class BattleService {
     }
   }
 
+  leave(BattleObject battle) {
+    channel.leave(battle.id);
+  }
+
   canMove(BattleObject battle) {
     if (battle.status != BattleStatus.ACTIVE) {
       return false;

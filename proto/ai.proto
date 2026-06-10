@@ -5,7 +5,7 @@ import "common/empty.proto";
 
 package ai;
 
-service Auth {
+service Ai {
   rpc Health (common.empty.Empty) returns (common.health.HealthReport);
   rpc Status (common.empty.Empty) returns (common.health.StatusInfo);
   rpc Livez (common.empty.Empty) returns (common.health.LiveStatus);
@@ -13,15 +13,4 @@ service Auth {
 }
 
 
-streaming
-redis
-ai
-postgres
-gateway
-kafka-ui
-battle
-orchestration
-engine
-auth
-profile
 

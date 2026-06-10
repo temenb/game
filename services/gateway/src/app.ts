@@ -12,17 +12,17 @@ async function startGrpc() {
       grpc.ServerCredentials.createInsecure(),
       (err, port) => {
         if (err) {
-          logger.error('❌ Ошибка запуска gRPC:', err);
+          logger.error('❌ Failed to start gRPC:', err);
           reject(err);
           return;
         }
-        logger.info(`🟢 gRPC сервер запущен на порту ${port}`);
+        logger.info(`🟢 gRPC server started on port ${port}`);
         resolve();
       }
     );
 
     process.on('SIGINT', () => {
-      logger.info('🛑 Остановка gRPC сервера...');
+      logger.info('🛑 Stopping gRPC server...');
       grpcServer.forceShutdown();
       process.exit(0);
     });
@@ -32,7 +32,7 @@ async function startGrpc() {
 async function startHttp() {
   return new Promise<void>((resolve) => {
     httpApp.listen(config.httpPort, "0.0.0.0", () => {
-      logger.info(`🌐 HTTP сервер запущен на порту ${config.httpPort}`);
+      logger.info(`🌐 HTTP started on port ${config.httpPort}`);
       resolve();
     });
   });
@@ -41,14 +41,14 @@ async function startHttp() {
 async function bootstrap() {
   try {
     await Promise.all([startGrpc(), startHttp()]);
-    logger.info('🚀 Gateway успешно запущен');
+    logger.info('🚀 Gateway successfully started');
   } catch (err) {
-    logger.error('💥 Ошибка запуска Gateway:', err);
+    logger.error('💥 Failed to start Gateway:', err);
     process.exit(1);
   }
 
   process.on('SIGINT', () => {
-    logger.info('🛑 Завершение работы...');
+    logger.info('🛑 Shutting down...');
     grpcServer.forceShutdown();
     process.exit(0);
   });
