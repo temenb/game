@@ -1,5 +1,5 @@
 import * as battleClient from "../grpc/clients/battle.client";
-import FrontBattleStreamRegistry from "../channels/front.battle.stream";
+import FrontBattleStreamRegistry from "../websocket/channels/front.battle.stream";
 import {BattleObject, BattleStatus} from "../grpc/generated/battle";
 import logger from "@shared/logger";
 import * as profileGrpc from "../grpc/generated/profile";

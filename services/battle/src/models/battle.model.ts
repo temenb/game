@@ -21,8 +21,7 @@ export class BattleModel {
   static async findAvailableBattle(profileId: string): Promise<Battle | null> {
     return prisma.battle.findFirst({
       where: {
-        playersCount: 1,
-        status: BattleStatus.Active,
+        status: BattleStatus.New,
         NOT: {players: {has: profileId}},
       },
     });
@@ -31,18 +30,16 @@ export class BattleModel {
   static async joinBattle(
     battleId: string
     , profileId: string
-    , callback: (battle: battleGrpc.BattleObject) => Promise<emptyGrpc.Empty | null>
   ): Promise<Battle> {
     return prisma.$transaction(async (tx) => {
       const updated = await tx.battle.updateMany({
         where: {
           id: battleId,
-          playersCount: 1, // гарантируем, что пока один игрок
-          status: {not: BattleStatus.Finished},
+          status: BattleStatus.New,
         },
         data: {
           players: {push: profileId},
-          playersCount: {increment: 1},
+          status: BattleStatus.Active,
         },
       });
 
@@ -62,7 +59,6 @@ export class BattleModel {
       // logger.log('battle started');
       // logger.log(battle);
 
-      callback(battleToGrpc(battle));
       return battle;
     });
   }
@@ -81,8 +77,7 @@ export class BattleModel {
       data: {
         players: [profileId],
         cells: Array(9).fill(BattleCellValue.EMPTY),
-        playersCount: 1,
-        status: BattleStatus.Active,
+        status: BattleStatus.New,
       },
     });
   }

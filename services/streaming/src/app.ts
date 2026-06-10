@@ -5,6 +5,7 @@ import {createConsumer} from "@shared/kafka";
 import kafkaConfig, {kafkaConsumersConfig} from "./config/kafka.config";
 import {initWss} from "./websocket/server";
 import config from "./config/config";
+import engineStream from "./grpc/channels/engine.stream";
 
 
 const GRPC_PORT = Number(config.grpcPort);
@@ -42,9 +43,15 @@ async function startWebSocket() {
   });
 }
 
+async function startGRpcStreamToEngineService() {
+  return new Promise<void>(() => {
+    engineStream.connect();
+  });
+}
+
 async function bootstrap() {
   try {
-    await Promise.all([startGrpc(), createKafkaConsumers(), startWebSocket()]);
+    await Promise.all([startGrpc(), createKafkaConsumers(), startWebSocket(), startGRpcStreamToEngineService()]);
     logger.info('🚀 Streaming успешно запущен');
   } catch (err) {
     logger.error('💥 Ошибка запуска Streaming:', err);

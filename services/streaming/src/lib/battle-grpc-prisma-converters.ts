@@ -60,8 +60,8 @@ export function battleToGrpc(battle: Battle): battleGrpc.BattleObject {
     players: players,
     status: status,
     winner: battle.winner ?? "",
-    // createdAt: result.createdAt,
-    // updatedAt: result.updatedAt,
+    createdAt: result.createdAt,
+    updatedAt: result.updatedAt,
   };
 }
 
@@ -76,7 +76,8 @@ export function battleToPrisma(battle: battleGrpc.BattleObject) {
     players: players,
     status: status,
     winner: battle.winner ?? "",
-    // createdAt: result.createdAt,
-    // updatedAt: result.updatedAt,
+    createdAt: result.createdAt,
+    updatedAt: result.updatedAt,
   };
 }
+

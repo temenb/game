@@ -17,3 +17,7 @@ export const readyz = async () =>
 export const getMyProfile = async (jwt: string) => {
   return await orchestrationClient.getMyProfile(jwt);
 }
+
+export const getProfile = async (jwt: string, profileId: string) => {
+  return await orchestrationClient.getProfile(jwt, profileId);
+}

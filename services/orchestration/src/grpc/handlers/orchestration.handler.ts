@@ -26,3 +26,24 @@ export const getMyProfile = async (
     callbackError(callback, err);
   }
 };
+
+export const getProfile = async (
+  call: grpc.ServerUnaryCall<profileGrpc.ProfileIdRequest, profileGrpc.ProfileObject>,
+  callback: grpc.sendUnaryData<profileGrpc.ProfileObject>
+) => {
+  try {
+    const {profileId} = call.request;
+
+    // if (!userId) {
+    //   return;
+    // }
+
+    const response = await profileService.getProfile(profileId);
+
+    callback(null, response);
+
+  } catch (err: any) {
+    logger.log(err);
+    callbackError(callback, err);
+  }
+};

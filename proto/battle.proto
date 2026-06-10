@@ -23,6 +23,10 @@ message BattleIdRequest {
   string battleId = 1;
 }
 
+message BattleRequest {
+  BattleObject battle = 1;
+}
+
 enum BattleCellValue {
   CELL_EMPTY = 0;
   CELL_X     = 1;
@@ -30,8 +34,9 @@ enum BattleCellValue {
 }
 
 enum BattleStatus {
-  ACTIVE   = 0;
-  FINISHED = 1;
+  NEW      = 0;
+  ACTIVE   = 1;
+  FINISHED = 2;
 }
 
 message BattleObject {
@@ -40,6 +45,6 @@ message BattleObject {
   repeated string          players    = 3;
   BattleStatus             status     = 4;
   string                   winner     = 5;
-//  google.protobuf.Timestamp createdAt = 6;
-//  google.protobuf.Timestamp updatedAt = 7;
+  int64 createdAt = 6;
+  int64 updatedAt = 7;
 }

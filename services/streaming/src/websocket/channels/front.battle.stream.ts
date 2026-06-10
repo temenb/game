@@ -1,7 +1,6 @@
 import {WebSocket} from 'ws';
-import * as emptyGrpc from '../grpc/generated/common/empty';
-import * as battleGrpc from '../grpc/generated/battle';
-import * as streamingGrpc from '../grpc/generated/streaming';
+import * as battleGrpc from '../../grpc/generated/battle';
+import * as streamingGrpc from '../../grpc/generated/streaming';
 import logger from "@shared/logger";
 
 export default class FrontBattleStreamRegistry {

@@ -46,3 +46,15 @@ export const getMyProfile = (jwt: string): Promise<profileGrpc.ProfileObject | n
     client.getMyProfile(grpcRequest, metadata, cb)
   );
 };
+
+export const getProfile = (jwt: string, profileId: string): Promise<profileGrpc.ProfileObject | null> => {
+  const grpcRequest: profileGrpc.ProfileIdRequest = { profileId };
+
+  const metadata = new grpc.Metadata();
+  metadata.add("authorization", `Bearer ${jwt}`);
+
+  return orchestrationManager.call((client, cb) =>
+    client.getProfile(grpcRequest, metadata, cb)
+  );
+};
+

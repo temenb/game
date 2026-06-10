@@ -2,6 +2,7 @@ syntax = "proto3";
 
 import "common/health.proto";
 import "common/empty.proto";
+import "common/ping.proto";
 import "battle.proto";
 
 package engine;
@@ -12,18 +13,24 @@ service Engine {
   rpc Livez (common.empty.Empty) returns (common.health.LiveStatus);
   rpc Readyz (common.empty.Empty) returns (common.health.ReadyStatus);
 
-//  rpc GetMyBattle (common.empty.Empty) returns (common.empty.Empty);
-  rpc BattleMove (BattleMoveRequest) returns (common.empty.Empty);
-  rpc BattleNew (BattleNewRequest) returns (common.empty.Empty);
+  rpc BattleChannel (stream BattleChannelClientEvent) returns (stream battle.BattleObject);
 }
 
+message BattleChannelClientEvent {
+  battle.BattleRequest      start = 1;
+  BattleMoveRequest         move  = 2;
+  BattleLeaveRequest        leave = 3;
+  common.ping.Ping          ping  = 4;
+}
 
 message BattleMoveRequest {
-  string battleId = 1;
+  string battleId    = 1;
   string profileId   = 2;
-  int32 cellIdx = 3;
+  int32 cellIdx      = 3;
 }
 
-message BattleNewRequest {
-  battle.BattleObject battle = 1;
+message BattleLeaveRequest {
+  string battleId    = 1;
+  string profileId   = 2;
 }
+

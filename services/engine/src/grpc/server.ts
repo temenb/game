@@ -10,8 +10,10 @@ server.addService(EngineService, {
   status: healthHandler.status,
   livez: healthHandler.livez,
   readyz: healthHandler.readyz,
-  battleMove: engineHandler.battleMove,
-  battleNew: engineHandler.battleNew,
+
+  BattleChannel: engineHandler.battleChannel,
+  // battleMove: engineHandler.battleMove,
+  // battleNew: engineHandler.battleNew,
 });
 
 export default server;

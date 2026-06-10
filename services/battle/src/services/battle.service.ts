@@ -1,7 +1,6 @@
 import {Battle} from "@prisma/client";
 import {BattleModel} from "../models/battle.model";
 import {BattleObject} from "../grpc/generated/battle";
-import * as engineClient from "../grpc/clients/engine.client";
 import logger from "@shared/logger";
 
 // import {enqueueEventTx} from "@shared/pg-boss/src/enqueueEvent";
@@ -32,9 +31,7 @@ export async function upsertBattle(profileId: string): Promise<Battle> {
     if (existingSomebodiesBattle) {
       try {
 
-        // logger.log('join battle', existingSomebodiesBattle);
-        const battleNew = async (battle: BattleObject) => await engineClient.battleNew(battle);
-        return await BattleModel.joinBattle(existingSomebodiesBattle.id, profileId, battleNew);
+        return await BattleModel.joinBattle(existingSomebodiesBattle.id, profileId);
       } catch (e) {
         logger.log(e);
         // await enqueueEventTx(kafkaProducersConfig.topicBattleStarted, battleToGrpc(battle), tx);

@@ -7,32 +7,54 @@ import {callbackError} from './callback.error';
 import logger from "@shared/logger";
 
 
-export const battleMove = async (
-  call: grpc.ServerUnaryCall<engineGrpc.BattleMoveRequest, emptyGrpc.Empty>,
-  callback: grpc.sendUnaryData<emptyGrpc.Empty>
-) => {
+
+export async function battleChannel(
+  call: grpc.ServerDuplexStream<engineGrpc.BattleChannelClientEvent, battleGrpc.BattleObject>
+) {
   try {
-    const battleMoveRequest = call.request;
+    // слушаем входящие события от Streaming
+    call.on("data", async (event: engineGrpc.BattleChannelClientEvent) => {
+      try {
+        if (event.start) {
+          const battle: battleGrpc.BattleObject = event.start.battle as battleGrpc.BattleObject;
 
-    await battleService.makeMove(battleMoveRequest);
-    callback(null, {});
+          const updated = await battleService.battleNew(battle);
+          if (updated) call.write(updated);
+
+        }
+
+        if (event.move) {
+
+          const battleMoveRequest = event.move as engineGrpc.BattleMoveRequest;
+
+          const updated = await battleService.makeMove(battleMoveRequest);
+
+          if (updated) call.write(updated);
+        }
+
+        if (event.leave) {
+          const updated = await battleService.leaveBattle(event.leave.profileId, event.leave.battleId);
+          if (updated) call.write(updated);
+        }
+
+        if (event.ping) {
+          // heartbeat — можно просто игнорировать или логировать
+        }
+      } catch (err: any) {
+        console.error("Event error:", err);
+      }
+    });
+
+    call.on("end", () => {
+      call.end();
+    });
+
+    call.on("error", (err) => {
+      console.error("Stream error:", err);
+      call.end();
+    });
   } catch (err: any) {
-    // logger.log(err);
-    callbackError(callback, err);
+    console.error("battleChannel error:", err);
+    call.end();
   }
-};
-
-export const battleNew = async (
-  call: grpc.ServerUnaryCall<engineGrpc.BattleNewRequest, emptyGrpc.Empty>,
-  callback: grpc.sendUnaryData<emptyGrpc.Empty>
-) => {
-  try {
-    const battle: battleGrpc.BattleObject = call.request.battle as battleGrpc.BattleObject;
-
-    await battleService.battleNew(battle);
-    callback(null, {});
-  } catch (err: any) {
-    // logger.log(err);
-    callbackError(callback, err);
-  }
-};
+}

@@ -99,9 +99,17 @@ class _BattleBoard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(
-          'Игроки: ${(battle.players.map((id) => PlayerName(profileId: id)).toList()).join(" vs ")}',
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            for (int i = 0; i < battle.players.length; i++) ...[
+              PlayerName(profileId: battle.players[i]),
+              if (i < battle.players.length - 1)
+                const Text(' vs '),
+            ],
+          ],
         ),
+
         Text('Статус: ${battle.status}'),
         if (battle.winner.isNotEmpty)
           Text('Победитель: ${PlayerName(profileId: battle.winner)}'),

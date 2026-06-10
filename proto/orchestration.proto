@@ -13,4 +13,5 @@ service Orchestration {
   rpc Readyz (common.empty.Empty) returns (common.health.ReadyStatus);
 
   rpc GetMyProfile (common.empty.Empty) returns (profile.ProfileObject);
+  rpc GetProfile (profile.ProfileIdRequest) returns (profile.ProfileObject);
 }

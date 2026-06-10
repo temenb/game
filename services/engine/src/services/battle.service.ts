@@ -26,6 +26,8 @@ export const battleNew = async (battle: battleGrpc.BattleObject) => {
   await battleStore().set(battle);
   await enqueueEvent(kafkaProducersConfig.topicBattleUpdated, battle);
 
+  return battle;
+
 };
 
 function getSymbolForUser(battle: battleGrpc.BattleObject, move: engineGrpc.BattleMoveRequest): battleGrpc.BattleCellValue {
@@ -76,19 +78,10 @@ function isDraw(battle: battleGrpc.BattleObject): boolean {
   return !battle.cells.includes(battleGrpc.BattleCellValue.CELL_EMPTY);
 }
 
-// export const refreshBattle = async  (battleId: string): battleGrpc.BattleObject {
-//   return await  battleClient.getBattle()
-// }
-
 export const makeMove = async (move: engineGrpc.BattleMoveRequest) => {
   const battle = await battleStore().get(move.battleId);
 
   if (!battle) {
-    // battle = battleService
-    
-    
-    
-    
     throw new Error(`Battle ${move.battleId} not found`);
   }
 
@@ -111,4 +104,29 @@ export const makeMove = async (move: engineGrpc.BattleMoveRequest) => {
   }
 
   await enqueueEvent(kafkaProducersConfig.topicBattleUpdated, battle);
+
+  return battle;
+};
+
+export const leaveBattle = async (profileId: string, battleId: string) => {
+  const battle = await battleStore().get(battleId);
+
+  if (!battle) {
+    throw new Error(`Battle ${battleId} not found`);
+  }
+
+  if (!battle.players.includes(profileId)) {
+    throw new Error(`Battle ${battleId} doesnt have player ${profileId}`);
+  }
+  const winner = battle.players.find((id) => id !== profileId);
+  battle.winner = winner ?? "";
+
+  battle.status = battleGrpc.BattleStatus.FINISHED;
+
+  await battleStore().remove(battle.id);
+
+  await enqueueEvent(kafkaProducersConfig.topicBattleUpdated, battle);
+
+  return battle;
+
 };

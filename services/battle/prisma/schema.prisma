@@ -15,6 +15,7 @@ enum BattleCellValue {
 }
 
 enum BattleStatus {
+  New
   Active
   Finished
 }
@@ -22,7 +23,6 @@ enum BattleStatus {
 model Battle {
   id           String   @id @default(uuid())
   players      String[]
-  playersCount Int
   cells        BattleCellValue[]
   status       BattleStatus
   winner       String?

@@ -12,3 +12,8 @@ export const getProfileByUser = (userId: string): Promise<profileGrpc.ProfileObj
   const grpcRequest: authGrpc.UserIdRequest = {userId};
   return profileManager.call((client, cb) => client.getProfileByUser(grpcRequest, cb));
 };
+
+export const getProfile = (profileId: string): Promise<profileGrpc.ProfileObject | null> => {
+  const grpcRequest: profileGrpc.ProfileIdRequest = {profileId};
+  return profileManager.call((client, cb) => client.getProfile(grpcRequest, cb));
+};

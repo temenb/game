@@ -11,6 +11,7 @@ server.addService(OrchestrationService, {
   livez: healthHandler.livez,
   readyz: healthHandler.readyz,
   getMyProfile: orchestrationHandler.getMyProfile,
+  getProfile: orchestrationHandler.getProfile,
 });
 
 export default server;

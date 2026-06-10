@@ -1,11 +1,13 @@
 import type {WebSocket} from "ws";
 import * as streamingGrpc from "../../grpc/generated/streaming";
 import * as battleService from "../../services/battle.service";
-import * as engineService from "../../services/engine.service";
+import * as engineGrpc from "../../grpc/generated/engine";
+import * as battleGrpc from "../../grpc/generated/battle";
 import logger from "@shared/logger";
-import FrontBattleStreamRegistry from "../../channels/front.battle.stream";
-import {ErrorObject} from "../../grpc/generated/common/error";
+import FrontBattleStreamRegistry from "../channels/front.battle.stream";
 import * as profileService from "../../services/profile.service";
+import {ErrorObject} from "../../grpc/generated/common/error";
+import engineStream from "../../grpc/channels/engine.stream";
 
 
 async function isAllowedUser(userId: string, profileId: string) {
@@ -39,6 +41,11 @@ export async function battleHandler(ws: WebSocket, userId: string, payload: stre
     FrontBattleStreamRegistry.setBattleStream(battle.id, ws);
     // logger.log("Battle stream was set:" + battle.id);
     try {
+      if (battle.status == battleGrpc.BattleStatus.ACTIVE) {
+        const grpcRequest = engineGrpc.BattleChannelClientEvent.create({start: battleGrpc.BattleRequest.create({battle})})
+        engineStream.write(grpcRequest);
+      }
+
       FrontBattleStreamRegistry.writeBattleStreams(battle);
     } catch (e) {
       logger.error(String(e));
@@ -59,34 +66,36 @@ export async function battleHandler(ws: WebSocket, userId: string, payload: stre
       ws.send(buffer);
       return;
     }
-    engineService.makeMove(payload.move);
+
+    const grpcRequest = engineGrpc.BattleChannelClientEvent.create({
+      move: payload.move,
+    });
+
+    engineStream.write(grpcRequest);
+
   }
 
   if (payload.ping) {
     ///just ignore
   }
 
-  // if (payload.leave) {
-  //   const battleId = event.leave.battleId;
-  //   const streams = battleStreams.get(battleId);
-  //   if (streams) {
-  //     streams.delete(call);
-  //     if (streams.size === 0) {
-  //       battleStreams.delete(battleId);
-  //     }
-  //   }
-  //   call.end();
-  // }
-  //
-  // if (payload.end) {
-  //   const battleId = event.end.battleId;
-  //   const streams = battleStreams.get(battleId);
-  //   if (streams) {
-  //     for (const stream of streams) {
-  //       stream.end();
-  //     }
-  //     battleStreams.delete(battleId);
-  //   }
-  // }
+  if (payload.leave) {
+    const grpcRequest = engineGrpc.BattleChannelClientEvent.create({
+      leave: engineGrpc.BattleLeaveRequest.create(payload.leave),
+    });
+
+    engineStream.write(grpcRequest);
+
+
+    // const battleId = event.leave.battleId;
+    // const streams = battleStreams.get(battleId);
+    // if (streams) {
+    //   streams.delete(call);
+    //   if (streams.size === 0) {
+    //     battleStreams.delete(battleId);
+    //   }
+    // }
+    // call.end();
+  }
 }
 

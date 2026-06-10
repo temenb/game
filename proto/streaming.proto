@@ -2,6 +2,7 @@ syntax = "proto3";
 
 import "common/health.proto";
 import "common/empty.proto";
+import "common/error.proto";
 import "battle.proto";
 import "profile.proto";
 import "engine.proto";
@@ -27,12 +28,8 @@ message BattleStreamRequest {
 
 message BattleStreamResponse {
   oneof event {
-    battle.BattleObject battle  = 1;
-    common.empty.Empty  ping    = 1;
+    battle.BattleObject      battle  = 1;
+    common.empty.Empty       ping    = 2;
+    common.error.ErrorObject error   = 3;
   }
-}
-
-message DataStreamResponse {
-  string type = 1;
-  string data = 2;
 }
