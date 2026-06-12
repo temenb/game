@@ -1,60 +1,12 @@
 import * as battleGrpc from "../../src/grpc/generated/battle";
-import * as profileGrpc from "../../src/grpc/generated/profile";
 import * as streamingGrpc from "../../src/grpc/generated/streaming";
 import config from "../../src/config/config";
 import jwt from "jsonwebtoken";
 import WebSocket from "ws";
-import * as http from "node:http";
-import logger from "@shared/logger";
-import {BattleStreamRequest} from "../../src/grpc/generated/streaming";
+import * as gatewayClient from "../../src/http/clients/gateway.client.ts";
 
 function delay(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-async function gatewayRequest(uri: string, request: object, method?: string, jwt?: string): Promise<any> {
-  return new Promise((resolve, reject) => {
-    const data = JSON.stringify(request);
-
-    let headers: Record<string, string | number> = {
-      "Content-Type": "application/json",
-      "Content-Length": Buffer.byteLength(data),
-    };
-
-    if (jwt) {
-      headers["Authorization"] = "Bearer " + jwt;
-    }
-
-    if (!method) {
-      method = 'GET';
-    }
-
-    const options = {
-      hostname: config.httpGatewayHost,
-      port: Number(config.httpGatewayPort),
-      path: `/${uri}`,
-      method: method,
-      headers,
-    };
-
-    const req = http.request(options, (res) => {
-      let body = "";
-      res.on("data", (chunk) => (body += chunk));
-      res.on("end", () => {
-        try {
-          console.log(body);
-          const response = JSON.parse(body);
-          resolve(response);
-        } catch (err) {
-          reject(err);
-        }
-      });
-    });
-
-    req.on("error", (err) => reject(err));
-    req.write(data);
-    req.end();
-  });
 }
 
 describe("Gateway Service", () => {
@@ -67,8 +19,8 @@ describe("Gateway Service", () => {
     console.log(deviceId1);
     console.log(deviceId2);
 
-    const auth1 = await gatewayRequest("auth/anonymousSignIn", {deviceId: deviceId1}, "POST");
-    const auth2 = await gatewayRequest("auth/anonymousSignIn", {deviceId: deviceId2}, "POST");
+    const auth1 = await gatewayClient.signIn(deviceId1);
+    const auth2 = await gatewayClient.signIn(deviceId2);
 
 
     console.log(auth1);
@@ -88,8 +40,8 @@ describe("Gateway Service", () => {
 
     // await delay(5000);
 
-    const profile1 = await gatewayRequest("profile/getMyProfile", {}, "GET", auth1.accessToken);
-    const profile2 = await gatewayRequest("profile/getMyProfile", {}, "GET", auth2.accessToken);
+    const profile1 = await gatewayClient.fetchProfile(auth1.accessToken);
+    const profile2 = await gatewayClient.fetchProfile(auth2.accessToken);
 
     console.log(profile1);
 

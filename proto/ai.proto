@@ -12,5 +12,7 @@ service Ai {
   rpc Readyz (common.empty.Empty) returns (common.health.ReadyStatus);
 }
 
-
+message ConnectingRequest {
+  string battleId = 1;
+}
 

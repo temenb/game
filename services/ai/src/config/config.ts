@@ -10,6 +10,7 @@ export const config = {
   httpGatewayPort: httpGatewayPort,
   httpGateway: httpGateway,
   webSocketStreaming: process.env.WEBSOCKET_STREAMING,
+  deviceId: process.env.DEVICE_ID || 'bot-device-id',
 };
 
 export default config;

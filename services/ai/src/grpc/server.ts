@@ -9,7 +9,6 @@ server.addService(AiService, {
   status: healthHandler.status,
   livez: healthHandler.livez,
   readyz: healthHandler.readyz,
-  // getMyProfile: testHandler.getMyProfile,
 });
 
 export default server;
