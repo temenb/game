@@ -20,6 +20,15 @@ importers:
       '@bufbuild/protobuf':
         specifier: ^2.11.0
         version: 2.11.0
+      '@prisma/adapter-pg':
+        specifier: ^7.6.0
+        version: 7.6.0
+      '@prisma/client':
+        specifier: ^6.19.3
+        version: 6.19.3(prisma@6.19.3)(typescript@5.9.3)
+      '@shared/kafka':
+        specifier: workspace:*
+        version: link:../../shared/kafka
       '@shared/logger':
         specifier: workspace:*
         version: link:../../shared/logger
@@ -32,6 +41,12 @@ importers:
       jsonwebtoken:
         specifier: ^9.0.3
         version: 9.0.3
+      kafkajs:
+        specifier: ^2.2.4
+        version: 2.2.4
+      pg-boss:
+        specifier: ^12.15.0
+        version: 12.15.0
       ws:
         specifier: ^8.21.0
         version: 8.21.0
@@ -66,6 +81,9 @@ importers:
       nodemon:
         specifier: ^3.1.14
         version: 3.1.14
+      prisma:
+        specifier: ^6.19.3
+        version: 6.19.3(typescript@5.9.3)
       supertest:
         specifier: ^7.2.2
         version: 7.2.2
@@ -673,6 +691,9 @@ importers:
       '@shared/grpc-client-manager':
         specifier: workspace:*
         version: link:../../shared/grpc-client-manager
+      '@shared/kafka':
+        specifier: workspace:*
+        version: link:../../shared/kafka
       '@shared/logger':
         specifier: workspace:*
         version: link:../../shared/logger
@@ -685,6 +706,9 @@ importers:
       jsonwebtoken:
         specifier: ^9.0.3
         version: 9.0.3
+      kafkajs:
+        specifier: ^2.2.4
+        version: 2.2.4
       morgan:
         specifier: ^1.10.1
         version: 1.10.1
@@ -1975,11 +1999,12 @@ packages:
     resolution: {integrity: sha512-+qIYRKdNYJwY3vRCZMdJbPLJAtGjQBudzZzdzwQYkEPQd+PJGixUL5QfvCLDaULoLv+RhT3LDkwEfKaAkgSmNQ==}
     dependencies:
       undici-types: 7.19.2
+    dev: true
 
   /@types/pg@8.20.0:
     resolution: {integrity: sha512-bEPFOaMAHTEP1EzpvHTbmwR8UsFyHSKsRisLIHVMXnpNefSbGA1bD6CVy+qKjGSqmZqNqBDV2azOBo8TgkcVow==}
     dependencies:
-      '@types/node': 25.6.0
+      '@types/node': 24.12.0
       pg-protocol: 1.13.0
       pg-types: 2.2.0
     dev: false
@@ -5756,6 +5781,7 @@ packages:
 
   /undici-types@7.19.2:
     resolution: {integrity: sha512-qYVnV5OEm2AW8cJMCpdV20CDyaN3g0AjDlOGf1OW4iaDEx8MwdtChUp4zu4H0VP3nDRF/8RKWH+IPp9uW0YGZg==}
+    dev: true
 
   /unpipe@1.0.0:
     resolution: {integrity: sha512-pjy2bYhSsufwWlKwPc+l3cN7+wuJlK6uz0YdJEOlQDbl6jo/YlPi4mb8agUkVC8BF7V8NuzeyPNqRksA3hztKQ==}

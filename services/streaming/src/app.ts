@@ -2,10 +2,12 @@ import grpcServer from './grpc/server';
 import * as grpc from '@grpc/grpc-js';
 import logger from '@shared/logger';
 import {createConsumer} from "@shared/kafka";
-import kafkaConfig, {kafkaConsumersConfig} from "./config/kafka.config";
+import kafkaConfig, {kafkaConsumersConfig, kafkaProducersConfig} from "./config/kafka.config";
 import {initWss} from "./websocket/server";
 import config from "./config/config";
 import engineStream from "./grpc/channels/engine.stream";
+import {initBoss, startWorker} from "@shared/pg-boss";
+import pgBossConfig from "./config/pg.boss.config";
 
 
 const GRPC_PORT = Number(config.grpcPort);
@@ -49,9 +51,17 @@ async function startGRpcStreamToEngineService() {
   });
 }
 
+async function startPgBoss() {
+  await initBoss(pgBossConfig, async () => {
+    for (const topicConfig of Object.values(kafkaProducersConfig)) {
+      await startWorker(kafkaConfig, topicConfig);
+    }
+  });
+}
+
 async function bootstrap() {
   try {
-    await Promise.all([startGrpc(), createKafkaConsumers(), startWebSocket(), startGRpcStreamToEngineService()]);
+    await Promise.all([startGrpc(), startPgBoss(), createKafkaConsumers(), startWebSocket(), startGRpcStreamToEngineService()]);
     logger.info('🚀 Streaming successfully started');
   } catch (err) {
     logger.error('💥 Failed to start Streaming:', err);

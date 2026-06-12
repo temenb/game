@@ -19,6 +19,7 @@
     "@types/supertest": "^6.0.3",
     "fast-glob": "^3.3.3",
     "jest": "^30.3.0",
+    "prisma": "^6.19.3",
     "nodemon": "^3.1.14",
     "supertest": "^7.2.2",
     "ts-jest": "^29.4.9",
@@ -33,7 +34,12 @@
     "@shared/logger": "workspace:*",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
+    "@prisma/adapter-pg": "^7.6.0",
+    "@prisma/client": "^6.19.3",
     "jsonwebtoken": "^9.0.3",
+    "pg-boss": "^12.15.0",
+    "@shared/kafka": "workspace:*",
+    "kafkajs": "^2.2.4",
     "ws": "^8.21.0"
   }
 }

@@ -16,8 +16,8 @@ class BattleService {
     }
   }
 
-  leave() {
-    channel.leave();
+  connectAi() {
+    channel.connectAi();
   }
 
   canMove(BattleObject battle) {

@@ -6,9 +6,9 @@ const kafkaConfig = {
   groupId: process.env.KAFKA_GROUP_ID || 'streaming-service',
 };
 
-// export const kafkaProducersConfig = {
-//   topicBattleStarted: process.env.KAFKA_TOPIC_BATTLE_STARTED || 'battle.started',
-// };
+export const kafkaProducersConfig = {
+  topicAiConnectingRequest: process.env.KAFKA_TOPIC_AI_CONNECTING_REQUEST || 'ai.connecting-request',
+};
 
 export const kafkaConsumersConfig = {
   battleUpdated: {

@@ -1,5 +1,6 @@
 import {WebSocket} from 'ws';
 import * as battleGrpc from '../../grpc/generated/battle';
+import * as emptyGrpc from '../../grpc/generated/common/empty';
 import * as streamingGrpc from '../../grpc/generated/streaming';
 import logger from "@shared/logger";
 
@@ -42,6 +43,8 @@ export default class FrontBattleStreamRegistry {
 
     // любое сообщение от клиента сбрасывает таймер
     socket.on("message", () => this.resetHeartbeat(socket));
+    logger.info("Stream is opened");
+
   };
 
 
@@ -85,31 +88,12 @@ export default class FrontBattleStreamRegistry {
     return this.battleStreams.get(battleId);
   }
 
-  static getRandomBattleStream(): WebSocket | undefined {
-    for (const streams of this.battleStreams.values()) {
-      for (const stream of streams) {
-        return stream; // вернёт первый найденный
-      }
-    }
-    return undefined;
-    // const allStreams: WebSocket[] = [];
-    //
-    // for (const streams of this.battleStreams.values()) {
-    //   allStreams.push(...streams);
-    // }
-    //
-    // if (allStreams.length === 0) return undefined;
-    //
-    // const randomIndex = Math.floor(Math.random() * allStreams.length);
-    // return allStreams[randomIndex];
-  }
-
   static encodeResponse(type: string, data?: any) {
     switch (type) {
       case 'battle':
         return streamingGrpc.BattleStreamResponse.encode({ battle: data }).finish();
       case 'ping':
-        return streamingGrpc.BattleStreamResponse.encode({ battle: data }).finish();
+        return emptyGrpc.Empty.encode({}).finish();
       default:
         logger.error(`Unknown type: ${type}`);
         return undefined;

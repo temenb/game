@@ -76,7 +76,12 @@ export async function battleHandler(ws: WebSocket, userId: string, payload: stre
   }
 
   if (payload.ping) {
-    ///just ignore
+    // FrontBattleStreamRegistry.writeDataStreams(battle.id, 'ping', {});
+  }
+
+  if (payload.connectAi) {
+
+    // FrontBattleStreamRegistry.writeDataStreams(battle.id, 'ping', {});
   }
 
   if (payload.leave) {

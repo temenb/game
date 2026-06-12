@@ -153,27 +153,40 @@ class _BattleBoard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            for (int i = 0; i < battle.players.length; i++) ...[
-              PlayerName(profileId: battle.players[i]),
-              if (i < battle.players.length - 1) const Text(' vs '),
+        if (battle.players.length > 1) ...[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              for (int i = 0; i < battle.players.length; i++) ...[
+                PlayerName(profileId: battle.players[i]),
+                if (i < battle.players.length - 1) const Text(' vs '),
+              ],
             ],
-          ],
-        ),
-
-        battle.winner.isNotEmpty
-            ? Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text('Winner: '),
-                  PlayerName(profileId: battle.winner),
-                ],
-              )
-            : (battleService.canMove(battle)
-                  ? TurnTimer(seconds: 20, battleService: battleService)
-                  : const Text('Not your turn')),
+          ),
+          battle.winner.isNotEmpty
+              ? Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text('Winner: '),
+              PlayerName(profileId: battle.winner),
+            ],
+          )
+              : (battleService.canMove(battle)
+              ? TurnTimer(seconds: 20, battleService: battleService)
+              : const Text('Not your turn')),
+        ] else ...[
+          Row(
+            children: [
+              const Text('Waiting for rival '),
+              TextButton(
+                onPressed: () {
+                  battleService.connectAi(battle);
+                },
+                child: const Text('(Play with AI)'),
+              ),
+            ],
+          ),
+        ],
         const SizedBox(height: 8),
         Expanded(
           child: GridView.builder(
