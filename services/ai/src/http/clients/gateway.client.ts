@@ -1,6 +1,6 @@
 import config from "../../config/config";
 import http from "node:http";
-import * as grpcAuthO from "../../grpc/generated/auth";
+import * as grpcAuth from "../../grpc/generated/auth";
 
 export async function gatewayRequest(uri: string, request: object, method?: string, jwt?: string): Promise<any> {
   return new Promise((resolve, reject) => {
@@ -49,4 +49,4 @@ export async function gatewayRequest(uri: string, request: object, method?: stri
 
 export const signIn = async (deviceId: string) => await gatewayRequest("auth/anonymousSignIn", {deviceId}, "POST");
 
-export const fetchProfile = async (auth: grpcAuthO.AuthObject) => await gatewayRequest("profile/getMyProfile", {}, "GET", auth.accessToken);
+export const fetchProfile = async (auth: grpcAuth.AuthObject) => await gatewayRequest("profile/getMyProfile", {}, "GET", auth.accessToken);

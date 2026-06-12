@@ -4,6 +4,7 @@ import logger from '@shared/logger';
 import config from "./config/config";
 import {createConsumer} from "@shared/kafka";
 import kafkaConfig, {kafkaConsumersConfig} from "./config/kafka.config";
+import {getWebSoket} from "./services/ai.service";
 
 
 async function startGrpc() {
@@ -40,9 +41,15 @@ async function createKafkaConsumers() {
   );
 }
 
+async function createWebSocketStream() {
+  return new Promise<void>(async (resolve, reject) => {
+    await getWebSoket();
+  });
+}
+
 async function bootstrap() {
   try {
-    await Promise.all([startGrpc(), createKafkaConsumers()]);
+    await Promise.all([startGrpc(), createKafkaConsumers(), createWebSocketStream()]);
     logger.info('🚀 Ai successfully started ');
   } catch (err) {
     logger.error('💥 Failed to start Ai:', err);
