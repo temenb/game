@@ -1,10 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
+import 'package:front/features/battle/services/battle_service.dart';
 
 class TurnTimer extends StatefulWidget {
   final int seconds;
-  const TurnTimer({super.key, this.seconds = 20});
+  final BattleService battleService;
+
+  const TurnTimer({super.key, this.seconds = 20, required this.battleService});
 
   @override
   State<TurnTimer> createState() => _TurnTimerState();
@@ -23,7 +26,7 @@ class _TurnTimerState extends State<TurnTimer> {
         setState(() => remaining--);
       } else {
         t.cancel();
-        // здесь можно вызвать battleService.autoMove() или передать ход
+        widget.battleService.leave();
       }
     });
   }

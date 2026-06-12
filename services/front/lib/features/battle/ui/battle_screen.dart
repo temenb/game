@@ -13,11 +13,18 @@ import 'package:front/widgets/turn_timer.dart';
 
 import '../../battle/providers/battle_stream_provider.dart';
 
-class BattleScreen extends ConsumerWidget {
+class BattleScreen extends ConsumerStatefulWidget {
   const BattleScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<BattleScreen> createState() => _BattleScreenState();
+}
+
+class _BattleScreenState extends ConsumerState<BattleScreen> {
+  late BattleService battleService;
+
+  @override
+  Widget build(BuildContext context) {
     final jwtAsync = ref.watch(jwtProvider);
 
     return jwtAsync.when(
@@ -31,7 +38,8 @@ class BattleScreen extends ConsumerWidget {
               battleServiceProvider(battleParams),
             );
             return battleServiceAsync.when(
-              data: (battleService) {
+              data: (service) {
+                battleService = service;
                 final battleAsync = ref.watch(
                   battleStreamProvider(battleParams),
                 );
@@ -117,6 +125,12 @@ class BattleScreen extends ConsumerWidget {
       error: (e, _) => Text("Auth error: $e"),
     );
   }
+
+  @override
+  void dispose() {
+    battleService?.leave();
+    super.dispose();
+  }
 }
 
 class _BattleBoard extends StatelessWidget {
@@ -149,8 +163,6 @@ class _BattleBoard extends StatelessWidget {
           ],
         ),
 
-        Text('Status: ${battle.status}'),
-
         battle.winner.isNotEmpty
             ? Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -160,7 +172,7 @@ class _BattleBoard extends StatelessWidget {
                 ],
               )
             : (battleService.canMove(battle)
-                  ? TurnTimer(seconds: 20)
+                  ? TurnTimer(seconds: 20, battleService: battleService)
                   : const Text('Not your turn')),
         const SizedBox(height: 8),
         Expanded(

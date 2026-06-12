@@ -1,13 +1,14 @@
 import logger from '@shared/logger';
 import {createProducer, KafkaConfig} from "@shared/kafka";
 import {Job} from 'pg-boss';
+import {PgBossConfig} from "@shared/pg-boss/src/types";
 
 const { PgBoss } = require('pg-boss');
 export const pgBossKafkaEventPrefix = 'event.';
 
 let _boss: typeof PgBoss | null = null;
 
-export async function initBoss(cb: () => void): Promise<typeof PgBoss> {
+export async function initBoss(pbBossConfig: PgBossConfig, cb: () => void): Promise<typeof PgBoss> {
   // logger.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!boss');
   // logger.log(_boss);
   if (!_boss) {
@@ -17,6 +18,10 @@ export async function initBoss(cb: () => void): Promise<typeof PgBoss> {
 
       _boss = new PgBoss({
         connectionString: process.env.DATABASE_URL,
+        max: pbBossConfig.max || 5,
+        newConnectionTimeoutSeconds: pbBossConfig.newConnectionTimeoutSeconds || 30,
+        maintenanceIntervalSeconds: pbBossConfig.maintenanceIntervalSeconds || 60,
+        applicationName: pbBossConfig.applicationName || 'pgboss',
       }) as typeof PgBoss;
 
       // logger.log(process.env.DATABASE_URL);

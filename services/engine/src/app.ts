@@ -5,6 +5,7 @@ import kafkaConfig, {kafkaConsumersConfig, kafkaProducersConfig} from "./config/
 import {initBoss, startWorker} from "@shared/pg-boss";
 import {initRedis} from "./lib/redis-client";
 import {StoreRegistry} from "./services/store-registry";
+import pgBossConfig from "./config/pg.boss.config";
 
 const GRPC_PORT = process.env.GRPC_PORT ?? '50051';
 
@@ -26,7 +27,7 @@ async function startGrpc() {
 }
 
 async function startPgBoss() {
-  await initBoss(async () => {
+await initBoss(pgBossConfig, async () => {
     for (const topicConfig of Object.values(kafkaProducersConfig)) {
       await startWorker(kafkaConfig, topicConfig);
     }

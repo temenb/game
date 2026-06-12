@@ -16,8 +16,8 @@ class BattleService {
     }
   }
 
-  leave(BattleObject battle) {
-    channel.leave(battle.id);
+  leave() {
+    channel.leave();
   }
 
   canMove(BattleObject battle) {

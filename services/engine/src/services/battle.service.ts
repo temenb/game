@@ -112,6 +112,7 @@ export const leaveBattle = async (profileId: string, battleId: string) => {
   const battle = await battleStore().get(battleId);
 
   if (!battle) {
+
     throw new Error(`Battle ${battleId} not found`);
   }
 
