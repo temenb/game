@@ -62,6 +62,8 @@ export async function battleHandler(ws: WebSocket, profileId: string, payload: s
   if (payload.move) {
     // logger.log("Battle move event");
 
+    const battleId = FrontBattleStreamRegistry.getBattleIdByStream(ws);
+
     // try {
     //   await isAllowedUser(userId, payload.move.profileId)
     // } catch (error) {
@@ -75,7 +77,11 @@ export async function battleHandler(ws: WebSocket, profileId: string, payload: s
     // }
 
     const grpcRequest = engineGrpc.BattleChannelClientEvent.create({
-      move: payload.move,
+      move: engineGrpc.BattleMoveRequest.create({
+        profileId: profileId,
+        battleId: battleId,
+        cellIdx: payload.move.cellIdx
+      }),
     });
 
     engineStream.write(grpcRequest);
@@ -93,7 +99,10 @@ export async function battleHandler(ws: WebSocket, profileId: string, payload: s
 
   if (payload.leave) {
     const grpcRequest = engineGrpc.BattleChannelClientEvent.create({
-      leave: engineGrpc.BattleLeaveRequest.create(payload.leave),
+      leave: engineGrpc.BattleLeaveRequest.create({
+        battleId: FrontBattleStreamRegistry.getBattleIdByStream(ws),
+        profileId,
+      }),
     });
 
     engineStream.write(grpcRequest);

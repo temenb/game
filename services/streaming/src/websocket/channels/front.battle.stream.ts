@@ -93,6 +93,18 @@ export default class FrontBattleStreamRegistry {
     return this.battleStreams.get(battleId);
   }
 
+  static getBattleIdByStream(
+    ws: WebSocket
+  ): string | undefined {
+    return this.socketToBattle.get(ws);
+  }
+
+  static getProfileIdByStream(
+    ws: WebSocket
+  ): string | undefined {
+    return this.socketToProfile.get(ws);
+  }
+
   static encodeResponse(type: string, data?: any) {
     switch (type) {
       case 'battle':

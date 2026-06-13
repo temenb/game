@@ -21,7 +21,7 @@ message BattleStreamRequest {
     common.empty.Empty     ping      = 3;
     common.empty.Empty     leave     = 4;
     common.empty.Empty     end       = 5;
-    battle.BattleIdRequest connectAi = 6;
+    common.empty.Empty     connectAi = 6;
   }
 }
 

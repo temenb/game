@@ -6,6 +6,7 @@ import * as authGrpc from "../grpc/generated/auth";
 import {AuthObject} from "../grpc/generated/auth";
 import * as profileGrpc from "../grpc/generated/profile";
 import logger from "@shared/logger";
+import {ProfileObject} from "../grpc/generated/profile";
 
 class BattleClient {
   private auth: authGrpc.AuthObject | null = null;
@@ -60,7 +61,7 @@ class BattleClient {
   async connect(messageHandler?: (data: WebSocket.RawData) => void): Promise<WebSocket | null> {
     if (this.ws) return this.ws;
 
-    let auth: AuthObject | null;
+    let auth: authGrpc.AuthObject;
     try {
       auth = await this.getAuth();
     } catch (err) {
@@ -69,7 +70,16 @@ class BattleClient {
       return null;
     }
 
-    this.ws = new WebSocket(`ws://${config.webSocketStreaming}/battle?token=${auth.accessToken}`);
+    let profile: profileGrpc.ProfileObject;
+    try {
+      profile = await this.getProfile();
+    } catch (err) {
+      logger.error("❌ connection is refused.",);
+      this.scheduleReconnect();
+      return null;
+    }
+
+    this.ws = new WebSocket(`ws://${config.webSocketStreaming}/battle?token=${auth.accessToken}&profileId=${profile.id}`);
 
     this.ws.on("message", messageHandler ?? this.defaultMessageHandler);
     this.ws.on("error", this.errorHandler);
@@ -82,16 +92,15 @@ class BattleClient {
   async join(battleId: string) {
     const ws = await this.connect();
     if (!ws) throw new Error('cannot send. stream is not opened.')
-    const profile = await this.getProfile();
-    const req = streamingGrpc.BattleStreamRequest.create({join: {battleId, profileId: profile.id}});
+    const req = streamingGrpc.BattleStreamRequest.create({join: {battleId}});
     ws.send(streamingGrpc.BattleStreamRequest.encode(req).finish());
   }
 
   async makeMove(battleId: string, cellIdx: number) {
     const ws = await this.connect();
     if (!ws) throw new Error('cannot send. stream is not opened.')
-    const profile = await this.getProfile();
-    const req = streamingGrpc.BattleStreamRequest.create({move: {battleId, profileId: profile.id, cellIdx}});
+
+    const req = streamingGrpc.BattleStreamRequest.create({move: {cellIdx}});
     ws.send(streamingGrpc.BattleStreamRequest.encode(req).finish());
   }
 

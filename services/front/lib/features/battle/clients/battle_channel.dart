@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:front/src/clients/streaming_channel.dart';
 import 'package:front/src/grpc/generated/battle.pb.dart';
 import 'package:front/src/grpc/generated/common/empty.pb.dart';
-import 'package:front/src/grpc/generated/engine.pb.dart';
 import 'package:front/src/grpc/generated/profile.pb.dart';
 import 'package:front/src/grpc/generated/streaming.pb.dart';
 import 'package:logger/logger.dart';
@@ -53,7 +52,7 @@ class BattleChannel extends StreamingChannel<BattleObject> {
   /// Отправить событие "join"
   void join() {
     // logger.i('Join event');
-    final joinReq = JoinRequest()..profileId = profileId;
+    final joinReq = BattleIdRequest();
     final req = BattleStreamRequest()..join = joinReq;
     // logger.i(req);
     channel.sink.add(req.writeToBuffer());
@@ -64,9 +63,7 @@ class BattleChannel extends StreamingChannel<BattleObject> {
   void move(String battleId, int cellIdx) {
     // logger.i('Move event');
     final moveReq = BattleMoveRequest()
-      ..battleId = battleId
-      ..cellIdx = cellIdx
-      ..profileId = profileId;
+      ..cellIdx = cellIdx;
 
     final req = BattleStreamRequest()..move = moveReq;
     // logger.d(req);
@@ -85,8 +82,7 @@ class BattleChannel extends StreamingChannel<BattleObject> {
 
   connectAi(String battleId) {
     // logger.i('Move event');
-    final connectAiRequest = BattleIdRequest()
-      ..battleId = battleId;
+    final connectAiRequest = Empty();
 
     final req = BattleStreamRequest()..connectAi = connectAiRequest;
     // logger.d(req);
