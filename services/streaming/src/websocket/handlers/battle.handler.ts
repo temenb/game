@@ -10,7 +10,7 @@ import {ErrorObject} from "../../grpc/generated/common/error";
 import engineStream from "../../grpc/channels/engine.stream";
 
 
-async function isAllowedUser(userId: string, profileId: string) {
+export async function isAllowedUser(userId: string, profileId: string) {
 
   const profile = await profileService.getProfileByUser(userId);
 
@@ -23,18 +23,15 @@ async function isAllowedUser(userId: string, profileId: string) {
   }
 }
 
-export async function battleHandler(ws: WebSocket, userId: string, payload: streamingGrpc.BattleStreamRequest) {
+export async function battleHandler(ws: WebSocket, profileId: string, payload: streamingGrpc.BattleStreamRequest) {
   if (payload.join) {
     // logger.log("Battle join event");
 
     let battle: battleGrpc.BattleObject | null;
     if (payload.join.battleId) {
-      await isAllowedUser(userId, payload.join.profileId)
-
-      battle = await battleService.joinBattle(payload.join.battleId, payload.join.profileId);
+      battle = await battleService.joinBattle(payload.join.battleId, profileId);
     } else {
-      battle = await battleService.upsertBattle(payload.join);
-
+      battle = await battleService.upsertBattle(profileId);
     }
 
     if (!battle) {
@@ -48,7 +45,7 @@ export async function battleHandler(ws: WebSocket, userId: string, payload: stre
       return;
     }
 
-    FrontBattleStreamRegistry.setBattleStream(battle.id, ws);
+    FrontBattleStreamRegistry.setBattleStream(battle.id, profileId, ws);
     // logger.log("Battle stream was set:" + battle.id);
     try {
       if (battle.status == battleGrpc.BattleStatus.ACTIVE) {
@@ -65,17 +62,17 @@ export async function battleHandler(ws: WebSocket, userId: string, payload: stre
   if (payload.move) {
     // logger.log("Battle move event");
 
-    try {
-      await isAllowedUser(userId, payload.move.profileId)
-    } catch (error) {
-      const errObj = ErrorObject.create({
-        type: "error",
-        message: String(error)
-      });
-      const buffer = ErrorObject.encode(errObj).finish();
-      ws.send(buffer);
-      return;
-    }
+    // try {
+    //   await isAllowedUser(userId, payload.move.profileId)
+    // } catch (error) {
+    //   const errObj = ErrorObject.create({
+    //     type: "error",
+    //     message: String(error)
+    //   });
+    //   const buffer = ErrorObject.encode(errObj).finish();
+    //   ws.send(buffer);
+    //   return;
+    // }
 
     const grpcRequest = engineGrpc.BattleChannelClientEvent.create({
       move: payload.move,

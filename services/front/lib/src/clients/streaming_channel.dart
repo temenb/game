@@ -40,10 +40,14 @@ abstract class StreamingChannel<T> {
     }
   }
 
-  connect() {
-    final uri = Uri.parse(
+  getWsUri() {
+    return Uri.parse(
       'ws://${config.host}:${config.port}/$pathname?token=$jwt',
     );
+  }
+
+  connect() {
+    final uri = getWsUri();
     // logger.i('Connecting to $uri');
     _channel = WebSocketChannel.connect(uri);
 

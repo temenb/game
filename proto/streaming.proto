@@ -4,7 +4,6 @@ import "common/health.proto";
 import "common/empty.proto";
 import "common/error.proto";
 import "battle.proto";
-import "engine.proto";
 
 package streaming;
 
@@ -17,18 +16,13 @@ service Streaming {
 
 message BattleStreamRequest {
   oneof event {
-    JoinRequest               join      = 1;
-    engine.BattleMoveRequest  move      = 2;
-    common.empty.Empty        ping      = 3;
-    common.empty.Empty        leave     = 4;
-    common.empty.Empty        end       = 5;
-    battle.BattleIdRequest    connectAi = 6;
+    battle.BattleIdRequest join      = 1;
+    BattleMoveRequest      move      = 2;
+    common.empty.Empty     ping      = 3;
+    common.empty.Empty     leave     = 4;
+    common.empty.Empty     end       = 5;
+    battle.BattleIdRequest connectAi = 6;
   }
-}
-
-message JoinRequest {
-  string battleId  = 1;
-  string profileId = 2;
 }
 
 message BattleStreamResponse {
@@ -37,4 +31,8 @@ message BattleStreamResponse {
     common.empty.Empty       ping    = 2;
     common.error.ErrorObject error   = 3;
   }
+}
+
+message BattleMoveRequest {
+  int32 cellIdx = 1;
 }

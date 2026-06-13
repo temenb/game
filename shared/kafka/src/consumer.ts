@@ -1,12 +1,12 @@
-import { getKafkaInstance } from './register';
-import { KafkaConfig, ConsumerConfig } from './types';
-import { KafkaJSProtocolError } from 'kafkajs';
+import {getKafkaInstance} from './register';
+import {ConsumerConfig, KafkaConfig} from './types';
+import {Kafka, KafkaJSProtocolError} from 'kafkajs';
 import logger from "@shared/logger";
 
 export async function createConsumer(config: KafkaConfig, consumerConfig: ConsumerConfig) {
   const kafka = await getKafkaInstance(config);
   const admin = kafka.admin();
-  const consumer = kafka.consumer({ groupId: config.groupId });
+  const consumer = kafka.consumer({groupId: config.groupId});
 
   await admin.connect();
 
@@ -20,29 +20,26 @@ export async function createConsumer(config: KafkaConfig, consumerConfig: Consum
   // logger.log(consumerConfig);
   if (!topicExists) {
     await admin.createTopics({
-      topics: [{ topic: consumerConfig.topic, numPartitions: 1 }],
+      topics: [{topic: consumerConfig.topic, numPartitions: 1, replicationFactor: 1}],
       waitForLeaders: true,
     });
+    logger.info(`✅ Created topic ${consumerConfig.topic}`);
+    await waitForLeader(admin, consumerConfig.topic);
+    await admin.fetchTopicMetadata({topics: [consumerConfig.topic]});
   }
 
   await admin.disconnect();
-
   await consumer.connect();
 
-
-  // logger.log(consumerConfig.topic)
-
-  // Подписка с retry на случай гонки
+  // Подписка с retry
   for (let attempt = 0; attempt < 5; attempt++) {
     try {
-      await consumer.subscribe({ topic: consumerConfig.topic, fromBeginning: true });
+      await consumer.subscribe({topic: consumerConfig.topic, fromBeginning: true});
       break;
     } catch (err) {
-      if (
-        err instanceof KafkaJSProtocolError &&
-        err.message.includes('does not host this topic-partition')
-      ) {
-        await new Promise(res => setTimeout(res, 1000));
+      if (err instanceof KafkaJSProtocolError && err.type === 'UNKNOWN_TOPIC_OR_PARTITION') {
+        logger.warn(`⚠️ Partition not ready for ${consumerConfig.topic}, retrying...`);
+        await new Promise(res => setTimeout(res, 1000 * (attempt + 1)));
         continue;
       }
       throw err;
@@ -50,19 +47,33 @@ export async function createConsumer(config: KafkaConfig, consumerConfig: Consum
   }
 
   await consumer.run({
-    eachMessage: async ({ topic, partition, message }) => {
+    eachMessage: async ({topic, partition, message}) => {
       const value = message.value?.toString();
       if (value) {
-        await consumerConfig.handler(
-          topic,
-          partition,
-          JSON.parse(value)
-        );
+        await consumerConfig.handler(topic, partition, JSON.parse(value));
       }
     },
-    retry: { retries: 10, initialRetryTime: 1000 }
+    retry: {retries: 10, initialRetryTime: 1000},
   });
 
-
   return consumer;
+}
+
+async function waitForLeader(admin: ReturnType<Kafka["admin"]>, topic: string, maxAttempts = 5) {
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    const metadata = await admin.fetchTopicMetadata({ topics: [topic] });
+    const partitions = metadata.topics[0]?.partitions ?? [];
+    const leaderReady = partitions.every(p => p.leader !== -1);
+
+    if (leaderReady) {
+      logger.info(`✅ Leader assigned for topic ${topic}`);
+      return;
+    }
+
+    const delay = 500 * attempt; // экспоненциальный backoff
+    logger.warn(`⚠️ Leader not ready for ${topic}, retry ${attempt}/${maxAttempts} in ${delay}ms`);
+    await new Promise(res => setTimeout(res, delay));
+  }
+
+  throw new Error(`❌ Leader not assigned for topic ${topic} after ${maxAttempts} attempts`);
 }

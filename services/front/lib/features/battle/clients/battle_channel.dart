@@ -41,6 +41,13 @@ class BattleChannel extends StreamingChannel<BattleObject> {
     }
   }
 
+
+  getWsUri() {
+    return Uri.parse(
+      'ws://${config.host}:${config.port}/$pathname?token=$jwt&profileId=${this.profileId}',
+    );
+  }
+
   BattleChannel(super.config, this.profileId, super.jwt);
 
   /// Отправить событие "join"

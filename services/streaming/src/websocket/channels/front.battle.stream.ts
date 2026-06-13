@@ -7,6 +7,7 @@ import logger from "@shared/logger";
 export default class FrontBattleStreamRegistry {
   private static battleStreams = new Map<string, Set<WebSocket>>();
   private static socketToBattle = new Map<WebSocket, string>();
+  private static socketToProfile = new Map<WebSocket, string>();
 
   private static heartbeatTimers = new Map<
     WebSocket,
@@ -17,6 +18,7 @@ export default class FrontBattleStreamRegistry {
 
   static setBattleStream = (
     battleId: string,
+    profileId: string,
     socket: WebSocket
   ) => {
     if (!this.battleStreams.has(battleId)) {
@@ -25,18 +27,19 @@ export default class FrontBattleStreamRegistry {
     this.battleStreams.get(battleId)!.add(socket);
 
     this.socketToBattle.set(socket, battleId);
+    this.socketToProfile.set(socket, profileId);
 
     // logger.log('battleStreams keys:', this.battleStreams.keys());
 
-
     socket.on("close", () => {
       logger.error("Close a stream");
+
       this.deleteBattleStream(socket);
     });
 
     socket.on("error", (err) => {
       logger.error("Stream error:", err);
-      this.deleteBattleStream(socket);
+      // this.deleteBattleStream(socket);
     });
 
     this.resetHeartbeat(socket);
@@ -62,6 +65,7 @@ export default class FrontBattleStreamRegistry {
       for (const stream of streams) {
         stream.close();
         this.socketToBattle.delete(stream);
+        this.socketToProfile.delete(stream);
       }
       this.battleStreams.delete(battleId)
     } else {
@@ -78,6 +82,7 @@ export default class FrontBattleStreamRegistry {
       }
 
       this.socketToBattle.delete(call);
+      this.socketToProfile.delete(call);
       call.close();
     }
   }

@@ -7,7 +7,7 @@ class TurnTimer extends StatefulWidget {
   final int seconds;
   final BattleService battleService;
 
-  const TurnTimer({super.key, this.seconds = 20, required this.battleService});
+  const TurnTimer({super.key, this.seconds = 2000, required this.battleService});
 
   @override
   State<TurnTimer> createState() => _TurnTimerState();

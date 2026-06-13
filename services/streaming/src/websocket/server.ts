@@ -1,6 +1,6 @@
 import {WebSocketServer} from 'ws';
 import * as streamingGrpc from "../grpc/generated/streaming";
-import {battleHandler} from "./handlers/battle.handler";
+import {battleHandler, isAllowedUser} from "./handlers/battle.handler";
 import config from "../config/config";
 import logger from "@shared/logger";
 import extractUserIdFromJwt from "../lib/extractUserIdFromJwt";
@@ -16,6 +16,7 @@ export function initWss() {
 
     const url = new URL(req.url!, `http://${req.headers.host}`);
     let userId: string;
+    let profileId: string;
 
     const token = url.searchParams.get('token');
     if (!token) {
@@ -31,6 +32,16 @@ export function initWss() {
       return;
     }
 
+    profileId = url.searchParams.get('profileId')?? '';
+
+    try {
+      isAllowedUser(userId, profileId)
+    } catch (e) {
+      ws.close();
+      logger.error("❌ JWT token does not match to profile")
+      return;
+    }
+
     ws.on('message', (data) => {
       // logger.log('📩 Raw message:', data);
       try {
@@ -39,7 +50,7 @@ export function initWss() {
 
         try {
           if (url.pathname.startsWith('/battle')) {
-            battleHandler(ws, userId, request);
+            battleHandler(ws, profileId, request);
           } else {
             logger.warn(`⚠️ Unknown path: ${url.pathname}`);
           }
@@ -63,6 +74,7 @@ export function initWss() {
     ws.on('close', () => {
       // logger.log('❌ Client is disconnected');
     });
+
   });
 }
 

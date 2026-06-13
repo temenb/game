@@ -36,7 +36,8 @@ export const joinBattle = (battleId: string, profileId: string): Promise<battleG
   return battleManager.call((client, cb) => client.joinBattle(grpcRequest, cb));
 };
 
-export const upsertBattle = (grpcRequest: profileGrpc.ProfileIdRequest): Promise<battleGrpc.BattleObject | null> => {
+export const upsertBattle = (profileId: string): Promise<battleGrpc.BattleObject | null> => {
+  const grpcRequest = profileGrpc.ProfileIdRequest.create({profileId});
   return battleManager.call<battleGrpc.BattleObject>(
     (client, cb) => client.upsertBattle(grpcRequest, cb)
   ).catch((err) => {

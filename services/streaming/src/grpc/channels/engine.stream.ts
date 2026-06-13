@@ -42,7 +42,7 @@ class EngineStream {
     });
 
     this.stream.on('error', (err) => {
-      console.error('Stream error:');
+      console.error('Stream error:', err);
       this.scheduleReconnect();
     });
 
