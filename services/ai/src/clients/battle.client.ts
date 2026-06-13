@@ -1,40 +1,68 @@
 import WebSocket from "ws";
 import config from "../config/config";
-import * as gatewayClient from "./auth.client";
+import gatewayClient from "./gateway.client";
 import * as streamingGrpc from "../grpc/generated/streaming";
 import * as authGrpc from "../grpc/generated/auth";
+import {AuthObject} from "../grpc/generated/auth";
 import * as profileGrpc from "../grpc/generated/profile";
+import logger from "@shared/logger";
 
 class BattleClient {
   private auth: authGrpc.AuthObject | null = null;
   private profile: profileGrpc.ProfileObject | null = null;
   private ws: WebSocket | null = null;
+  private reconnectAttempts = 0;
 
   async getAuth(): Promise<authGrpc.AuthObject> {
     if (this.auth) return this.auth;
-    this.auth = await gatewayClient.signIn(config.deviceId) as authGrpc.AuthObject;
-    return this.auth;
+    try {
+      this.auth = await gatewayClient.signIn(config.deviceId) as authGrpc.AuthObject;
+      return this.auth;
+    } catch (err) {
+      logger.error("❌ Auth error:", err);
+      this.auth = null;
+      throw err; // ошибка всплывает, но процесс не падает
+    }
   }
+
 
   async getProfile(): Promise<profileGrpc.ProfileObject> {
     if (this.profile) return this.profile;
-    this.auth = await this.getAuth();
-    this.profile = await gatewayClient.fetchProfile(this.auth) as profileGrpc.ProfileObject;
-    return this.profile;
+    try {
+      this.auth = await this.getAuth();
+      this.profile = await gatewayClient.fetchProfile(this.auth) as profileGrpc.ProfileObject;
+      return this.profile;
+    } catch (err) {
+      logger.error("❌ Profile error:", err);
+      this.profile = null;
+      throw err; // ошибка всплывает, но процесс не падает
+    }
   }
 
-  async connect(messageHandler?: (data: WebSocket.RawData) => void): Promise<WebSocket> {
+  async connect(messageHandler?: (data: WebSocket.RawData) => void): Promise<WebSocket | null> {
     if (this.ws) return this.ws;
-    const auth = await this.getAuth();
+
+    let auth: AuthObject | null;
+    try {
+      auth = await this.getAuth();
+    } catch (err) {
+      logger.error("❌ connection is refused.",);
+      this.scheduleReconnect();
+      return null;
+    }
+
     this.ws = new WebSocket(`ws://${config.webSocketStreaming}/battle?token=${auth.accessToken}`);
+
     this.ws.on("message", messageHandler ?? this.defaultMessageHandler);
     this.ws.on("error", this.errorHandler);
     this.ws.on("close", this.closeHandler);
+
     return this.ws;
   }
 
   async join(battleId: string) {
     const ws = await this.connect();
+    if (!ws) throw new Error('cannot send. stream is not opened.')
     const profile = await this.getProfile();
     const req = streamingGrpc.BattleStreamRequest.create({join: {battleId, profileId: profile.id}});
     ws.send(streamingGrpc.BattleStreamRequest.encode(req).finish());
@@ -42,28 +70,46 @@ class BattleClient {
 
   async makeMove(battleId: string, cellIdx: number) {
     const ws = await this.connect();
+    if (!ws) throw new Error('cannot send. stream is not opened.')
     const profile = await this.getProfile();
     const req = streamingGrpc.BattleStreamRequest.create({move: {battleId, profileId: profile.id, cellIdx}});
     ws.send(streamingGrpc.BattleStreamRequest.encode(req).finish());
+  }
+
+  disconnect() {
+    if (this.ws) {
+      this.ws.close();
+      this.ws = null;
+    }
   }
 
   private defaultMessageHandler(data: WebSocket.RawData) {
     try {
       const buffer = new Uint8Array(data as ArrayBuffer);
       const response = streamingGrpc.BattleStreamResponse.decode(buffer);
-      console.log("📩 Got response:", response);
+      logger.log("📩 Got response:", response);
     } catch (err) {
-      console.error("❌ Failed to parse message:", err);
+      logger.error("❌ Failed to parse message:", err);
     }
   }
 
   private errorHandler(err: unknown) {
-    console.error("⚠️ WebSocket error:", err);
+    logger.error("⚠️ WebSocket error:", err);
   }
 
-  private closeHandler() {
-    console.log("❌ Connection closed");
-    // TODO: reconnect logic
+  private closeHandler = () => {
+    logger.warn("❌ Connection closed");
+    this.ws = null;
+    this.scheduleReconnect();
+  };
+
+  private scheduleReconnect() {
+    const delay = Math.min(1000 * 2 ** this.reconnectAttempts, 30000); // экспоненциальная задержка, макс 30с
+    this.reconnectAttempts++;
+    setTimeout(() => {
+      logger.info(`🔄 Reconnecting... attempt ${this.reconnectAttempts}`);
+      this.connect().catch(err => logger.error("Reconnect failed:", err));
+    }, delay);
   }
 }
 

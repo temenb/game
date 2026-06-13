@@ -4,7 +4,7 @@ import { KafkaJSProtocolError } from 'kafkajs';
 import logger from "@shared/logger";
 
 export async function createConsumer(config: KafkaConfig, consumerConfig: ConsumerConfig) {
-  const kafka = getKafkaInstance(config);
+  const kafka = await getKafkaInstance(config);
   const admin = kafka.admin();
   const consumer = kafka.consumer({ groupId: config.groupId });
 

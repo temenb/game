@@ -4,7 +4,7 @@ exports.createProducer = createProducer;
 const register_1 = require("./register");
 const kafkajs_1 = require("kafkajs");
 async function createProducer(config) {
-    const kafka = (0, register_1.getKafkaInstance)(config);
+    const kafka = await (0, register_1.getKafkaInstance)(config);
     const producer = kafka.producer({
         createPartitioner: kafkajs_1.Partitioners.DefaultPartitioner,
     });

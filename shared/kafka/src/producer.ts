@@ -3,7 +3,7 @@ import { KafkaConfig } from './types';
 import {Partitioners} from "kafkajs";
 
 export async function createProducer(config: KafkaConfig) {
-  const kafka = getKafkaInstance(config);
+  const kafka = await getKafkaInstance(config);
   const producer = kafka.producer({
     createPartitioner: Partitioners.DefaultPartitioner,
   });

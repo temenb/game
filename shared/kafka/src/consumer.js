@@ -4,7 +4,7 @@ exports.createConsumer = createConsumer;
 const register_1 = require("./register");
 const kafkajs_1 = require("kafkajs");
 async function createConsumer(config, consumerConfig) {
-    const kafka = (0, register_1.getKafkaInstance)(config);
+    const kafka = await (0, register_1.getKafkaInstance)(config);
     const admin = kafka.admin();
     const consumer = kafka.consumer({ groupId: config.groupId });
     await admin.connect();
