@@ -4,7 +4,7 @@ import logger from '@shared/logger';
 import config from "./config/config";
 import {createConsumer} from "@shared/kafka";
 import kafkaConfig, {kafkaConsumersConfig} from "./config/kafka.config";
-import {startWebSocket} from "./websoket/clients/streaming.client";
+import battleClient from "./clients/battle.client";
 
 
 async function startGrpc() {
@@ -42,9 +42,7 @@ async function createKafkaConsumers() {
 }
 
 async function createWebSocketStream() {
-  return new Promise<void>(async (resolve, reject) => {
-    await startWebSocket();
-  });
+  return await battleClient.connect();
 }
 
 async function bootstrap() {

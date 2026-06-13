@@ -1,6 +1,6 @@
-import config from "../../config/config";
+import config from "../config/config";
 import http from "node:http";
-import * as grpcAuth from "../../grpc/generated/auth";
+import * as grpcAuth from "../grpc/generated/auth";
 
 export async function gatewayRequest(uri: string, request: object, method?: string, jwt?: string): Promise<any> {
   return new Promise((resolve, reject) => {
