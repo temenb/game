@@ -48,7 +48,7 @@ export const getMyProfile = (jwt: string): Promise<profileGrpc.ProfileObject | n
 };
 
 export const getProfile = (jwt: string, profileId: string): Promise<profileGrpc.ProfileObject | null> => {
-  const grpcRequest: profileGrpc.ProfileIdRequest = { profileId };
+  const grpcRequest: profileGrpc.ProfileIdRequest = {profileId};
 
   const metadata = new grpc.Metadata();
   metadata.add("authorization", `Bearer ${jwt}`);

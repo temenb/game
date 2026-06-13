@@ -1,6 +1,3 @@
-import logger from "@shared/logger";
-import {createProducer} from '@shared/kafka';
-
 const startedAt = Date.now();
 
 export const health = async () => {

@@ -31,7 +31,7 @@ export const getProfile = wrapper(async (req: Request, res) => {
   const profileId = req.query.profileId as string;
 
   if (!profileId) {
-    return res.status(400).json({ error: "No profileId provided" });
+    return res.status(400).json({error: "No profileId provided"});
   }
 
   return await profileService.getProfile(jwt, profileId)

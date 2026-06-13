@@ -165,15 +165,15 @@ class _BattleBoard extends StatelessWidget {
           ),
           battle.winner.isNotEmpty
               ? Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text('Winner: '),
-              PlayerName(profileId: battle.winner),
-            ],
-          )
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('Winner: '),
+                    PlayerName(profileId: battle.winner),
+                  ],
+                )
               : (battleService.canMove(battle)
-              ? TurnTimer(seconds: 20, battleService: battleService)
-              : const Text('Not your turn')),
+                    ? TurnTimer(seconds: 20, battleService: battleService)
+                    : const Text('Not your turn')),
         ] else ...[
           Row(
             children: [

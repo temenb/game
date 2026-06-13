@@ -1,6 +1,5 @@
 import {BattleStateStore} from "../stores/battleStateStore";
 import {getRedis} from "../lib/redis-client";
-import logger from "@shared/logger";
 
 export const stores = {
   BattleStateStore: {

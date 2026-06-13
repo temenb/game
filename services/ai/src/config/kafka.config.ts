@@ -7,7 +7,6 @@ const kafkaConfig = {
 };
 
 
-
 export const kafkaConsumersConfig = {
   userCreated: {
     topic: process.env.KAFKA_TOPIC_AI_CONNECTING_REQUEST || 'ai.connecting-request',

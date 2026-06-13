@@ -4,7 +4,6 @@ import "common/health.proto";
 import "common/empty.proto";
 import "common/error.proto";
 import "battle.proto";
-import "profile.proto";
 import "engine.proto";
 
 package streaming;
@@ -18,13 +17,18 @@ service Streaming {
 
 message BattleStreamRequest {
   oneof event {
-    profile.ProfileIdRequest  join      = 1;
+    JoinRequest               join      = 1;
     engine.BattleMoveRequest  move      = 2;
     common.empty.Empty        ping      = 3;
     common.empty.Empty        leave     = 4;
     common.empty.Empty        end       = 5;
     battle.BattleIdRequest    connectAi = 6;
   }
+}
+
+message JoinRequest {
+    optional string battleId  = 1;
+             string profileId = 2;
 }
 
 message BattleStreamResponse {

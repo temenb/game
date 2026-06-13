@@ -56,31 +56,61 @@ describe("Gateway Service", () => {
 
         console.log('=====================================================================step ', counter);
         if (!battleObject) {
-          const req = streamingGrpc.BattleStreamRequest.create({join: { profileId: profile1.id }});
+          const req = streamingGrpc.BattleStreamRequest.create({join: {profileId: profile1.id}});
           const buffer = streamingGrpc.BattleStreamRequest.encode(req).finish();
           ws1.send(buffer);
         } else if (counter === 1) {
-          const req = streamingGrpc.BattleStreamRequest.create({join: { profileId: profile2.id }});
+          const req = streamingGrpc.BattleStreamRequest.create({join: {profileId: profile2.id}});
           const buffer = streamingGrpc.BattleStreamRequest.encode(req).finish();
           ws2.send(buffer);
         } else if (counter === 5) {
-          const req = streamingGrpc.BattleStreamRequest.create({move: { battleId: battleObject.id, profileId: profile1.id, cellIdx: 4 }});
+          const req = streamingGrpc.BattleStreamRequest.create({
+            move: {
+              battleId: battleObject.id,
+              profileId: profile1.id,
+              cellIdx: 4
+            }
+          });
           const buffer = streamingGrpc.BattleStreamRequest.encode(req).finish();
           ws1.send(buffer);
         } else if (counter === 7) {
-          const req = streamingGrpc.BattleStreamRequest.create({move: {battleId: battleObject.id, profileId: profile2.id, cellIdx: 1}});
+          const req = streamingGrpc.BattleStreamRequest.create({
+            move: {
+              battleId: battleObject.id,
+              profileId: profile2.id,
+              cellIdx: 1
+            }
+          });
           const buffer = streamingGrpc.BattleStreamRequest.encode(req).finish();
           ws2.send(buffer);
         } else if (counter === 9) {
-          const req = streamingGrpc.BattleStreamRequest.create({move: { battleId: battleObject.id, profileId: profile1.id, cellIdx: 0 }});
+          const req = streamingGrpc.BattleStreamRequest.create({
+            move: {
+              battleId: battleObject.id,
+              profileId: profile1.id,
+              cellIdx: 0
+            }
+          });
           const buffer = streamingGrpc.BattleStreamRequest.encode(req).finish();
           ws1.send(buffer);
         } else if (counter === 11) {
-          const req = streamingGrpc.BattleStreamRequest.create({move: {battleId: battleObject.id, profileId: profile2.id, cellIdx: 2}});
+          const req = streamingGrpc.BattleStreamRequest.create({
+            move: {
+              battleId: battleObject.id,
+              profileId: profile2.id,
+              cellIdx: 2
+            }
+          });
           const buffer = streamingGrpc.BattleStreamRequest.encode(req).finish();
           ws2.send(buffer);
         } else if (counter === 13) {
-          const req = streamingGrpc.BattleStreamRequest.create({move: {battleId: battleObject.id, profileId: profile1.id, cellIdx: 8}});
+          const req = streamingGrpc.BattleStreamRequest.create({
+            move: {
+              battleId: battleObject.id,
+              profileId: profile1.id,
+              cellIdx: 8
+            }
+          });
           const buffer = streamingGrpc.BattleStreamRequest.encode(req).finish();
           ws1.send(buffer);
         } else if (counter >= 15) {

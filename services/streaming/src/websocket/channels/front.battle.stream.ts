@@ -91,7 +91,7 @@ export default class FrontBattleStreamRegistry {
   static encodeResponse(type: string, data?: any) {
     switch (type) {
       case 'battle':
-        return streamingGrpc.BattleStreamResponse.encode({ battle: data }).finish();
+        return streamingGrpc.BattleStreamResponse.encode({battle: data}).finish();
       case 'ping':
         return emptyGrpc.Empty.encode({}).finish();
       default:

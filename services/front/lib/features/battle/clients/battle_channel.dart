@@ -69,7 +69,6 @@ class BattleChannel extends StreamingChannel<BattleObject> {
 
   /// Отправить ход
   void leave() {
-
     final req = BattleStreamRequest()..leave = Empty();
     // logger.d(req);
     channel.sink.add(req.writeToBuffer());

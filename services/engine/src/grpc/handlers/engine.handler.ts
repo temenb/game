@@ -1,11 +1,7 @@
 import * as grpc from '@grpc/grpc-js';
-import * as emptyGrpc from '../generated/common/empty';
 import * as battleGrpc from '../generated/battle';
 import * as engineGrpc from '../generated/engine';
 import * as battleService from '../../services/battle.service';
-import {callbackError} from './callback.error';
-import logger from "@shared/logger";
-
 
 
 export async function battleChannel(

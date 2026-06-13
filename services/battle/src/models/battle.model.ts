@@ -1,10 +1,7 @@
 import {Battle, BattleCellValue, BattleStatus} from "@prisma/client";
 import prisma from "../lib/prisma";
-import * as battleGrpc from "../grpc/generated/battle";
 import {BattleObject} from "../grpc/generated/battle";
-import {battleToGrpc, battleToPrisma} from "../lib/battle-grpc-prisma-converters";
-import logger from "@shared/logger";
-import * as emptyGrpc from "../grpc/generated/common/empty";
+import {battleToPrisma} from "../lib/battle-grpc-prisma-converters";
 import {NotFoundError} from "../services/battle.service";
 
 export class BattleModel {

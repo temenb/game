@@ -1,6 +1,5 @@
 import {Battle} from "@prisma/client";
 import {BattleModel} from "../models/battle.model";
-import {BattleObject} from "../grpc/generated/battle";
 import logger from "@shared/logger";
 
 // import {enqueueEventTx} from "@shared/pg-boss/src/enqueueEvent";
