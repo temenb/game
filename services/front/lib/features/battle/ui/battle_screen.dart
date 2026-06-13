@@ -180,7 +180,7 @@ class _BattleBoard extends StatelessWidget {
               const Text('Waiting for rival '),
               TextButton(
                 onPressed: () {
-                  battleService.connectAi(battle);
+                  battleService.connectAi(battle.id);
                 },
                 child: const Text('(Play with AI)'),
               ),

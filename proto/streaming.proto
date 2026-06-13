@@ -27,8 +27,8 @@ message BattleStreamRequest {
 }
 
 message JoinRequest {
-    optional string battleId  = 1;
-             string profileId = 2;
+  string battleId  = 1;
+  string profileId = 2;
 }
 
 message BattleStreamResponse {

@@ -1,6 +1,7 @@
 import config from "../config/config";
 import http from "node:http";
 import * as grpcAuth from "../grpc/generated/auth";
+import logger from "@shared/logger";
 
 class GatewayClient {
   private host = config.httpGatewayHost;
@@ -13,6 +14,12 @@ class GatewayClient {
     jwt?: string
   ): Promise<any> {
     return new Promise((resolve, reject) => {
+      // logger.info(
+      //   uri,
+      //   request,
+      //   method,
+      //   jwt,
+      // );
       const data = JSON.stringify(request);
 
       const headers: Record<string, string | number> = {

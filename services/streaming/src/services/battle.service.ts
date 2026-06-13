@@ -3,6 +3,7 @@ import FrontBattleStreamRegistry from "../websocket/channels/front.battle.stream
 import {BattleObject, BattleStatus} from "../grpc/generated/battle";
 import logger from "@shared/logger";
 import * as profileGrpc from "../grpc/generated/profile";
+import * as battleGrpc from "../grpc/generated/battle";
 
 export const health = async () =>
   await battleClient.health();
@@ -18,6 +19,9 @@ export const readyz = async () =>
 
 export const upsertBattle = async (req: profileGrpc.ProfileIdRequest) =>
   await battleClient.upsertBattle(req);
+
+export const joinBattle = async (battleId: string, profileId: string) =>
+  await battleClient.joinBattle(battleId, profileId);
 
 export const updateBattle = async (battle: BattleObject) => {
   logger.log('update battle: battle');

@@ -16,8 +16,12 @@ class BattleService {
     }
   }
 
-  connectAi() {
-    channel.connectAi();
+  connectAi(String battleId) {
+    channel.connectAi(battleId);
+  }
+
+  leave() {
+    channel.leave();
   }
 
   canMove(BattleObject battle) {

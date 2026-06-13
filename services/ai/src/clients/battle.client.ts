@@ -14,9 +14,18 @@ class BattleClient {
   private reconnectAttempts = 0;
 
   async getAuth(): Promise<authGrpc.AuthObject> {
-    if (this.auth) return this.auth;
+    if (this.auth) {
+      // logger.info('this.auth', this.auth);
+      return this.auth;
+    }
     try {
-      this.auth = await gatewayClient.signIn(config.deviceId) as authGrpc.AuthObject;
+      const response = await gatewayClient.signIn(config.deviceId) as authGrpc.AuthObject;
+      if (!response || (response as any).error) {
+        logger.error("❌ Auth failed:", response);
+        this.auth = null;
+        throw new Error("Auth failed");
+      }
+      this.auth = response as authGrpc.AuthObject;
       return this.auth;
     } catch (err) {
       logger.error("❌ Auth error:", err);
@@ -30,7 +39,16 @@ class BattleClient {
     if (this.profile) return this.profile;
     try {
       this.auth = await this.getAuth();
-      this.profile = await gatewayClient.fetchProfile(this.auth) as profileGrpc.ProfileObject;
+      const response = await gatewayClient.fetchProfile(this.auth) as profileGrpc.ProfileObject;
+
+
+      if (!response || (response as any).error) {
+        logger.error("❌ Profile failed:", response);
+        this.auth = null;
+        throw new Error("Profile failed");
+      }
+      this.profile = response as profileGrpc.ProfileObject;
+
       return this.profile;
     } catch (err) {
       logger.error("❌ Profile error:", err);
@@ -57,6 +75,7 @@ class BattleClient {
     this.ws.on("error", this.errorHandler);
     this.ws.on("close", this.closeHandler);
 
+    logger.info("Battle stream was created",);
     return this.ws;
   }
 
@@ -105,6 +124,8 @@ class BattleClient {
 
   private scheduleReconnect() {
     const delay = Math.min(1000 * 2 ** this.reconnectAttempts, 30000); // экспоненциальная задержка, макс 30с
+    logger.info("Schedule reconnect in " + (delay/1000));
+
     this.reconnectAttempts++;
     setTimeout(() => {
       logger.info(`🔄 Reconnecting... attempt ${this.reconnectAttempts}`);

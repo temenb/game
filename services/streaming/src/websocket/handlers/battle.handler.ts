@@ -26,7 +26,16 @@ async function isAllowedUser(userId: string, profileId: string) {
 export async function battleHandler(ws: WebSocket, userId: string, payload: streamingGrpc.BattleStreamRequest) {
   if (payload.join) {
     // logger.log("Battle join event");
-    const battle = await battleService.upsertBattle(payload.join);
+
+    let battle: battleGrpc.BattleObject | null;
+    if (payload.join.battleId) {
+      await isAllowedUser(userId, payload.join.profileId)
+
+      battle = await battleService.joinBattle(payload.join.battleId, payload.join.profileId);
+    } else {
+      battle = await battleService.upsertBattle(payload.join);
+
+    }
 
     if (!battle) {
       const error = ErrorObject.create({
@@ -38,6 +47,7 @@ export async function battleHandler(ws: WebSocket, userId: string, payload: stre
 
       return;
     }
+
     FrontBattleStreamRegistry.setBattleStream(battle.id, ws);
     // logger.log("Battle stream was set:" + battle.id);
     try {

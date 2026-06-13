@@ -46,7 +46,7 @@ class BattleChannel extends StreamingChannel<BattleObject> {
   /// Отправить событие "join"
   void join() {
     // logger.i('Join event');
-    final joinReq = ProfileIdRequest()..profileId = profileId;
+    final joinReq = JoinRequest()..profileId = profileId;
     final req = BattleStreamRequest()..join = joinReq;
     // logger.i(req);
     channel.sink.add(req.writeToBuffer());
@@ -70,6 +70,18 @@ class BattleChannel extends StreamingChannel<BattleObject> {
   /// Отправить ход
   void leave() {
     final req = BattleStreamRequest()..leave = Empty();
+    // logger.d(req);
+    channel.sink.add(req.writeToBuffer());
+    // logger.i('Sent profile: $profileId at $cellIdx');
+  }
+
+
+  connectAi(String battleId) {
+    // logger.i('Move event');
+    final connectAiRequest = BattleIdRequest()
+      ..battleId = battleId;
+
+    final req = BattleStreamRequest()..connectAi = connectAiRequest;
     // logger.d(req);
     channel.sink.add(req.writeToBuffer());
     // logger.i('Sent profile: $profileId at $cellIdx');

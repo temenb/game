@@ -17,6 +17,7 @@ service Battle {
   rpc GetBattleByUser (auth.UserIdRequest) returns (BattleObject);
   rpc GetBattle (BattleIdRequest) returns (BattleObject);
   rpc UpsertBattle (profile.ProfileIdRequest) returns (BattleObject);
+  rpc JoinBattle (profile.ProfileIdRequest) returns (BattleObject);
 }
 
 message BattleIdRequest {
@@ -25,6 +26,11 @@ message BattleIdRequest {
 
 message BattleRequest {
   BattleObject battle = 1;
+}
+
+message JoinBattleRequest {
+  string battleId = 1;
+  string profileId = 2;
 }
 
 enum BattleCellValue {
