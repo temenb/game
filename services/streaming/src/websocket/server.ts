@@ -10,7 +10,7 @@ export const wss = new WebSocketServer({port: config.webSocketPort});
 logger.info(`WebSocket listening on ${config.webSocketPort}`);
 
 export function initWss() {
-  wss.on('connection', (ws, req) => {
+  wss.on('connection', async (ws, req) => {
 
     // logger.info('New websocket connection established');
 
@@ -35,10 +35,10 @@ export function initWss() {
     profileId = url.searchParams.get('profileId')?? '';
 
     try {
-      isAllowedUser(userId, profileId)
+      await isAllowedUser(userId, profileId);
     } catch (e) {
       ws.close();
-      logger.error("❌ JWT token does not match to profile")
+      logger.error("❌ JWT token does not match to profile");
       return;
     }
 

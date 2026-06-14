@@ -36,7 +36,7 @@ services:
     depends_on:
       kafka:
         condition: service_healthy
-      postgres:
+      pgbouncer:
         condition: service_healthy
     command: pnpm dlx turbo run dev --parallel
     networks:
@@ -55,6 +55,11 @@ services:
       - ./services/orchestration/src:/usr/src/app/services/orchestration/src/
       - ./services/orchestration/__tests__:/usr/src/app/services/orchestration/__tests__/
       - ./services/orchestration/package.json:/usr/src/app/services/orchestration/package.json
+    depends_on:
+      kafka:
+        condition: service_healthy
+      pgbouncer:
+        condition: service_healthy
     command: pnpm dlx turbo run dev --parallel
     networks:
       - backend
@@ -72,6 +77,9 @@ services:
       - ./services/ai/src:/usr/src/app/services/ai/src/
       - ./services/ai/__tests__:/usr/src/app/services/ai/__tests__/
       - ./services/ai/package.json:/usr/src/app/services/ai/package.json
+    depends_on:
+      pgbouncer:
+        condition: service_healthy
     command: pnpm dlx turbo run dev --parallel
     networks:
       - backend
@@ -89,6 +97,11 @@ services:
       - ./services/battle/src:/usr/src/app/services/battle/src/
       - ./services/battle/__tests__:/usr/src/app/services/battle/__tests__/
       - ./services/battle/package.json:/usr/src/app/services/battle/package.json
+    depends_on:
+      kafka:
+        condition: service_healthy
+      pgbouncer:
+        condition: service_healthy
     command: pnpm dlx turbo run dev --parallel
     networks:
       - backend
@@ -125,14 +138,14 @@ services:
       - ./services/profile/src:/usr/src/app/services/profile/src/
       - ./services/profile/__tests__:/usr/src/app/services/profile/__tests__/
       - ./services/profile/package.json:/usr/src/app/services/profile/package.json
-    command: pnpm dlx turbo run dev --parallel
-    networks:
-      - backend
     depends_on:
       kafka:
         condition: service_healthy
-      postgres:
+      pgbouncer:
         condition: service_healthy
+    command: pnpm dlx turbo run dev --parallel
+    networks:
+      - backend
 
   engine:
     build:
@@ -147,11 +160,16 @@ services:
       - ./services/engine/src:/usr/src/app/services/engine/src/
       - ./services/engine/__tests__:/usr/src/app/services/engine/__tests__/
       - ./services/engine/package.json:/usr/src/app/services/engine/package.json
+    depends_on:
+      kafka:
+        condition: service_healthy
+      pgbouncer:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     command: pnpm dlx turbo run dev --parallel
     networks:
       - backend
-    depends_on:
-      - redis
 
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
@@ -208,8 +226,9 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: postgres
-    ports:
-      - "5432:5432"
+      POSTGRES_INITDB_ARGS: "--auth-host=md5"
+#    ports:
+#      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
@@ -220,6 +239,27 @@ services:
       timeout: 3s
       retries: 5
       start_period: 10s
+
+  pgbouncer:
+    image: edoburu/pgbouncer
+    container_name: game-pgbouncer
+    volumes:
+      - ./services/pgbouncer/userlist.txt:/etc/pgbouncer/userlist.txt
+      - ./services/pgbouncer/pgbouncer.ini:/etc/pgbouncer/pgbouncer.ini
+    ports:
+      - "6432:6432"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -h postgres -p 5432"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
 
   redis:
     image: redis:7.2

@@ -40,7 +40,7 @@ async function createKafkaConsumers() {
 }
 
 async function startWebSocket() {
-  return new Promise<void>(() => {
+  return new Promise<void>(async () => {
     initWss();
   });
 }
