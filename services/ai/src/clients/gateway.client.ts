@@ -1,34 +1,43 @@
 import config from "../config/config";
 import http from "node:http";
 import * as grpcAuth from "../grpc/generated/auth";
+import * as grpcProfile from "../grpc/generated/profile";
 import logger from "@shared/logger";
 
 class GatewayClient {
   private host = config.httpGatewayHost;
   private port = Number(config.httpGatewayPort);
+  private jwt = '';
+
+  public getJwt() {
+    return this.jwt;
+  }
 
   private async request(
     uri: string,
-    request: object,
-    method: string = "GET",
-    jwt?: string
+    request?: object,
+    method: string = "GET"
   ): Promise<any> {
     return new Promise((resolve, reject) => {
       // logger.info(
       //   uri,
       //   request,
       //   method,
-      //   jwt,
       // );
-      const data = JSON.stringify(request);
 
       const headers: Record<string, string | number> = {
         "Content-Type": "application/json",
-        "Content-Length": Buffer.byteLength(data),
       };
 
-      if (jwt) {
-        headers["Authorization"] = "Bearer " + jwt;
+      let data = '';
+      if (request) {
+        data = JSON.stringify(request);
+        headers["Content-Length"] = Buffer.byteLength(data);
+
+      }
+
+      if (this.jwt) {
+        headers["Authorization"] = "Bearer " + this.jwt;
       }
 
       const options = {
@@ -47,10 +56,13 @@ class GatewayClient {
             const response = JSON.parse(body);
             resolve(response);
           } catch (err) {
+            logger.error(body);
             reject(err);
           }
         });
       });
+
+      // logger.log(options);
 
       req.on("error", (err) => {
         if ((err as NodeJS.ErrnoException).code === "ECONNREFUSED") {
@@ -60,7 +72,7 @@ class GatewayClient {
         }
       });
 
-      if (method !== "GET") {
+      if (request) {
         req.write(data);
       }
       req.end();
@@ -68,13 +80,16 @@ class GatewayClient {
   }
 
   async signIn(deviceId: string): Promise<grpcAuth.AuthObject> {
-    return this.request("auth/anonymousSignIn", { deviceId }, "POST") as Promise<grpcAuth.AuthObject>;
+    const resp = await this.request("auth/anonymousSignIn", { deviceId }, "POST") as grpcAuth.AuthObject;
+    this.jwt = resp.accessToken;
+    return resp;
   }
 
-  async fetchProfile(auth: grpcAuth.AuthObject): Promise<any> {
-    return this.request("profile/getMyProfile", {}, "GET", auth.accessToken);
+  async fetchProfile(): Promise<grpcProfile.ProfileObject> {
+    return await this.request("profile/getMyProfile") as grpcProfile.ProfileObject;
   }
 }
 
 const gatewayClient = new GatewayClient();
 export default gatewayClient;
+

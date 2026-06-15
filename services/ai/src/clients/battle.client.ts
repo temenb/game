@@ -20,7 +20,7 @@ class BattleClient {
       return this.auth;
     }
     try {
-      const response = await gatewayClient.signIn(config.deviceId) as authGrpc.AuthObject;
+      const response = await gatewayClient.signIn(config.deviceId);
       if (!response || (response as any).error) {
         logger.error("❌ Auth failed:", response);
         this.auth = null;
@@ -39,9 +39,7 @@ class BattleClient {
   async getProfile(): Promise<profileGrpc.ProfileObject> {
     if (this.profile) return this.profile;
     try {
-      this.auth = await this.getAuth();
-      const response = await gatewayClient.fetchProfile(this.auth) as profileGrpc.ProfileObject;
-
+      const response = await gatewayClient.fetchProfile();
 
       if (!response || (response as any).error) {
         logger.error("❌ Profile failed:", response);
@@ -79,6 +77,7 @@ class BattleClient {
       return null;
     }
 
+    // logger.log(`ws://${config.webSocketStreaming}/battle?token=${auth.accessToken}&profileId=${profile.id}`);
     this.ws = new WebSocket(`ws://${config.webSocketStreaming}/battle?token=${auth.accessToken}&profileId=${profile.id}`);
 
     this.ws.on("message", messageHandler ?? this.defaultMessageHandler);
@@ -86,6 +85,7 @@ class BattleClient {
     this.ws.on("close", this.closeHandler);
 
     logger.info("Battle stream was created",);
+    this.reconnectAttempts = 0;
     return this.ws;
   }
 
@@ -107,8 +107,12 @@ class BattleClient {
   disconnect() {
     if (this.ws) {
       this.ws.close();
+      this.ws.removeAllListeners();
       this.ws = null;
     }
+    this.auth = null;
+    this.profile = null;
+    this.reconnectAttempts = 0;
   }
 
   private defaultMessageHandler(data: WebSocket.RawData) {
@@ -127,11 +131,11 @@ class BattleClient {
 
   private closeHandler = () => {
     logger.warn("❌ Connection closed");
-    this.ws = null;
     this.scheduleReconnect();
   };
 
   private scheduleReconnect() {
+    this.disconnect();
     const delay = Math.min(1000 * 2 ** this.reconnectAttempts, 30000); // экспоненциальная задержка, макс 30с
     logger.info("Schedule reconnect in " + (delay/1000));
 
