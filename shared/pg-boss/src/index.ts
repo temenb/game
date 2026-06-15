@@ -9,13 +9,11 @@ export const pgBossKafkaEventPrefix = 'event.';
 let _boss: typeof PgBoss | null = null;
 
 export async function initBoss(pbBossConfig: PgBossConfig, cb: () => void): Promise<typeof PgBoss> {
-  // logger.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!boss');
-  // logger.log(_boss);
-  if (!_boss) {
+  if (_boss) return _boss;
 
+  // logger.log('init');
+  async function tryStart(attempt = 1): Promise<typeof PgBoss> {
     try {
-      // logger.log('1');
-
       _boss = new PgBoss({
         connectionString: process.env.DATABASE_URL,
         max: pbBossConfig.max || 5,
@@ -24,23 +22,31 @@ export async function initBoss(pbBossConfig: PgBossConfig, cb: () => void): Prom
         applicationName: pbBossConfig.applicationName || 'pgboss',
       }) as typeof PgBoss;
 
-      // logger.log(process.env.DATABASE_URL);
-      // logger.log('2');
-
       await _boss.start();
-
-      // logger.log('3');
-
+      logger.info("✅ PgBoss started");
       cb();
-      // logger.log(_boss);
+
+      _boss.on("error", (err: any) => {
+        logger.error("⚠️ PgBoss error:", err);
+        _boss = null;
+        const delay = Math.min(1000 * 2 ** attempt, 30000);
+        setTimeout(() => tryStart(attempt + 1), delay);
+      });
+
+      attempt = 1;
+      return _boss!;
     } catch (e) {
-      logger.log(e);
+      logger.error("❌ PgBoss start failed:", e);
+      _boss = null;
+      const delay = Math.min(1000 * 2 ** attempt, 30000);
+      logger.info(`🔄 Retry PgBoss start in ${delay / 1000}s (attempt ${attempt})`);
+      setTimeout(() => tryStart(attempt + 1), delay);
     }
-    console.log('PgBoss started');
   }
 
-  return _boss!;
+  return await tryStart();
 }
+
 
 export function boss(): typeof PgBoss {
   if (!_boss) {
@@ -49,29 +55,26 @@ export function boss(): typeof PgBoss {
   return _boss!;
 }
 
-export async function startWorker(kafkaConfig: KafkaConfig, topic: string) {
-  const producer = await createProducer(kafkaConfig);
 
+export async function startWorker(kafkaConfig: KafkaConfig, topic: string) {
+  // проверка на дубль
+
+  const producer = await createProducer(kafkaConfig);
   await boss().createQueue(pgBossKafkaEventPrefix + topic);
 
-  // logger.log('startWorker ' + pgBossKafkaEventPrefix + topic);
   await boss().work(pgBossKafkaEventPrefix + topic, async (job: Job) => {
     try {
-
       const j = Array.isArray(job) ? job[0] : job;
-      const {name, data} = j;
-
-      const topic = name.replace(pgBossKafkaEventPrefix, '');
-
-      await producer.send(topic, data);
-      // logger.log('pgBoss ' + topic + ' event successfully done');
-
+      const { name, data } = j;
+      const topicName = name.replace(pgBossKafkaEventPrefix, '');
+      await producer.send(topicName, data);
       return true;
     } catch (err) {
       logger.error('Kafka send failed:', err);
       throw err;
     }
   });
+
   logger.log('Kafka ' + pgBossKafkaEventPrefix + topic + ' event worker started');
 }
 

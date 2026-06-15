@@ -14,5 +14,6 @@ service Ai {
 
 message ConnectingRequest {
   string battleId = 1;
+  string profileId = 2;
 }
 

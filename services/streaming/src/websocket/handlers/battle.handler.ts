@@ -3,11 +3,14 @@ import * as streamingGrpc from "../../grpc/generated/streaming";
 import * as battleService from "../../services/battle.service";
 import * as engineGrpc from "../../grpc/generated/engine";
 import * as battleGrpc from "../../grpc/generated/battle";
+import * as aiGrpc from "../../grpc/generated/ai";
 import logger from "@shared/logger";
 import FrontBattleStreamRegistry from "../channels/front.battle.stream";
 import * as profileService from "../../services/profile.service";
 import {ErrorObject} from "../../grpc/generated/common/error";
 import engineStream from "../../grpc/channels/engine.stream";
+import {enqueueEvent} from "@shared/pg-boss/src/enqueueEvent";
+import {kafkaProducersConfig} from "../../config/kafka.config";
 
 
 export async function isAllowedUser(userId: string, profileId: string) {
@@ -64,18 +67,6 @@ export async function battleHandler(ws: WebSocket, profileId: string, payload: s
 
     const battleId = FrontBattleStreamRegistry.getBattleIdByStream(ws);
 
-    // try {
-    //   await isAllowedUser(userId, payload.move.profileId)
-    // } catch (error) {
-    //   const errObj = ErrorObject.create({
-    //     type: "error",
-    //     message: String(error)
-    //   });
-    //   const buffer = ErrorObject.encode(errObj).finish();
-    //   ws.send(buffer);
-    //   return;
-    // }
-
     const grpcRequest = engineGrpc.BattleChannelClientEvent.create({
       move: engineGrpc.BattleMoveRequest.create({
         profileId: profileId,
@@ -85,16 +76,20 @@ export async function battleHandler(ws: WebSocket, profileId: string, payload: s
     });
 
     engineStream.write(grpcRequest);
-
   }
 
   if (payload.ping) {
+    // logger.log('ping from profile ' + FrontBattleStreamRegistry.getProfileIdByStream(ws));
+    // logger.log('ping battle ' + FrontBattleStreamRegistry.getBattleIdByStream(ws));
     // FrontBattleStreamRegistry.writeDataStreams(battle.id, 'ping', {});
   }
 
   if (payload.connectAi) {
-
-    // FrontBattleStreamRegistry.writeDataStreams(battle.id, 'ping', {});
+    const battleId = FrontBattleStreamRegistry.getBattleIdByStream(ws);
+    const profileId = FrontBattleStreamRegistry.getProfileIdByStream(ws);
+    const battleIdRequest = aiGrpc.ConnectingRequest.create({battleId, profileId});
+    logger.log('kafkaProducersConfig.topicAiConnectingRequest');
+    await enqueueEvent(kafkaProducersConfig.topicAiConnectingRequest, battleIdRequest);
   }
 
   if (payload.leave) {
@@ -106,17 +101,6 @@ export async function battleHandler(ws: WebSocket, profileId: string, payload: s
     });
 
     engineStream.write(grpcRequest);
-
-
-    // const battleId = event.leave.battleId;
-    // const streams = battleStreams.get(battleId);
-    // if (streams) {
-    //   streams.delete(call);
-    //   if (streams.size === 0) {
-    //     battleStreams.delete(battleId);
-    //   }
-    // }
-    // call.end();
   }
 }
 

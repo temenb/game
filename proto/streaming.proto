@@ -4,6 +4,7 @@ import "common/health.proto";
 import "common/empty.proto";
 import "common/error.proto";
 import "battle.proto";
+import "ai.proto";
 
 package streaming;
 
@@ -21,7 +22,7 @@ message BattleStreamRequest {
     common.empty.Empty     ping      = 3;
     common.empty.Empty     leave     = 4;
     common.empty.Empty     end       = 5;
-    common.empty.Empty     connectAi = 6;
+    ai.ConnectingRequest   connectAi = 6;
   }
 }
 

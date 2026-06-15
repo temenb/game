@@ -117,7 +117,7 @@ class _BattleScreenState extends ConsumerState<BattleScreen> {
                               ElevatedButton(
                                 onPressed: () {
                                   // Запуск игры против AI
-                                  // battleService.startBattleWithAI(profile.id);
+                                  battleService.connectAi(battle.id);
                                 },
                                 child: const Text('Play with AI'),
                               ),

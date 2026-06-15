@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:front/src/clients/streaming_channel.dart';
+import 'package:front/src/grpc/generated/ai.pb.dart';
 import 'package:front/src/grpc/generated/battle.pb.dart';
 import 'package:front/src/grpc/generated/common/empty.pb.dart';
 import 'package:front/src/grpc/generated/profile.pb.dart';
@@ -82,7 +83,7 @@ class BattleChannel extends StreamingChannel<BattleObject> {
 
   connectAi(String battleId) {
     // logger.i('Move event');
-    final connectAiRequest = Empty();
+    final connectAiRequest = ConnectingRequest()..battleId = battleId;
 
     final req = BattleStreamRequest()..connectAi = connectAiRequest;
     // logger.d(req);

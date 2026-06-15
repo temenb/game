@@ -20,12 +20,6 @@ importers:
       '@bufbuild/protobuf':
         specifier: ^2.11.0
         version: 2.11.0
-      '@prisma/adapter-pg':
-        specifier: ^7.6.0
-        version: 7.6.0
-      '@prisma/client':
-        specifier: ^6.19.3
-        version: 6.19.3(prisma@6.19.3)(typescript@5.9.3)
       '@shared/kafka':
         specifier: workspace:*
         version: link:../../shared/kafka
@@ -44,9 +38,6 @@ importers:
       kafkajs:
         specifier: ^2.2.4
         version: 2.2.4
-      pg-boss:
-        specifier: ^12.15.0
-        version: 12.15.0
       ws:
         specifier: ^8.21.0
         version: 8.21.0
@@ -81,9 +72,6 @@ importers:
       nodemon:
         specifier: ^3.1.14
         version: 3.1.14
-      prisma:
-        specifier: ^6.19.3
-        version: 6.19.3(typescript@5.9.3)
       supertest:
         specifier: ^7.2.2
         version: 7.2.2
@@ -117,12 +105,6 @@ importers:
       '@prisma/client':
         specifier: ^6.19.3
         version: 6.19.3(prisma@6.19.3)(typescript@6.0.2)
-      '@shared/kafka':
-        specifier: workspace:*
-        version: link:../../shared/kafka
-      '@shared/logger':
-        specifier: workspace:*
-        version: link:../../shared/logger
       bcrypt:
         specifier: ^6.0.0
         version: 6.0.0
@@ -443,85 +425,6 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
-  services/mailer:
-    dependencies:
-      '@bufbuild/protobuf':
-        specifier: ^2.11.0
-        version: 2.11.0
-      '@grpc/grpc-js':
-        specifier: ^1.14.3
-        version: 1.14.3
-      '@prisma/client':
-        specifier: ^6.19.3
-        version: 6.19.3(prisma@6.19.3)(typescript@5.9.3)
-      '@shared/kafka':
-        specifier: workspace:*
-        version: link:../../shared/kafka
-      '@shared/logger':
-        specifier: workspace:*
-        version: link:../../shared/logger
-      bcrypt:
-        specifier: ^6.0.0
-        version: 6.0.0
-      jsonwebtoken:
-        specifier: ^9.0.3
-        version: 9.0.3
-      kafkajs:
-        specifier: ^2.2.4
-        version: 2.2.4
-      morgan:
-        specifier: ^1.10.1
-        version: 1.10.1
-    devDependencies:
-      '@types/amqplib':
-        specifier: ^0.10.8
-        version: 0.10.8
-      '@types/bcrypt':
-        specifier: ^6.0.0
-        version: 6.0.0
-      '@types/jest':
-        specifier: ^30.0.0
-        version: 30.0.0
-      '@types/jsonwebtoken':
-        specifier: ^9.0.10
-        version: 9.0.10
-      '@types/morgan':
-        specifier: ^1.9.10
-        version: 1.9.10
-      '@types/supertest':
-        specifier: ^6.0.3
-        version: 6.0.3
-      fast-glob:
-        specifier: ^3.3.3
-        version: 3.3.3
-      jest:
-        specifier: ^30.3.0
-        version: 30.3.0(@types/node@24.12.0)(ts-node@10.9.2)
-      nodemon:
-        specifier: ^3.1.14
-        version: 3.1.14
-      prisma:
-        specifier: ^6.19.3
-        version: 6.19.3(typescript@5.9.3)
-      rimraf:
-        specifier: ^4.4.1
-        version: 4.4.1
-      supertest:
-        specifier: ^7.2.2
-        version: 7.2.2
-      ts-jest:
-        specifier: ^29.4.9
-        version: 29.4.9(@babel/core@7.29.0)(jest@30.3.0)(typescript@5.9.3)
-      ts-node:
-        specifier: ^10.9.2
-        version: 10.9.2(@types/node@24.12.0)(typescript@5.9.3)
-      ts-node-dev:
-        specifier: ^2.0.0
-        version: 2.0.0(@types/node@24.12.0)(typescript@5.9.3)
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
   services/orchestration:
     dependencies:
       '@bufbuild/protobuf':
@@ -688,6 +591,9 @@ importers:
       '@bufbuild/protobuf':
         specifier: ^2.11.0
         version: 2.11.0
+      '@prisma/client':
+        specifier: ^6.19.3
+        version: 6.19.3(prisma@6.19.3)(typescript@5.9.3)
       '@shared/grpc-client-manager':
         specifier: workspace:*
         version: link:../../shared/grpc-client-manager
@@ -758,6 +664,9 @@ importers:
       nodemon:
         specifier: ^3.1.14
         version: 3.1.14
+      prisma:
+        specifier: ^6.19.3
+        version: 6.19.3(typescript@5.9.3)
       supertest:
         specifier: ^7.2.2
         version: 7.2.2

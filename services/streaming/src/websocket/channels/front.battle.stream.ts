@@ -32,14 +32,14 @@ export default class FrontBattleStreamRegistry {
     // logger.log('battleStreams keys:', this.battleStreams.keys());
 
     socket.on("close", () => {
-      logger.error("Close a stream");
+      logger.info("Close a stream");
 
       this.deleteBattleStream(socket);
     });
 
     socket.on("error", (err) => {
       logger.error("Stream error:", err);
-      // this.deleteBattleStream(socket);
+      this.deleteBattleStream(socket);
     });
 
     this.resetHeartbeat(socket);
@@ -84,6 +84,7 @@ export default class FrontBattleStreamRegistry {
       this.socketToBattle.delete(call);
       this.socketToProfile.delete(call);
       call.close();
+      // call.end();
     }
   }
 

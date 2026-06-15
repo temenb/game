@@ -7,6 +7,7 @@ import {AuthObject} from "../grpc/generated/auth";
 import * as profileGrpc from "../grpc/generated/profile";
 import logger from "@shared/logger";
 import {ProfileObject} from "../grpc/generated/profile";
+import * as aiGrpc from "../grpc/generated/ai";
 
 class BattleClient {
   private auth: authGrpc.AuthObject | null = null;
@@ -81,19 +82,19 @@ class BattleClient {
     this.ws = new WebSocket(`ws://${config.webSocketStreaming}/battle?token=${auth.accessToken}&profileId=${profile.id}`);
 
     this.ws.on("message", messageHandler ?? this.defaultMessageHandler);
+    this.ws.on("open", this.openHandler);
     this.ws.on("error", this.errorHandler);
     this.ws.on("close", this.closeHandler);
 
     logger.info("Battle stream was created",);
-    this.reconnectAttempts = 0;
     return this.ws;
   }
 
-  async join(battleId: string) {
+  async join(req: aiGrpc.ConnectingRequest) {
     const ws = await this.connect();
     if (!ws) throw new Error('cannot send. stream is not opened.')
-    const req = streamingGrpc.BattleStreamRequest.create({join: {battleId}});
-    ws.send(streamingGrpc.BattleStreamRequest.encode(req).finish());
+    const streamReq = streamingGrpc.BattleStreamRequest.create({join: req});
+    ws.send(streamingGrpc.BattleStreamRequest.encode(streamReq).finish());
   }
 
   async makeMove(battleId: string, cellIdx: number) {
@@ -125,26 +126,46 @@ class BattleClient {
     }
   }
 
-  private errorHandler(err: unknown) {
+  private errorHandler = (err: unknown) => {
     logger.error("⚠️ WebSocket error:", err);
+    this.scheduleReconnect();
   }
+
+  private openHandler = () => {
+    this.reconnectAttempts = 0;
+    logger.info("✅ WebSocket connected, attempts reset");
+  };
 
   private closeHandler = () => {
     logger.warn("❌ Connection closed");
     this.scheduleReconnect();
   };
 
+  private reconnecting = false;
+
   private scheduleReconnect() {
+    if (this.reconnecting) return; // защита от дублей
+
+    this.reconnecting = true;
+
     this.disconnect();
-    const delay = Math.min(1000 * 2 ** this.reconnectAttempts, 30000); // экспоненциальная задержка, макс 30с
-    logger.info("Schedule reconnect in " + (delay/1000));
+    const delay = Math.min(1000 * 2 ** this.reconnectAttempts, 30000);
+    logger.info("Schedule reconnect in " + delay / 1000);
 
     this.reconnectAttempts++;
-    setTimeout(() => {
+    setTimeout(async () => {
       logger.info(`🔄 Reconnecting... attempt ${this.reconnectAttempts}`);
-      this.connect().catch(err => logger.error("Reconnect failed:", err));
+      try {
+        await this.connect();
+        this.reconnecting = false; // сброс флага после успешного подключения
+      } catch (err) {
+        logger.error("Reconnect failed:", err);
+        this.reconnecting = false; // сброс, чтобы можно было пробовать снова
+        this.scheduleReconnect();  // запускаем новый цикл
+      }
     }, delay);
   }
+
 }
 
 const battleClient = new BattleClient();
