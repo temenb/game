@@ -37,6 +37,11 @@ install:
 bip:
 	@paplay /usr/share/sounds/freedesktop/stereo/complete.oga
 
+
+bipAlert:
+	@printf "\a"  # системный сигнал
+
+
 migrate:
 	@echo '🚀 Apply migrations...'
 	@if [ -n "$(service)" ]; then \
@@ -221,3 +226,19 @@ tmux:
 	tmux split-window -v -t logs:0.0
 	tmux select-pane -t logs:0.1
 	tmux attach -t logs
+
+healthloop:
+	@while true; do \
+		now=$$(date '+%Y-%m-%d %H:%M:%S'); \
+     	response=$$(curl -s http://192.168.31.186:9090/health); \
+     	if echo $$response | grep -q '"healthy":true'; then \
+        	echo "$$now ✅ Services healthy"; \
+     	else \
+         	echo "$$now ❌ Not healthy"; \
+         	echo "$$response"; \
+         	$(MAKE) bip; \
+     	fi; \
+     	sleep 5; \
+ 	done
+
+

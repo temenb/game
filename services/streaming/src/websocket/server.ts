@@ -34,8 +34,8 @@ export function initWss() {
 
     profileId = url.searchParams.get('profileId')?? '';
 
-    logger.log(userId);
-    logger.log(profileId);
+    // logger.log(userId);
+    // logger.log(profileId);
     try {
       await isAllowedUser(userId, profileId);
     } catch (e) {
@@ -45,10 +45,20 @@ export function initWss() {
     }
 
     ws.on('message', (data) => {
-      // logger.log('📩 Raw message:', data);
+      logger.log('📩 Raw message:', data);
+      console.log("📩 Raw length:", (data as Buffer).length);
       try {
+
+        const str = data.toString();
+        if (str.startsWith("{")) {
+          const obj = JSON.parse(str);
+          console.log("✅ Parsed JSON:", obj);
+          return;
+        }
+
         const buffer = new Uint8Array(data as ArrayBuffer);
         const request = streamingGrpc.BattleStreamRequest.decode(buffer);
+        console.log("Decoded:", request);
 
         try {
           if (url.pathname.startsWith('/battle')) {
