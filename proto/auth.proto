@@ -18,7 +18,7 @@ service Auth {
   rpc ForgotPassword (ForgotPasswordRequest) returns (common.empty.Empty);
   rpc ResetPassword (ResetPasswordRequest) returns (AuthObject);
   rpc AnonymousSignIn (AnonymousSignInRequest) returns (AuthObject);
-  rpc GetMyUser (common.empty.Empty) returns (UserObject);
+  rpc GetUser (UserIdRequest) returns (UserObject);
 }
 
 message RegisterRequest {

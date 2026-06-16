@@ -87,7 +87,7 @@ export async function battleHandler(ws: WebSocket, profileId: string, payload: s
   if (payload.connectAi) {
     const battleId = FrontBattleStreamRegistry.getBattleIdByStream(ws);
     const profileId = FrontBattleStreamRegistry.getProfileIdByStream(ws);
-    const battleIdRequest = aiGrpc.ConnectingRequest.create({battleId, profileId});
+    const battleIdRequest = battleGrpc.JoinBattleRequest.create({battleId, profileId});
     logger.log('kafkaProducersConfig.topicAiConnectingRequest');
     await enqueueEvent(kafkaProducersConfig.topicAiConnectingRequest, battleIdRequest);
   }

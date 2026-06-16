@@ -21,7 +21,6 @@ export const readyz = wrapper(async (req, res) => {
 });
 
 export const getMyProfile = wrapper(async (req, res) => {
-  logger.log('here');
   const jwt = getJwt(req);
   return await profileService.getMyProfile(jwt)
 });

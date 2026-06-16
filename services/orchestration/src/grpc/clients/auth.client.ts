@@ -3,6 +3,7 @@ import * as authGrpc from '../generated/auth';
 import * as emptyGrpc from '../generated/common/empty';
 import config from '../../config/config';
 import {GrpcClientManager} from '@shared/grpc-client-manager';
+import * as profileGrpc from "../generated/profile";
 
 const authManager = new GrpcClientManager<authGrpc.AuthClient>(() => {
   return new authGrpc.AuthClient(config.serviceAuthUrl, grpc.credentials.createInsecure());
@@ -41,4 +42,9 @@ export const forgotPassword = (email: string): Promise<emptyGrpc.Empty | null> =
 export const resetPassword = (token: string, newPassword: string): Promise<authGrpc.AuthObject | null> => {
   const grpcRequest: authGrpc.ResetPasswordRequest = {token, newPassword};
   return authManager.call((client, cb) => client.resetPassword(grpcRequest, cb));
+};
+
+export const getUser = (userId: string): Promise<authGrpc.UserObject | null> => {
+  const grpcRequest: authGrpc.UserIdRequest = {userId};
+  return authManager.call((client, cb) => client.getUser(grpcRequest, cb));
 };

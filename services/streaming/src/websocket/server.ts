@@ -34,6 +34,8 @@ export function initWss() {
 
     profileId = url.searchParams.get('profileId')?? '';
 
+    logger.log(userId);
+    logger.log(profileId);
     try {
       await isAllowedUser(userId, profileId);
     } catch (e) {

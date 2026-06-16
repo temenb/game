@@ -7,7 +7,9 @@ import {AuthObject} from "../grpc/generated/auth";
 import * as profileGrpc from "../grpc/generated/profile";
 import logger from "@shared/logger";
 import {ProfileObject} from "../grpc/generated/profile";
-import * as aiGrpc from "../grpc/generated/ai";
+import * as aiService from "../services/ai.service";
+import * as battleGrpc from "../grpc/generated/battle";
+import {battleMessageHandler} from "../services/ai.service";
 
 class BattleClient {
   private auth: authGrpc.AuthObject | null = null;
@@ -90,22 +92,23 @@ class BattleClient {
     return this.ws;
   }
 
-  async join(req: aiGrpc.ConnectingRequest) {
+  async join(req: battleGrpc.JoinBattleRequest) {
     const ws = await this.connect();
     if (!ws) throw new Error('cannot send. stream is not opened.')
     const streamReq = streamingGrpc.BattleStreamRequest.create({join: req});
     ws.send(streamingGrpc.BattleStreamRequest.encode(streamReq).finish());
   }
 
-  async makeMove(battleId: string, cellIdx: number) {
+  async makeMove(battleId: string) {
     const ws = await this.connect();
     if (!ws) throw new Error('cannot send. stream is not opened.')
 
+    const cellIdx = 0;
     const req = streamingGrpc.BattleStreamRequest.create({move: {cellIdx}});
     ws.send(streamingGrpc.BattleStreamRequest.encode(req).finish());
   }
 
-  disconnect() {
+  disconnect(reconnectAttempts = this.reconnectAttempts) {
     if (this.ws) {
       this.ws.close();
       this.ws.removeAllListeners();
@@ -113,14 +116,15 @@ class BattleClient {
     }
     this.auth = null;
     this.profile = null;
-    this.reconnectAttempts = 0;
+    this.reconnectAttempts = reconnectAttempts;
   }
 
   private defaultMessageHandler(data: WebSocket.RawData) {
     try {
       const buffer = new Uint8Array(data as ArrayBuffer);
-      const response = streamingGrpc.BattleStreamResponse.decode(buffer);
-      logger.log("📩 Got response:", response);
+      const message = streamingGrpc.BattleStreamResponse.decode(buffer);
+      logger.log("📩 Got response:", message);
+      aiService.battleMessageHandler(message);
     } catch (err) {
       logger.error("❌ Failed to parse message:", err);
     }
@@ -133,7 +137,7 @@ class BattleClient {
 
   private openHandler = () => {
     this.reconnectAttempts = 0;
-    logger.info("✅ WebSocket connected, attempts reset");
+    logger.info("✅ WebSocket connected");
   };
 
   private closeHandler = () => {

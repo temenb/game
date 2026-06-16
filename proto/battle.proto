@@ -17,7 +17,7 @@ service Battle {
   rpc GetBattleByUser (auth.UserIdRequest) returns (BattleObject);
   rpc GetBattle (BattleIdRequest) returns (BattleObject);
   rpc UpsertBattle (profile.ProfileIdRequest) returns (BattleObject);
-  rpc JoinBattle (profile.ProfileIdRequest) returns (BattleObject);
+  rpc JoinBattle (JoinBattleRequest) returns (BattleObject);
 }
 
 message BattleIdRequest {

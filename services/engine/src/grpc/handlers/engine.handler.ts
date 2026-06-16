@@ -2,6 +2,7 @@ import * as grpc from '@grpc/grpc-js';
 import * as battleGrpc from '../generated/battle';
 import * as engineGrpc from '../generated/engine';
 import * as battleService from '../../services/battle.service';
+import logger from "@shared/logger";
 
 
 export async function battleChannel(
@@ -50,6 +51,8 @@ export async function battleChannel(
       console.error("Stream error:", err);
       call.end();
     });
+
+    logger.log('Grpc streaming connection established');
   } catch (err: any) {
     console.error("battleChannel error:", err);
     call.end();

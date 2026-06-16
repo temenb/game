@@ -1,5 +1,6 @@
 import * as authClient from '../grpc/clients/auth.client';
 import {AnonymousSignInRequest, RefreshTokensRequest} from '../grpc/generated/auth';
+import * as orchestrationClient from "../grpc/clients/orchestration.client";
 
 export const health = async () =>
   await authClient.health();
@@ -14,12 +15,15 @@ export const readyz = async () =>
   await authClient.readyz();
 
 export const refreshTokens = async (request: RefreshTokensRequest) =>
-  await authClient.refreshTokens(request);
+  await orchestrationClient.refreshTokens(request.token);
 
 export const anonymousSignIn = async (request: AnonymousSignInRequest) => {
-  return await authClient.anonymousSignIn(request);
+  return await orchestrationClient.anonymousSignIn(request.deviceId);
 }
 
+export const getMyUser = async (jwt: string) => {
+  return await orchestrationClient.getMyUser(jwt);
+}
 
 // export const register = async (email: string, password: string) =>
 //   await authClient.register(email, password);

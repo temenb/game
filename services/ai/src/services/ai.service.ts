@@ -1,7 +1,18 @@
-// import * as streamingGrpc from "../grpc/generated/streaming";
-import * as aiGrpc from "../grpc/generated/ai";
+import * as streamingGrpc from "../grpc/generated/streaming";
+import * as battleGrpc from "../grpc/generated/battle";
 import battleClient from "../clients/battle.client";
+import logger from "@shared/logger";
 
-export const connectToBattle = async (req: aiGrpc.ConnectingRequest) => {
+export const connectToBattle = async (req: battleGrpc.JoinBattleRequest) => {
   battleClient.join(req);
+};
+
+export const battleMessageHandler = (message: streamingGrpc.BattleStreamResponse) => {
+  if (message.battle) {
+    battleClient.makeMove(message.battle.id);
+  }
+
+  if (message.error) {
+    logger.error(message.error);
+  }
 };
