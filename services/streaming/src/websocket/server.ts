@@ -4,6 +4,7 @@ import {battleHandler, isAllowedUser} from "./handlers/battle.handler";
 import config from "../config/config";
 import logger from "@shared/logger";
 import extractUserIdFromJwt from "../lib/extractUserIdFromJwt";
+import FrontBattleStreamRegistry from "./channels/front.battle.stream";
 
 
 export const wss = new WebSocketServer({port: config.webSocketPort});
@@ -45,20 +46,22 @@ export function initWss() {
     }
 
     ws.on('message', (data) => {
-      logger.log('📩 Raw message:', data);
-      console.log("📩 Raw length:", (data as Buffer).length);
+      // logger.log('📩 Raw message:', data);
+      // console.log("📩 Raw length:", (data as Buffer).length);
       try {
 
         const str = data.toString();
+        let request;
         if (str.startsWith("{")) {
-          const obj = JSON.parse(str);
-          console.log("✅ Parsed JSON:", obj);
-          return;
+          request = JSON.parse(str);
+          console.log("✅ Parsed JSON:", request);
+          FrontBattleStreamRegistry.setSocketEncodingTypeToString(ws);
+        } else {
+          const buffer = new Uint8Array(data as ArrayBuffer);
+          request = streamingGrpc.BattleStreamRequest.decode(buffer);
+          console.log("Decoded:", request);
         }
 
-        const buffer = new Uint8Array(data as ArrayBuffer);
-        const request = streamingGrpc.BattleStreamRequest.decode(buffer);
-        console.log("Decoded:", request);
 
         try {
           if (url.pathname.startsWith('/battle')) {

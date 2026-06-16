@@ -2,6 +2,7 @@ import * as battleClient from "../grpc/clients/battle.client";
 import FrontBattleStreamRegistry from "../websocket/channels/front.battle.stream";
 import {BattleObject, BattleStatus} from "../grpc/generated/battle";
 import logger from "@shared/logger";
+import * as streamingGrpc from "../grpc/generated/streaming";
 
 export const health = async () =>
   await battleClient.health();
@@ -22,9 +23,11 @@ export const joinBattle = async (battleId: string, profileId: string) =>
   await battleClient.joinBattle(battleId, profileId);
 
 export const updateBattle = async (battle: BattleObject) => {
-  logger.log('update battle: battle');
+  // logger.log('update battle:', battle);
   try {
-    FrontBattleStreamRegistry.writeBattleStreams(battle);
+    const message = streamingGrpc.BattleStreamResponse.create({battle: battle});
+
+    FrontBattleStreamRegistry.writeBattleStreams(battle.id, message);
   } catch (e) {
     logger.error(String(e));
   }

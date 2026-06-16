@@ -1,6 +1,4 @@
 import {WebSocket} from 'ws';
-import * as battleGrpc from '../../grpc/generated/battle';
-import * as emptyGrpc from '../../grpc/generated/common/empty';
 import * as streamingGrpc from '../../grpc/generated/streaming';
 import logger from "@shared/logger";
 
@@ -8,6 +6,7 @@ export default class FrontBattleStreamRegistry {
   private static battleStreams = new Map<string, Set<WebSocket>>();
   private static socketToBattle = new Map<WebSocket, string>();
   private static socketToProfile = new Map<WebSocket, string>();
+  private static socketEncodingType = new Map<WebSocket, string>();
 
   private static heartbeatTimers = new Map<
     WebSocket,
@@ -50,12 +49,16 @@ export default class FrontBattleStreamRegistry {
 
   };
 
+  static setSocketEncodingTypeToString(socket: WebSocket): void {
+    this.socketEncodingType.set(socket, 'plain');
+  }
 
-  static deleteBattleStream(socket: WebSocket): void;
-  static deleteBattleStream(battleId: string): void;
-  static deleteBattleStream(
-    arg: WebSocket | string
-  ) {
+
+  static socketEncodingTypeIsPlain(socket: WebSocket): boolean {
+    return this.socketEncodingType.has(socket) && (this.socketEncodingType.get(socket) == 'plain');
+  }
+
+  static deleteBattleStream(arg: WebSocket | string): void {
     if (typeof arg === "string") {
       const battleId = arg;
 
@@ -69,6 +72,7 @@ export default class FrontBattleStreamRegistry {
       }
       this.battleStreams.delete(battleId)
     } else {
+      //@todo refactor this
       const call = arg;
       const battleId = this.socketToBattle.get(call);
       if (!battleId) return;
@@ -106,43 +110,39 @@ export default class FrontBattleStreamRegistry {
     return this.socketToProfile.get(ws);
   }
 
-  static encodeResponse(type: string, data?: any) {
-    switch (type) {
-      case 'battle':
-        return streamingGrpc.BattleStreamResponse.encode({battle: data}).finish();
-      case 'ping':
-        return emptyGrpc.Empty.encode({}).finish();
-      default:
-        logger.error(`Unknown type: ${type}`);
-        return undefined;
+
+  static getStreams(arg: WebSocket | string): Set<WebSocket> {
+    if (typeof arg === "string") {
+      const battleId = arg;
+
+      const streams = FrontBattleStreamRegistry.getBattleStreams(battleId);
+      if (!streams) {
+        logger.log(`No active streams found for battleId=${battleId}`);
+        throw new Error(`No active streams found for battleId=${battleId}`);
+      }
+      return streams;
+    } else if (arg instanceof WebSocket) {
+
+      return new Set<WebSocket>([arg]);
     }
+    throw new Error(`Smth went wrong`);
   }
 
-  static _writeBattleStreams(battleId: string, type: string, data: object) {
-    const streams = FrontBattleStreamRegistry.getBattleStreams(battleId);
-    if (!streams) {
-      logger.log(`No active streams found for battleId=${battleId}`, data);
-      throw new Error(`No active streams found for battleId=${battleId}`);
-    }
+  static writeBattleStreams(arg: WebSocket | string, streamRequest: streamingGrpc.BattleStreamResponse) {
+
+    const streams = this.getStreams(arg);
 
     // logger.log('Update ' + type + ' streams for battle: ' + battleId, data);
     // logger.log('Streams count: ' + streams.size);
-    let count = 0;
     for (const stream of streams) {
       // logger.log('Streams update ' + ++count);
-      const buffer = FrontBattleStreamRegistry.encodeResponse(type, data);
+      const buffer = this.socketEncodingTypeIsPlain(stream)
+        ? JSON.stringify(streamRequest)
+        : streamingGrpc.BattleStreamResponse.encode(streamRequest).finish();
       if (buffer) {
         stream.send(buffer);
       }
     }
-  }
-
-  static writeBattleStreams(battle: battleGrpc.BattleObject) {
-    FrontBattleStreamRegistry._writeBattleStreams(battle.id, 'battle', battle);
-  }
-
-  static writeDataStreams(battleId: string, type: string, data: object) {
-    FrontBattleStreamRegistry._writeBattleStreams(battleId, type, data);
   }
 
   private static resetHeartbeat(call: WebSocket) {

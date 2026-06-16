@@ -11,6 +11,7 @@ import {ErrorObject} from "../../grpc/generated/common/error";
 import engineStream from "../../grpc/channels/engine.stream";
 import {enqueueEvent} from "@shared/pg-boss/src/enqueueEvent";
 import {kafkaProducersConfig} from "../../config/kafka.config";
+import * as emptyGrpc from "../../grpc/generated/common/empty";
 
 
 export async function isAllowedUser(userId: string, profileId: string) {
@@ -48,7 +49,6 @@ export async function battleHandler(ws: WebSocket, profileId: string, payload: s
       return;
     }
 
-    FrontBattleStreamRegistry.setBattleStream(battle.id, profileId, ws);
     // logger.log("Battle stream was set:" + battle.id);
     try {
       if (battle.status == battleGrpc.BattleStatus.ACTIVE) {
@@ -56,7 +56,9 @@ export async function battleHandler(ws: WebSocket, profileId: string, payload: s
         engineStream.write(grpcRequest);
       }
 
-      FrontBattleStreamRegistry.writeBattleStreams(battle);
+      const message = streamingGrpc.BattleStreamResponse.create({battle});
+
+      FrontBattleStreamRegistry.writeBattleStreams(battle.id, message);
     } catch (e) {
       logger.error(String(e));
     }
@@ -79,9 +81,9 @@ export async function battleHandler(ws: WebSocket, profileId: string, payload: s
   }
 
   if (payload.ping) {
-    // logger.log('ping from profile ' + FrontBattleStreamRegistry.getProfileIdByStream(ws));
-    // logger.log('ping battle ' + FrontBattleStreamRegistry.getBattleIdByStream(ws));
-    // FrontBattleStreamRegistry.writeDataStreams(battle.id, 'ping', {});
+    const grpcRequest = emptyGrpc.Empty.create({});
+
+    FrontBattleStreamRegistry.writeBattleStreams(ws, grpcRequest);
   }
 
   if (payload.connectAi) {
