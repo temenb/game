@@ -9,7 +9,7 @@ router.get('/livez', authController.livez);
 router.get('/readyz', authController.readyz);
 
 router.post('/anonymousSignIn', authController.anonymousSignIn);
-router.post('/getMyUser', authController.getMyUser);
+router.get('/getMyUser', authController.getMyUser);
 router.post('/refreshTokens', authController.refreshTokens);
 
 export default router;

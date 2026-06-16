@@ -2,7 +2,7 @@ import {
   BattleCellValue as GrpcBattleCellValue,
   BattleObject,
   BattleStatus as GrpcBattleStatus
-} from "../grpc/generated/battle";
+} from "../../grpc/generated/battle";
 import {Battle, BattleCellValue, BattleStatus} from "@prisma/client";
 
 const battleStatusMap: Record<BattleStatus, GrpcBattleStatus> = {
@@ -81,7 +81,7 @@ export function battleToPrisma(battle: BattleObject) {
     players: players,
     status: status,
     winner: battle.winner ?? "",
-    createdAt: battle.createdAt,
-    updatedAt: battle.updatedAt,
+    createdAt: new Date(battle.createdAt),
+    updatedAt: new Date(battle.updatedAt),
   };
 }

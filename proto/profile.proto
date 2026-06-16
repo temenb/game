@@ -22,10 +22,12 @@ message ProfileIdRequest {
 }
 
 message ProfileObject {
-  string id = 1;
-  string user_id = 2;
-  string nickname = 3;
-  int64 level = 4;
-  int64 rating = 5;
-  int64 experience = 6;
+  string id         = 1;
+  string user_id    = 2;
+  string nickname   = 3;
+  int64  level      = 4;
+  int64  rating     = 5;
+  int64  experience = 6;
+  int64  createdAt  = 7;
+  int64  updatedAt  = 8;
 }

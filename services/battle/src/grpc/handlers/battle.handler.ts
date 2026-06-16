@@ -3,7 +3,7 @@ import * as battleGrpc from '../generated/battle';
 import * as profileGrpc from '../generated/profile';
 import * as battleService from '../../services/battle.service';
 import {callbackError} from './callback.error';
-import {battleToGrpc} from '../../lib/battle-grpc-prisma-converters';
+import {battleToGrpc} from '../../lib/grpc-prisma-converters/battle';
 import logger from "@shared/logger";
 import {BattleModel} from "../../models/battle.model";
 

@@ -29,6 +29,7 @@ export const anonymousSignIn = wrapper(async (req, res) => {
 });
 
 export const getMyUser = wrapper(async (req, res) => {
+  logger.log('getMyUser');
   const jwt = getJwt(req);
   return await authService.getMyUser(jwt)
 });

@@ -29,7 +29,7 @@ message BattleRequest {
 }
 
 message JoinBattleRequest {
-  string battleId = 1;
+  string battleId  = 1;
   string profileId = 2;
 }
 
@@ -51,6 +51,6 @@ message BattleObject {
   repeated string          players    = 3;
   BattleStatus             status     = 4;
   string                   winner     = 5;
-  int64 createdAt = 6;
-  int64 updatedAt = 7;
+  int64                    createdAt  = 6;
+  int64                    updatedAt  = 7;
 }
