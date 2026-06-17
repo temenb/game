@@ -1,8 +1,8 @@
-import {connectToBattle} from "../services/ai.service";
+import {connectToBattle} from "../services/battle.service";
 import logger from "@shared/logger";
-import * as battleGrpc from "../grpc/generated/battle";
+import * as streamingGrpc from "../grpc/generated/streaming";
 
-export async function connectingRequest(topic: string, partition: number, message: battleGrpc.JoinBattleRequest): Promise<void> {
+export async function connectingRequest(topic: string, partition: number, message: streamingGrpc.JoinBattleRequest): Promise<void> {
   try {
     logger.log('message received', message);
     connectToBattle(message);

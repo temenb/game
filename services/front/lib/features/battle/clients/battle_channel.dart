@@ -1,10 +1,8 @@
 import 'dart:async';
 
 import 'package:front/src/clients/streaming_channel.dart';
-import 'package:front/src/grpc/generated/ai.pb.dart';
 import 'package:front/src/grpc/generated/battle.pb.dart';
 import 'package:front/src/grpc/generated/common/empty.pb.dart';
-import 'package:front/src/grpc/generated/profile.pb.dart';
 import 'package:front/src/grpc/generated/streaming.pb.dart';
 import 'package:logger/logger.dart';
 
@@ -41,7 +39,6 @@ class BattleChannel extends StreamingChannel<BattleObject> {
     }
   }
 
-
   getWsUri() {
     return Uri.parse(
       'ws://${config.host}:${config.port}/$pathname?token=$jwt&profileId=${this.profileId}',
@@ -63,8 +60,7 @@ class BattleChannel extends StreamingChannel<BattleObject> {
   /// Отправить ход
   void move(String battleId, int cellIdx) {
     // logger.i('Move event');
-    final moveReq = BattleMoveRequest()
-      ..cellIdx = cellIdx;
+    final moveReq = BattleMoveRequest()..cellIdx = cellIdx;
 
     final req = BattleStreamRequest()..move = moveReq;
     // logger.d(req);
@@ -79,7 +75,6 @@ class BattleChannel extends StreamingChannel<BattleObject> {
     channel.sink.add(req.writeToBuffer());
     // logger.i('Sent profile: $profileId at $cellIdx');
   }
-
 
   connectAi(String battleId) {
     // logger.i('Move event');

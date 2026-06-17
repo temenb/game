@@ -4,7 +4,7 @@ import {battleHandler, isAllowedUser} from "./handlers/battle.handler";
 import config from "../config/config";
 import logger from "@shared/logger";
 import extractUserIdFromJwt from "../lib/extractUserIdFromJwt";
-import FrontBattleStreamRegistry from "./channels/front.battle.stream";
+import frontBattleStreamRegistry from "./channels/front.battle.stream";
 
 
 export const wss = new WebSocketServer({port: config.webSocketPort});
@@ -33,7 +33,7 @@ export function initWss() {
       return;
     }
 
-    profileId = url.searchParams.get('profileId')?? '';
+    profileId = url.searchParams.get('profileId') ?? '';
 
     // logger.log(userId);
     // logger.log(profileId);
@@ -48,7 +48,7 @@ export function initWss() {
     }
 
     ws.on('message', (data) => {
-      // logger.log('📩 Raw message:', data);
+      logger.log('📩 Raw message:', data);
       // console.log("📩 Raw length:", (data as Buffer).length);
       try {
 
@@ -57,7 +57,7 @@ export function initWss() {
         if (str.startsWith("{")) {
           request = JSON.parse(str);
           // console.log("✅ Parsed JSON:", request);
-          FrontBattleStreamRegistry.setSocketEncodingTypeToString(ws);
+          frontBattleStreamRegistry.setSocketEncodingTypeToString(ws);
         } else {
           const buffer = new Uint8Array(data as ArrayBuffer);
           request = streamingGrpc.BattleStreamRequest.decode(buffer);
@@ -90,7 +90,12 @@ export function initWss() {
 
     ws.on('close', () => {
       // logger.log('❌ Client is disconnected');
+      frontBattleStreamRegistry.deleteBattleStream(ws);
     });
+
+    ws.on('error', () => frontBattleStreamRegistry.deleteBattleStream(ws));
+
+    ws.on('end', () => frontBattleStreamRegistry.deleteBattleStream(ws));
 
   });
 }

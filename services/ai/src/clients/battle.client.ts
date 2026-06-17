@@ -3,19 +3,16 @@ import config from "../config/config";
 import gatewayClient from "./gateway.client";
 import * as streamingGrpc from "../grpc/generated/streaming";
 import * as authGrpc from "../grpc/generated/auth";
-import {AuthObject} from "../grpc/generated/auth";
 import * as profileGrpc from "../grpc/generated/profile";
 import logger from "@shared/logger";
-import {ProfileObject} from "../grpc/generated/profile";
-import * as aiService from "../services/ai.service";
-import * as battleGrpc from "../grpc/generated/battle";
-import {battleMessageHandler} from "../services/ai.service";
+import * as battleService from "../services/battle.service";
 
 class BattleClient {
   private auth: authGrpc.AuthObject | null = null;
   private profile: profileGrpc.ProfileObject | null = null;
   private ws: WebSocket | null = null;
   private reconnectAttempts = 0;
+  private reconnecting = false;
 
   async getAuth(): Promise<authGrpc.AuthObject> {
     if (this.auth) {
@@ -38,7 +35,6 @@ class BattleClient {
     }
   }
 
-
   async getProfile(): Promise<profileGrpc.ProfileObject> {
     if (this.profile) return this.profile;
     try {
@@ -59,7 +55,7 @@ class BattleClient {
     }
   }
 
-  async connect(messageHandler?: (data: WebSocket.RawData) => void): Promise<WebSocket | null> {
+  async connect(): Promise<WebSocket | null> {
     if (this.ws) return this.ws;
 
     let auth: authGrpc.AuthObject;
@@ -83,29 +79,13 @@ class BattleClient {
     // logger.log(`ws://${config.webSocketStreaming}/battle?token=${auth.accessToken}&profileId=${profile.id}`);
     this.ws = new WebSocket(`ws://${config.webSocketStreaming}/battle?token=${auth.accessToken}&profileId=${profile.id}`);
 
-    this.ws.on("message", messageHandler ?? this.defaultMessageHandler);
+    this.ws.on("message", this.messageHandler);
     this.ws.on("open", this.openHandler);
     this.ws.on("error", this.errorHandler);
     this.ws.on("close", this.closeHandler);
 
     logger.info("Battle stream was created",);
     return this.ws;
-  }
-
-  async start(req: battleGrpc.JoinBattleRequest) {
-    const ws = await this.connect();
-    if (!ws) throw new Error('cannot send. stream is not opened.')
-    const streamReq = streamingGrpc.BattleStreamRequest.create({start: req});
-    ws.send(streamingGrpc.BattleStreamRequest.encode(streamReq).finish());
-  }
-
-  async makeMove(battleId: string) {
-    const ws = await this.connect();
-    if (!ws) throw new Error('cannot send. stream is not opened.')
-
-    const cellIdx = 0;
-    const req = streamingGrpc.BattleStreamRequest.create({move: {cellIdx}});
-    ws.send(streamingGrpc.BattleStreamRequest.encode(req).finish());
   }
 
   disconnect(reconnectAttempts = this.reconnectAttempts) {
@@ -119,12 +99,16 @@ class BattleClient {
     this.reconnectAttempts = reconnectAttempts;
   }
 
-  private defaultMessageHandler(data: WebSocket.RawData) {
+  send = (message: streamingGrpc.BattleStreamRequest) => {
+    this.ws!.send(streamingGrpc.BattleStreamRequest.encode(message).finish());
+  }
+
+  private messageHandler(data: WebSocket.RawData) {
     try {
       const buffer = new Uint8Array(data as ArrayBuffer);
       const message = streamingGrpc.BattleStreamResponse.decode(buffer);
       logger.log("📩 Got response:", message);
-      aiService.battleMessageHandler(message);
+      battleService.battleMessageHandler(message);
     } catch (err) {
       logger.error("❌ Failed to parse message:", err);
     }
@@ -144,8 +128,6 @@ class BattleClient {
     logger.warn("❌ Connection closed");
     this.scheduleReconnect();
   };
-
-  private reconnecting = false;
 
   private scheduleReconnect() {
     if (this.reconnecting) return; // защита от дублей

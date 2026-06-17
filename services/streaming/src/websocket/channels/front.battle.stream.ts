@@ -2,25 +2,25 @@ import {WebSocket} from 'ws';
 import * as streamingGrpc from '../../grpc/generated/streaming';
 import logger from "@shared/logger";
 
-export default class FrontBattleStreamRegistry {
-  private static sockets = new Set<WebSocket>();
-  private static battleSockets = new Map<string, Set<WebSocket>>();
-  private static socketBattles = new Map<WebSocket, Set<string>>();
-  private static socketProfile = new Map<WebSocket, string>();
-  private static socketEncodingType = new Map<WebSocket, string>();
+class FrontBattleStreamRegistry {
+  private sockets = new Set<WebSocket>();
+  private battleSockets = new Map<string, Set<WebSocket>>();
+  private socketBattles = new Map<WebSocket, Set<string>>();
+  private socketProfile = new Map<WebSocket, string>();
+  private socketEncodingType = new Map<WebSocket, string>();
 
-  private static heartbeatTimers = new Map<
+  private heartbeatTimers = new Map<
     WebSocket,
     NodeJS.Timeout
   >();
 
-  private static heartbeatTimeoutMs = 360000;
+  private heartbeatTimeoutMs = 360000;
 
-  static getBattleIdsByStream = (ws: WebSocket): Set<string> => {
+  getBattleIdsByStream = (ws: WebSocket): Set<string> => {
     return this.socketBattles.get(ws) ?? new Set<string>();
   }
 
-  static setBattleStream = (
+  setBattleStream = (
     ws: WebSocket,
     profileId: string,
     battleId: string
@@ -60,16 +60,16 @@ export default class FrontBattleStreamRegistry {
     this.socketProfile.set(ws, profileId);
   };
 
-  static setSocketEncodingTypeToString(socket: WebSocket): void {
+  setSocketEncodingTypeToString(socket: WebSocket): void {
     this.socketEncodingType.set(socket, 'plain');
   }
 
-  static socketEncodingTypeIsPlain(socket: WebSocket): boolean {
+  socketEncodingTypeIsPlain(socket: WebSocket): boolean {
     return this.socketEncodingType.has(socket) && (this.socketEncodingType.get(socket) == 'plain');
   }
 
-  static deleteBattleStreams(battleId: string): void {
-    const streams = FrontBattleStreamRegistry.getBattleStreams(battleId);
+  deleteBattleStreams(battleId: string): void {
+    const streams = this.getBattleStreams(battleId);
     if (!streams) return;
 
     for (const stream of streams) {
@@ -79,9 +79,8 @@ export default class FrontBattleStreamRegistry {
     this.battleSockets.delete(battleId);
   }
 
-  static deleteBattleStream(ws: WebSocket): void {
+  deleteBattleStream(ws: WebSocket): void {
     this.sockets.delete(ws);
-
 
 
     const battleIds = this.getBattleIdsByStream(ws);
@@ -101,14 +100,14 @@ export default class FrontBattleStreamRegistry {
     this.socketEncodingType.delete(ws);
   }
 
-  static getBattleStreams(
+  getBattleStreams(
     battleId: string
   ): Set<WebSocket> | undefined {
     return this.battleSockets.get(battleId);
   }
 
-  static writeBattleStreams(battleId: string, streamRequest: streamingGrpc.BattleStreamResponse) {
-    const streams = FrontBattleStreamRegistry.getBattleStreams(battleId);
+  writeBattleStreams(battleId: string, streamRequest: streamingGrpc.BattleStreamResponse) {
+    const streams = this.getBattleStreams(battleId);
     if (!streams) return;
 
     for (const stream of streams) {
@@ -116,7 +115,7 @@ export default class FrontBattleStreamRegistry {
     }
   }
 
-  static writeStream(ws: WebSocket, streamRequest: streamingGrpc.BattleStreamResponse) {
+  writeStream(ws: WebSocket, streamRequest: streamingGrpc.BattleStreamResponse) {
     const buffer = this.socketEncodingTypeIsPlain(ws)
       ? JSON.stringify(streamRequest)
       : streamingGrpc.BattleStreamResponse.encode(streamRequest).finish();
@@ -125,7 +124,7 @@ export default class FrontBattleStreamRegistry {
     }
   }
 
-  private static resetHeartbeat(call: WebSocket) {
+  private resetHeartbeat(call: WebSocket) {
     this.clearHeartbeat(call);
     const timer = setTimeout(() => {
       logger.warn("Heartbeat timeout, cleaning stream");
@@ -134,7 +133,7 @@ export default class FrontBattleStreamRegistry {
     this.heartbeatTimers.set(call, timer);
   }
 
-  private static clearHeartbeat(call: WebSocket) {
+  private clearHeartbeat(call: WebSocket) {
     const timer = this.heartbeatTimers.get(call);
     if (timer) {
       clearTimeout(timer);
@@ -142,5 +141,10 @@ export default class FrontBattleStreamRegistry {
     }
   }
 }
+
+const frontBattleStreamRegistry = new FrontBattleStreamRegistry();
+
+export default frontBattleStreamRegistry;
+
 
 

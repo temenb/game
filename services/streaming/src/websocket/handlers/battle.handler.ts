@@ -4,7 +4,7 @@ import * as battleService from "../../services/battle.service";
 import * as engineGrpc from "../../grpc/generated/engine";
 import * as battleGrpc from "../../grpc/generated/battle";
 import logger from "@shared/logger";
-import FrontBattleStreamRegistry from "../channels/front.battle.stream";
+import frontBattleStreamRegistry from "../channels/front.battle.stream";
 import * as profileService from "../../services/profile.service";
 import {ErrorObject} from "../../grpc/generated/common/error";
 import engineStream from "../../grpc/channels/engine.stream";
@@ -65,7 +65,7 @@ export async function battleHandlerStart(ws: WebSocket, profileId: string, paylo
     return;
   }
 
-  FrontBattleStreamRegistry.setBattleStream(ws, profileId, battle.id);
+  frontBattleStreamRegistry.setBattleStream(ws, profileId, battle.id);
 
   // logger.log("Battle stream was set:" + battle.id);
 
@@ -77,7 +77,7 @@ export async function battleHandlerStart(ws: WebSocket, profileId: string, paylo
 
     const message = streamingGrpc.BattleStreamResponse.create({battle});
 
-    FrontBattleStreamRegistry.writeBattleStreams(battle.id, message);
+    frontBattleStreamRegistry.writeBattleStreams(battle.id, message);
   } catch (e) {
     logger.error(String(e));
   }
@@ -87,6 +87,13 @@ export async function battleHandlerMove(ws: WebSocket, profileId: string, payloa
   // logger.log("Battle move event");
 
   const battleId = payload.battleId;
+
+  const battleIds = frontBattleStreamRegistry.getBattleIdsByStream(ws);
+
+  if (!battleIds.has(battleId)) {
+    logger.error('Invalid battleId')
+    return;
+  }
 
   const grpcRequest = engineGrpc.BattleChannelClientEvent.create({
     move: engineGrpc.BattleMoveRequest.create({
@@ -98,20 +105,20 @@ export async function battleHandlerMove(ws: WebSocket, profileId: string, payloa
 }
 
 export async function battleHandlerPing(ws: WebSocket) {
-  FrontBattleStreamRegistry.writeStream(ws, emptyGrpc.Empty.create({}));
+  frontBattleStreamRegistry.writeStream(ws, emptyGrpc.Empty.create({}));
 }
 
 export async function battleHandlerConnectAi(ws: WebSocket, profileId: string, payload: streamingGrpc.AiJoinToBattleRequest) {
   const battleId = payload.battleId;
 
-  const battleIds = FrontBattleStreamRegistry.getBattleIdsByStream(ws);
+  const battleIds = frontBattleStreamRegistry.getBattleIdsByStream(ws);
 
   if (!battleIds.has(battleId)) {
     logger.error("wrong battleId");
     return;
   }
 
-  const battleIdRequest = battleGrpc.JoinBattleRequest.create({battleId, profileId});
+  const battleIdRequest = streamingGrpc.JoinBattleRequest.create({battleId});
   await enqueueEvent(kafkaProducersConfig.topicAiConnectingRequest, battleIdRequest);
 }
 

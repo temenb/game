@@ -8,8 +8,8 @@ export class BattleModel {
   static async findBattleByProfile(profileId: string): Promise<Battle | null> {
     return prisma.battle.findFirst({
       where: {
-        players: { has: profileId },
-        status: { not: BattleStatus.Finished },
+        players: {has: profileId},
+        status: {not: BattleStatus.Finished},
       },
     });
   }

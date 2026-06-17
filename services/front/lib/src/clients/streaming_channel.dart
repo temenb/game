@@ -41,9 +41,7 @@ abstract class StreamingChannel<T> {
   }
 
   getWsUri() {
-    return Uri.parse(
-      'ws://${config.host}:${config.port}/$pathname?token=$jwt',
-    );
+    return Uri.parse('ws://${config.host}:${config.port}/$pathname?token=$jwt');
   }
 
   connect() {

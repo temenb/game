@@ -13,6 +13,16 @@ class GatewayClient {
     return this.jwt;
   }
 
+  async signIn(deviceId: string): Promise<grpcAuth.AuthObject> {
+    const resp = await this.request("auth/anonymousSignIn", {deviceId}, "POST") as grpcAuth.AuthObject;
+    this.jwt = resp.accessToken;
+    return resp;
+  }
+
+  async fetchProfile(): Promise<grpcProfile.ProfileObject> {
+    return await this.request("profile/getMyProfile") as grpcProfile.ProfileObject;
+  }
+
   private async request(
     uri: string,
     request?: object,
@@ -77,16 +87,6 @@ class GatewayClient {
       }
       req.end();
     });
-  }
-
-  async signIn(deviceId: string): Promise<grpcAuth.AuthObject> {
-    const resp = await this.request("auth/anonymousSignIn", { deviceId }, "POST") as grpcAuth.AuthObject;
-    this.jwt = resp.accessToken;
-    return resp;
-  }
-
-  async fetchProfile(): Promise<grpcProfile.ProfileObject> {
-    return await this.request("profile/getMyProfile") as grpcProfile.ProfileObject;
   }
 }
 
