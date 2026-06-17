@@ -41,6 +41,8 @@ export function initWss() {
       await isAllowedUser(userId, profileId);
     } catch (e) {
       ws.close();
+      logger.log('userId', userId);
+      logger.log('profileId', profileId);
       logger.error("❌ JWT token does not match to profile");
       return;
     }
@@ -54,12 +56,12 @@ export function initWss() {
         let request;
         if (str.startsWith("{")) {
           request = JSON.parse(str);
-          console.log("✅ Parsed JSON:", request);
+          // console.log("✅ Parsed JSON:", request);
           FrontBattleStreamRegistry.setSocketEncodingTypeToString(ws);
         } else {
           const buffer = new Uint8Array(data as ArrayBuffer);
           request = streamingGrpc.BattleStreamRequest.decode(buffer);
-          console.log("Decoded:", request);
+          // console.log("Decoded:", request);
         }
 
 

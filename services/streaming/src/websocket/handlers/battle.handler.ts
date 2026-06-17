@@ -3,7 +3,6 @@ import * as streamingGrpc from "../../grpc/generated/streaming";
 import * as battleService from "../../services/battle.service";
 import * as engineGrpc from "../../grpc/generated/engine";
 import * as battleGrpc from "../../grpc/generated/battle";
-import * as aiGrpc from "../../grpc/generated/ai";
 import logger from "@shared/logger";
 import FrontBattleStreamRegistry from "../channels/front.battle.stream";
 import * as profileService from "../../services/profile.service";
@@ -28,81 +27,105 @@ export async function isAllowedUser(userId: string, profileId: string) {
 }
 
 export async function battleHandler(ws: WebSocket, profileId: string, payload: streamingGrpc.BattleStreamRequest) {
-  if (payload.join) {
-    // logger.log("Battle join event");
+  switch (true) {
+    case !!payload.start:
+      return battleHandlerStart(ws, profileId, payload.start);
+    case !!payload.move:
+      return battleHandlerMove(ws, profileId, payload.move);
+    case !!payload.ping:
+      return battleHandlerPing(ws);
+    case !!payload.connectAi:
+      return battleHandlerConnectAi(ws, profileId, payload.connectAi);
+    case !!payload.leave:
+      return battleHandlerLeave(ws, profileId, payload.leave);
+    case !!payload.end:
+      return battleHandlerEnd(ws, profileId);
+  }
+}
 
-    let battle: battleGrpc.BattleObject | null;
-    if (payload.join.battleId) {
-      battle = await battleService.joinBattle(payload.join.battleId, profileId);
-    } else {
-      battle = await battleService.upsertBattle(profileId);
-    }
+export async function battleHandlerStart(ws: WebSocket, profileId: string, payload: streamingGrpc.JoinBattleRequest) {
+  // logger.log("Battle join event");
 
-    if (!battle) {
-      const error = ErrorObject.create({
-        type: "error",
-        message: "Battle not found"
-      });
-      const buffer = ErrorObject.encode(error).finish();
-      ws.send(buffer);
-
-      return;
-    }
-
-    // logger.log("Battle stream was set:" + battle.id);
-    try {
-      if (battle.status == battleGrpc.BattleStatus.ACTIVE) {
-        const grpcRequest = engineGrpc.BattleChannelClientEvent.create({start: battleGrpc.BattleRequest.create({battle})})
-        engineStream.write(grpcRequest);
-      }
-
-      const message = streamingGrpc.BattleStreamResponse.create({battle});
-
-      FrontBattleStreamRegistry.writeBattleStreams(battle.id, message);
-    } catch (e) {
-      logger.error(String(e));
-    }
+  let battle: battleGrpc.BattleObject | null;
+  if (payload.battleId) {
+    battle = await battleService.joinBattle(payload.battleId, profileId);
+  } else {
+    battle = await battleService.upsertBattle(profileId);
   }
 
-  if (payload.move) {
-    // logger.log("Battle move event");
-
-    const battleId = FrontBattleStreamRegistry.getBattleIdByStream(ws);
-
-    const grpcRequest = engineGrpc.BattleChannelClientEvent.create({
-      move: engineGrpc.BattleMoveRequest.create({
-        profileId: profileId,
-        battleId: battleId,
-        cellIdx: payload.move.cellIdx
-      }),
+  if (!battle) {
+    const error = ErrorObject.create({
+      type: "error",
+      message: "Battle not found"
     });
 
-    engineStream.write(grpcRequest);
+    const buffer = ErrorObject.encode(error).finish();
+    ws.send(buffer);
+
+    return;
   }
 
-  if (payload.ping) {
-    const grpcRequest = emptyGrpc.Empty.create({});
+  FrontBattleStreamRegistry.setBattleStream(ws, profileId, battle.id);
 
-    FrontBattleStreamRegistry.writeBattleStreams(ws, grpcRequest);
+  // logger.log("Battle stream was set:" + battle.id);
+
+  try {
+    if (battle.status == battleGrpc.BattleStatus.ACTIVE) {
+      const grpcRequest = engineGrpc.BattleChannelClientEvent.create({start: battleGrpc.BattleRequest.create({battle})})
+      engineStream.write(grpcRequest);
+    }
+
+    const message = streamingGrpc.BattleStreamResponse.create({battle});
+
+    FrontBattleStreamRegistry.writeBattleStreams(battle.id, message);
+  } catch (e) {
+    logger.error(String(e));
+  }
+}
+
+export async function battleHandlerMove(ws: WebSocket, profileId: string, payload: streamingGrpc.BattleMoveRequest) {
+  // logger.log("Battle move event");
+
+  const battleId = payload.battleId;
+
+  const grpcRequest = engineGrpc.BattleChannelClientEvent.create({
+    move: engineGrpc.BattleMoveRequest.create({
+      profileId: profileId, ...payload
+    }),
+  });
+
+  engineStream.write(grpcRequest);
+}
+
+export async function battleHandlerPing(ws: WebSocket) {
+  FrontBattleStreamRegistry.writeStream(ws, emptyGrpc.Empty.create({}));
+}
+
+export async function battleHandlerConnectAi(ws: WebSocket, profileId: string, payload: streamingGrpc.AiJoinToBattleRequest) {
+  const battleId = payload.battleId;
+
+  const battleIds = FrontBattleStreamRegistry.getBattleIdsByStream(ws);
+
+  if (!battleIds.has(battleId)) {
+    logger.error("wrong battleId");
+    return;
   }
 
-  if (payload.connectAi) {
-    const battleId = FrontBattleStreamRegistry.getBattleIdByStream(ws);
-    const profileId = FrontBattleStreamRegistry.getProfileIdByStream(ws);
-    const battleIdRequest = battleGrpc.JoinBattleRequest.create({battleId, profileId});
-    logger.log('kafkaProducersConfig.topicAiConnectingRequest');
-    await enqueueEvent(kafkaProducersConfig.topicAiConnectingRequest, battleIdRequest);
-  }
+  const battleIdRequest = battleGrpc.JoinBattleRequest.create({battleId, profileId});
+  await enqueueEvent(kafkaProducersConfig.topicAiConnectingRequest, battleIdRequest);
+}
 
-  if (payload.leave) {
-    const grpcRequest = engineGrpc.BattleChannelClientEvent.create({
-      leave: engineGrpc.BattleLeaveRequest.create({
-        battleId: FrontBattleStreamRegistry.getBattleIdByStream(ws),
-        profileId,
-      }),
-    });
+export async function battleHandlerLeave(ws: WebSocket, profileId: string, payload: streamingGrpc.LeaveBattleRequest) {
+  const grpcRequest = engineGrpc.BattleChannelClientEvent.create({
+    leave: engineGrpc.BattleLeaveRequest.create({
+      battleId: payload.battleId,
+      profileId,
+    }),
+  });
 
-    engineStream.write(grpcRequest);
-  }
+  engineStream.write(grpcRequest);
+}
+
+export async function battleHandlerEnd(ws: WebSocket, profileId: string) {
 }
 

@@ -17,6 +17,7 @@ export async function upsertBattle(
   try {
     const battle = await battleService.upsertBattle(profileId);
 
+    logger.log(battle);
     if (!battle) {
       throw new Error("Battle not found");
     }

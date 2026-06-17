@@ -5,11 +5,11 @@ import {battleToPrisma} from "../lib/grpc-prisma-converters/battle";
 import {NotFoundError} from "../services/battle.service";
 
 export class BattleModel {
-  static async findBattleByUser(profileId: string): Promise<Battle | null> {
+  static async findBattleByProfile(profileId: string): Promise<Battle | null> {
     return prisma.battle.findFirst({
       where: {
-        players: {has: profileId},
-        status: BattleStatus.Active,
+        players: { has: profileId },
+        status: { not: BattleStatus.Finished },
       },
     });
   }

@@ -29,6 +29,7 @@ async function startGrpc() {
   });
 }
 
+
 async function createKafkaConsumers() {
   const configs = Object.values(kafkaConsumersConfig);
 

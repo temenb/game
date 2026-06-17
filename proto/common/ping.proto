@@ -4,7 +4,4 @@ package common.ping;
 
 message Ping {
   int64 timestamp = 1;
-//  string clientId = 2;
-//  string battleId = 3;
-//  string lastEventId = 4;
 }

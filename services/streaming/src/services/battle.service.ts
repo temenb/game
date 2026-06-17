@@ -32,9 +32,9 @@ export const updateBattle = async (battle: BattleObject) => {
     logger.error(String(e));
   }
 
-  if (battle.winner || battle.status != BattleStatus.ACTIVE) {
+  if (battle.status != BattleStatus.FINISHED) {
     logger.log(`Battle ${battle.id} finished. Closing streams...`);
-    FrontBattleStreamRegistry.deleteBattleStream(battle.id);
+    FrontBattleStreamRegistry.deleteBattleStreams(battle.id);
     logger.log(`Removed battle ${battle.id} from activeBattleStreams`);
   }
 };

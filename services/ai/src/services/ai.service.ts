@@ -4,7 +4,7 @@ import battleClient from "../clients/battle.client";
 import logger from "@shared/logger";
 
 export const connectToBattle = async (req: battleGrpc.JoinBattleRequest) => {
-  battleClient.join(req);
+  battleClient.start(req);
 };
 
 export const battleMessageHandler = (message: streamingGrpc.BattleStreamResponse) => {

@@ -14,7 +14,7 @@ export class NotFoundError extends Error {
 }
 
 export async function upsertBattle(profileId: string): Promise<Battle> {
-  const existingMyBattle = await BattleModel.findBattleByUser(profileId);
+  const existingMyBattle = await BattleModel.findBattleByProfile(profileId);
 
   // logger.log('upsert battle for profile: ', profileId);
 

@@ -92,10 +92,10 @@ class BattleClient {
     return this.ws;
   }
 
-  async join(req: battleGrpc.JoinBattleRequest) {
+  async start(req: battleGrpc.JoinBattleRequest) {
     const ws = await this.connect();
     if (!ws) throw new Error('cannot send. stream is not opened.')
-    const streamReq = streamingGrpc.BattleStreamRequest.create({join: req});
+    const streamReq = streamingGrpc.BattleStreamRequest.create({start: req});
     ws.send(streamingGrpc.BattleStreamRequest.encode(streamReq).finish());
   }
 

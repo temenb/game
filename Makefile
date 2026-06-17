@@ -228,17 +228,20 @@ tmux:
 	tmux attach -t logs
 
 healthloop:
+	@echo "▶ Starting health loop..."
 	@while true; do \
-		now=$$(date '+%Y-%m-%d %H:%M:%S'); \
-     	response=$$(curl -s http://192.168.31.186:9090/health); \
-     	if echo $$response | grep -q '"healthy":true'; then \
-        	echo "$$now ✅ Services healthy"; \
-     	else \
-         	echo "$$now ❌ Not healthy"; \
-         	echo "$$response"; \
-         	$(MAKE) bip; \
-     	fi; \
-     	sleep 5; \
- 	done
+        now=$$(date '+%Y-%m-%d %H:%M:%S'); \
+        response=$$(curl -s http://192.168.31.186:9090/health); \
+        if echo $$response | grep -q '"healthy":true'; then \
+            echo "$$now ✅ Services healthy"; \
+        else \
+            echo "$$now ❌ Not healthy"; \
+#            echo "$$response"; \
+            echo "$$response" | grep -oE '"[a-zA-Z0-9_-]+":"fail"' | sed 's/"//g' | cut -d: -f1 | sed 's/^/❌ /'; \
+            $(MAKE) bip; \
+        fi; \
+        sleep 5; \
+    done
+
 
 
