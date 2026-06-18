@@ -99,6 +99,7 @@ class BattleClient {
     this.reconnectAttempts = reconnectAttempts;
   }
 
+
   send = (message: streamingGrpc.BattleStreamRequest) => {
     this.ws!.send(streamingGrpc.BattleStreamRequest.encode(message).finish());
   }

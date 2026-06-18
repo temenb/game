@@ -38,6 +38,11 @@ class EngineStream {
 
     this.stream.on('data', (update) => {
       this.reconnectDelay = 1000
+
+//     logger.log('battleUpdated');
+//     logger.log(message);
+//     await updateBattle(message as battleGrpc.BattleObject);
+
       // транслируем обновления игрокам
     });
 

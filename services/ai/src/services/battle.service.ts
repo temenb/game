@@ -2,7 +2,7 @@ import * as streamingGrpc from "../grpc/generated/streaming";
 import logger from "@shared/logger";
 import {makeMove, startBattle} from "../handlers/battle.handler";
 
-export const connectToBattle = async (req: streamingGrpc.JoinBattleRequest) => {
+export const connectToBattle = async (req: streamingGrpc.StartBattleRequest) => {
   startBattle(req);
 };
 

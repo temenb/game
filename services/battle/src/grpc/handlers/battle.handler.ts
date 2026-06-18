@@ -30,6 +30,28 @@ export async function upsertBattle(
   }
 }
 
+export async function joinBattle(
+  call: grpc.ServerUnaryCall<battleGrpc.StartBattleRequest, battleGrpc.BattleObject>,
+  callback: grpc.sendUnaryData<battleGrpc.BattleObject>
+) {
+  const {profileId, battleId} = call.request;
+
+  try {
+
+    const battle = await battleService.joinBattle(profileId, battleId);
+
+    if (!battle) {
+      throw new Error(`Cannot join profile ${profileId} to battle ${battleId}.`);
+    }
+
+    callback(null, battleToGrpc(battle));
+
+  } catch (err: any) {
+    logger.log(err);
+    callbackError(callback, err);
+  }
+}
+
 export const getBattle = async (
   call: grpc.ServerUnaryCall<battleGrpc.BattleIdRequest, battleGrpc.BattleObject>,
   callback: grpc.sendUnaryData<battleGrpc.BattleObject>

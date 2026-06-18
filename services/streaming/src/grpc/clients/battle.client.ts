@@ -32,7 +32,12 @@ export const readyz = (): Promise<healthGrpc.ReadyStatus | null> => {
 };
 
 export const joinBattle = (battleId: string, profileId: string): Promise<battleGrpc.BattleObject | null> => {
-  const grpcRequest: battleGrpc.JoinBattleRequest = {battleId, profileId};
+  const grpcRequest: battleGrpc.StartBattleRequest = {battleId, profileId};
+  return battleManager.call((client, cb) => client.joinBattle(grpcRequest, cb));
+};
+
+export const leaveBattle = (battleId: string, profileId: string): Promise<emptyGrpc.Empty | null> => {
+  const grpcRequest: battleGrpc.BattleLeaveRequest = {battleId, profileId};
   return battleManager.call((client, cb) => client.joinBattle(grpcRequest, cb));
 };
 

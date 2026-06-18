@@ -46,7 +46,7 @@ export async function battleHandler(ws: WebSocket, profileId: string, payload: s
   logger.warn(`⚠️ Unknown payload type:`, payload);
 }
 
-export async function battleHandlerStart(ws: WebSocket, profileId: string, payload: streamingGrpc.JoinBattleRequest) {
+export async function battleHandlerStart(ws: WebSocket, profileId: string, payload: streamingGrpc.StartBattleRequest) {
   // logger.log("Battle join event");
 
   let battle: battleGrpc.BattleObject | null;
@@ -122,7 +122,7 @@ export async function battleHandlerConnectAi(ws: WebSocket, profileId: string, p
     return;
   }
 
-  const battleIdRequest = streamingGrpc.JoinBattleRequest.create({battleId});
+  const battleIdRequest = streamingGrpc.StartBattleRequest.create({battleId});
   logger.log('messaging to ai');
   await enqueueEvent(kafkaProducersConfig.topicAiConnectingRequest, battleIdRequest);
 }

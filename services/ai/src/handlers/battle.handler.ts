@@ -3,7 +3,7 @@ import * as battleGrpc from "../grpc/generated/battle";
 import battleClient from "../clients/battle.client";
 
 
-export const startBattle = async (req: streamingGrpc.JoinBattleRequest) => {
+export const startBattle = async (req: streamingGrpc.StartBattleRequest) => {
   battleClient.send(streamingGrpc.BattleStreamRequest.create({start: req}));
 }
 

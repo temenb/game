@@ -22,6 +22,9 @@ export const upsertBattle = async (profileId: string) =>
 export const joinBattle = async (battleId: string, profileId: string) =>
   await battleClient.joinBattle(battleId, profileId);
 
+export const leaveBattle = async (battleId: string, profileId: string) =>
+  await battleClient.leaveBattle(battleId, profileId);
+
 export const updateBattle = async (battle: BattleObject) => {
   // logger.log('update battle:', battle);
   try {

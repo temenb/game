@@ -1,6 +1,7 @@
 import {WebSocket} from 'ws';
 import * as streamingGrpc from '../../grpc/generated/streaming';
 import logger from "@shared/logger";
+import engineStream from "../../grpc/channels/engine.stream";
 
 class FrontBattleStreamRegistry {
   private sockets = new Set<WebSocket>();
@@ -94,6 +95,9 @@ class FrontBattleStreamRegistry {
 
 
     const battleIds = this.getBattleIdsByStream(ws);
+
+
+    engineStream.write()
 
     for (const battleId of battleIds) {
 

@@ -29,15 +29,15 @@ async function startGrpc() {
   });
 }
 
-async function createKafkaConsumers() {
-  const configs = Object.values(kafkaConsumersConfig);
-
-  await Promise.all(
-    configs.map(async ({topic, handler}) => {
-      await createConsumer(kafkaConfig, {topic, handler});
-    })
-  );
-}
+// async function createKafkaConsumers() {
+//   const configs = Object.values(kafkaConsumersConfig);
+//
+//   await Promise.all(
+//     configs.map(async ({topic, handler}) => {
+//       await createConsumer(kafkaConfig, {topic, handler});
+//     })
+//   );
+// }
 
 async function startWebSocket() {
   return new Promise<void>(async () => {
@@ -64,7 +64,7 @@ async function bootstrap() {
     await Promise.all([
       startGrpc(),
       startPgBoss(),
-      createKafkaConsumers(),
+      // createKafkaConsumers(),
       startWebSocket(),
       startGRpcStreamToEngineService()
     ]);

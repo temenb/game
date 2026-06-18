@@ -15,6 +15,7 @@ server.addService(BattleService, {
   readyz: healthHandler.readyz,
 
   upsertBattle: battleHandler.upsertBattle,
+  joinBattle: battleHandler.joinBattle,
 });
 
 export default server;
