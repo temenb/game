@@ -243,5 +243,21 @@ healthloop:
         sleep 5; \
     done
 
+battles-clear:
+	docker compose exec postgres psql -U postgres -d battle -c "TRUNCATE TABLE battles CASCADE;"
+
+reset-db:
+	docker compose down postgres
+	docker volume rm game_postgres_data
+	docker compose up postgres -d
+	@make migrate
+
+battles-drop:
+	dc exec postgres dropdb -U postgres battle
+
+
+
+
+
 
 

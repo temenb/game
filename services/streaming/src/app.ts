@@ -29,7 +29,6 @@ async function startGrpc() {
   });
 }
 
-
 async function createKafkaConsumers() {
   const configs = Object.values(kafkaConsumersConfig);
 
@@ -62,7 +61,13 @@ async function startPgBoss() {
 
 async function bootstrap() {
   try {
-    await Promise.all([startGrpc(), startPgBoss(), createKafkaConsumers(), startWebSocket(), startGRpcStreamToEngineService()]);
+    await Promise.all([
+      startGrpc(),
+      // startPgBoss(),
+      // createKafkaConsumers(),
+      startWebSocket(),
+      startGRpcStreamToEngineService()
+    ]);
     logger.info('🚀 Streaming successfully started');
   } catch (err) {
     logger.error('💥 Failed to start Streaming:', err);

@@ -1,6 +1,6 @@
 import { getKafkaInstance } from './register';
 import { KafkaConfig } from './types';
-import { Partitioners, KafkaJSProtocolError } from "kafkajs";
+import { Partitioners } from "kafkajs";
 import logger from "@shared/logger";
 
 export async function createProducer(config: KafkaConfig) {
@@ -15,17 +15,17 @@ export async function createProducer(config: KafkaConfig) {
   const admin = kafka.admin();
   try {
     await admin.connect();
-    await admin.createTopics({
-      topics: [{ topic: "battle-stream", numPartitions: 1, replicationFactor: 1 }],
-      waitForLeaders: true,
-    });
-    // logger.info("✅ Topic ensured for producer");
-  } catch (err) {
-    if (err instanceof KafkaJSProtocolError && err.type === "UNKNOWN_TOPIC_OR_PARTITION") {
-      logger.warn("⚠️ Topic not found, will retry...");
-    } else {
-      logger.error("❌ Kafka admin error:", err);
+    const topics = await admin.listTopics();
+
+    if (!topics.includes("battle-stream")) {
+      await admin.createTopics({
+        topics: [{ topic: "battle-stream", numPartitions: 1, replicationFactor: 1 }],
+        waitForLeaders: true,
+      });
+      logger.info("✅ Topic created: battle-stream");
     }
+  } catch (err) {
+    logger.error("❌ Kafka admin error:", err);
   } finally {
     await admin.disconnect();
   }
@@ -39,7 +39,7 @@ export async function createProducer(config: KafkaConfig) {
         });
       } catch (err) {
         logger.error(`❌ Failed to send to ${topic}:`, err);
-        // можно добавить реконнект
+        // реконнект при ошибке
         await producer.disconnect();
         await producer.connect();
       }

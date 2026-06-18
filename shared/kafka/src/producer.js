@@ -17,19 +17,17 @@ async function createProducer(config) {
     const admin = kafka.admin();
     try {
         await admin.connect();
-        await admin.createTopics({
-            topics: [{ topic: "battle-stream", numPartitions: 1, replicationFactor: 1 }],
-            waitForLeaders: true,
-        });
-        // logger.info("✅ Topic ensured for producer");
+        const topics = await admin.listTopics();
+        if (!topics.includes("battle-stream")) {
+            await admin.createTopics({
+                topics: [{ topic: "battle-stream", numPartitions: 1, replicationFactor: 1 }],
+                waitForLeaders: true,
+            });
+            logger_1.default.info("✅ Topic created: battle-stream");
+        }
     }
     catch (err) {
-        if (err instanceof kafkajs_1.KafkaJSProtocolError && err.type === "UNKNOWN_TOPIC_OR_PARTITION") {
-            logger_1.default.warn("⚠️ Topic not found, will retry...");
-        }
-        else {
-            logger_1.default.error("❌ Kafka admin error:", err);
-        }
+        logger_1.default.error("❌ Kafka admin error:", err);
     }
     finally {
         await admin.disconnect();
@@ -44,7 +42,7 @@ async function createProducer(config) {
             }
             catch (err) {
                 logger_1.default.error(`❌ Failed to send to ${topic}:`, err);
-                // можно добавить реконнект
+                // реконнект при ошибке
                 await producer.disconnect();
                 await producer.connect();
             }
