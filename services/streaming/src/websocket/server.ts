@@ -53,15 +53,14 @@ export function initWss() {
 
         const str = data.toString();
         let request;
-        logger.log('📩 Raw message:', str);
         if (str.startsWith("{")) {
           request = JSON.parse(str);
-          // console.log("✅ Parsed JSON:", request);
+          console.log("✅ Parsed JSON:", request);
           frontBattleStreamRegistry.setSocketEncodingTypeToString(ws);
         } else {
           const buffer = new Uint8Array(data as ArrayBuffer);
           request = streamingGrpc.BattleStreamRequest.decode(buffer);
-          // console.log("Decoded:", request);
+          console.log("Decoded:", request);
         }
 
         try {

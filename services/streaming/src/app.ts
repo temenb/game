@@ -6,7 +6,7 @@ import kafkaConfig, {kafkaConsumersConfig, kafkaProducersConfig} from "./config/
 import {initWss} from "./websocket/server";
 import config from "./config/config";
 import engineStream from "./grpc/channels/engine.stream";
-import {initBoss, startWorker} from "@shared/pg-boss";
+import {initBoss, startKafkaWorker} from "@shared/pg-boss";
 import pgBossConfig from "./config/pg.boss.config";
 
 
@@ -54,7 +54,7 @@ async function startGRpcStreamToEngineService() {
 async function startPgBoss() {
   await initBoss(pgBossConfig, async () => {
     for (const topicConfig of Object.values(kafkaProducersConfig)) {
-      await startWorker(kafkaConfig, topicConfig);
+      await startKafkaWorker(kafkaConfig, topicConfig);
     }
   });
 }

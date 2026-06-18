@@ -18,7 +18,7 @@ service Streaming {
 
 message BattleStreamRequest {
   oneof event {
-    StartBattleRequest     start     = 1;
+    StartBattleRequest    start     = 1;
     BattleMoveRequest     move      = 2;
     common.ping.Ping      ping      = 3;
     LeaveBattleRequest    leave     = 4;

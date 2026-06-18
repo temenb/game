@@ -4,6 +4,7 @@ import * as battleGrpc from "../grpc/generated/battle";
 import * as engineGrpc from "../grpc/generated/engine";
 import {BattleStateStore} from "../stores/battleStateStore";
 import {enqueueEvent} from "@shared/pg-boss/src/enqueueEvent";
+import logger from "@shared/logger";
 
 export function battleStore(): BattleStateStore {
   // убедимся, что сторы инициализированы
@@ -112,10 +113,11 @@ export const leaveBattle = async (profileId: string, battleId: string) => {
 
   if (!battle) {
 
-    throw new Error(`Battle ${battleId} not found`);
+    logger.error(`Leave battle: Battle ${battleId} not found`);
+    return;
   }
 
-  if (!battle.players.includes(profileId)) {
+  if (!battle?.players.includes(profileId)) {
     throw new Error(`Battle ${battleId} doesnt have player ${profileId}`);
   }
   const winner = battle.players.find((id) => id !== profileId);

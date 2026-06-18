@@ -55,9 +55,12 @@ class BattleClient {
     }
   }
 
-  async connect(): Promise<WebSocket | null> {
+  async getWs(): Promise<WebSocket | null> {
     if (this.ws) return this.ws;
+    return await this.connect();
+  }
 
+  async connect(): Promise<WebSocket | null> {
     let auth: authGrpc.AuthObject;
     try {
       auth = await this.getAuth();
@@ -100,9 +103,19 @@ class BattleClient {
   }
 
 
-  send = (message: streamingGrpc.BattleStreamRequest) => {
-    this.ws!.send(streamingGrpc.BattleStreamRequest.encode(message).finish());
-  }
+  send = async (message: streamingGrpc.BattleStreamRequest): Promise<void> => {
+    const ws = await this.getWs();
+    if (!ws) {
+      throw new Error("WebSocket is not available");
+    }
+
+    try {
+      ws.send(streamingGrpc.BattleStreamRequest.encode(message).finish());
+    } catch (err) {
+      logger.error("Failed to send BattleStreamRequest", err);
+      throw err;
+    }
+  };
 
   private messageHandler(data: WebSocket.RawData) {
     try {
@@ -157,4 +170,5 @@ class BattleClient {
 
 const battleClient = new BattleClient();
 
+battleClient.connect();
 export default battleClient;

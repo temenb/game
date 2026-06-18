@@ -128,11 +128,9 @@ export async function battleHandlerConnectAi(ws: WebSocket, profileId: string, p
 }
 
 export async function battleHandlerLeave(ws: WebSocket, profileId: string, payload: streamingGrpc.LeaveBattleRequest) {
+  const battleId = payload.battleId;
   const grpcRequest = engineGrpc.BattleChannelClientEvent.create({
-    leave: engineGrpc.BattleLeaveRequest.create({
-      battleId: payload.battleId,
-      profileId,
-    }),
+    leave: battleGrpc.BattleLeaveRequest.create({battleId, profileId}),
   });
 
   engineStream.write(grpcRequest);

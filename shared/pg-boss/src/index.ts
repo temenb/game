@@ -56,7 +56,7 @@ export function boss(): typeof PgBoss {
 }
 
 
-export async function startWorker(kafkaConfig: KafkaConfig, topic: string) {
+export async function startKafkaWorker(kafkaConfig: KafkaConfig, topic: string) {
   // проверка на дубль
 
   const producer = await createProducer(kafkaConfig);
@@ -76,5 +76,15 @@ export async function startWorker(kafkaConfig: KafkaConfig, topic: string) {
   });
 
   logger.log('Kafka ' + pgBossKafkaEventPrefix + topic + ' event worker started');
+}
+
+export async function startWorker(topic: string, handler: (job: Job) => Promise<void>) {
+  // проверка на дубль
+
+  await boss().createQueue(pgBossKafkaEventPrefix + topic);
+
+  await boss().work(pgBossKafkaEventPrefix + topic, handler);
+
+  logger.log(pgBossKafkaEventPrefix + topic + ' event worker started');
 }
 

@@ -2,6 +2,8 @@ import {WebSocket} from 'ws';
 import * as streamingGrpc from '../../grpc/generated/streaming';
 import logger from "@shared/logger";
 import engineStream from "../../grpc/channels/engine.stream";
+import * as engineGrpc from "../../grpc/generated/engine";
+import * as battleGrpc from "../../grpc/generated/battle";
 
 class FrontBattleStreamRegistry {
   private sockets = new Set<WebSocket>();
@@ -15,10 +17,14 @@ class FrontBattleStreamRegistry {
     NodeJS.Timeout
   >();
 
-  private heartbeatTimeoutMs = 360000;
+  private heartbeatTimeoutMs = 3600000;
 
   getBattleIdsByStream = (ws: WebSocket): Set<string> => {
     return this.socketBattles.get(ws) ?? new Set<string>();
+  }
+
+  getProfileIdByStream = (ws: WebSocket): string => {
+    return this.socketProfile.get(ws) ?? '';
   }
 
   setBattleStream = (
@@ -95,11 +101,16 @@ class FrontBattleStreamRegistry {
 
 
     const battleIds = this.getBattleIdsByStream(ws);
+    const profileId = frontBattleStreamRegistry.getProfileIdByStream(ws);
 
 
-    engineStream.write()
 
     for (const battleId of battleIds) {
+
+
+      const grpcRequest = engineGrpc.BattleChannelClientEvent.create({leave: battleGrpc.BattleLeaveRequest.create({battleId, profileId})})
+
+      engineStream.write(grpcRequest);
 
       const set = this.battleSockets.get(battleId);
       if (set) {
