@@ -252,6 +252,12 @@ reset-db:
 	docker compose up postgres -d
 	@make migrate
 
+reset-kafka:
+	docker compose down kafka
+	docker volume rm game_kafka_data
+	docker compose up kafka -d
+	@make migrate
+
 battles-drop:
 	dc exec postgres dropdb -U postgres battle
 

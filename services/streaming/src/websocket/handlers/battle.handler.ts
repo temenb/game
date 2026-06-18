@@ -119,6 +119,7 @@ export async function battleHandlerConnectAi(ws: WebSocket, profileId: string, p
   }
 
   const battleIdRequest = streamingGrpc.JoinBattleRequest.create({battleId});
+  logger.log('messaging to ai');
   await enqueueEvent(kafkaProducersConfig.topicAiConnectingRequest, battleIdRequest);
 }
 

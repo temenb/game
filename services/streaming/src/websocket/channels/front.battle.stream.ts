@@ -58,6 +58,16 @@ class FrontBattleStreamRegistry {
 
 
     this.socketProfile.set(ws, profileId);
+
+    logger.log('sockets ' + this.sockets);
+    logger.log('socketBattles ' + this.socketBattles.size);
+    logger.log('socketProfile ' + this.socketProfile.size);
+    const summary = Array.from(this.battleSockets.entries()).map(([battleId, sockets]) => ({
+      battleId,
+      count: sockets.size,
+    }));
+
+    logger.log('battleSockets summary:', summary);
   };
 
   setSocketEncodingTypeToString(socket: WebSocket): void {
