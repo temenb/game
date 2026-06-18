@@ -63,8 +63,8 @@ async function bootstrap() {
   try {
     await Promise.all([
       startGrpc(),
-      // startPgBoss(),
-      // createKafkaConsumers(),
+      startPgBoss(),
+      createKafkaConsumers(),
       startWebSocket(),
       startGRpcStreamToEngineService()
     ]);

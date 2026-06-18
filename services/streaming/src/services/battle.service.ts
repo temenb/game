@@ -25,7 +25,7 @@ export const joinBattle = async (battleId: string, profileId: string) =>
 export const updateBattle = async (battle: BattleObject) => {
   // logger.log('update battle:', battle);
   try {
-    const message = streamingGrpc.BattleStreamResponse.create({battle: battle});
+    const message = streamingGrpc.BattleStreamResponse.create({battle});
 
     FrontBattleStreamRegistry.writeBattleStreams(battle.id, message);
   } catch (e) {

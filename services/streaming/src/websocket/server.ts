@@ -48,12 +48,12 @@ export function initWss() {
     }
 
     ws.on('message', (data) => {
-      logger.log('📩 Raw message:', data);
       // console.log("📩 Raw length:", (data as Buffer).length);
       try {
 
         const str = data.toString();
         let request;
+        logger.log('📩 Raw message:', str);
         if (str.startsWith("{")) {
           request = JSON.parse(str);
           // console.log("✅ Parsed JSON:", request);
@@ -63,7 +63,6 @@ export function initWss() {
           request = streamingGrpc.BattleStreamRequest.decode(buffer);
           // console.log("Decoded:", request);
         }
-
 
         try {
           if (url.pathname.startsWith('/battle')) {

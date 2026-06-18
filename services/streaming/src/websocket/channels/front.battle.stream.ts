@@ -59,7 +59,7 @@ class FrontBattleStreamRegistry {
 
     this.socketProfile.set(ws, profileId);
 
-    logger.log('sockets ' + this.sockets);
+    logger.log('sockets ' + this.sockets.size);
     logger.log('socketBattles ' + this.socketBattles.size);
     logger.log('socketProfile ' + this.socketProfile.size);
     const summary = Array.from(this.battleSockets.entries()).map(([battleId, sockets]) => ({

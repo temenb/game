@@ -27,6 +27,7 @@ export async function isAllowedUser(userId: string, profileId: string) {
 }
 
 export async function battleHandler(ws: WebSocket, profileId: string, payload: streamingGrpc.BattleStreamRequest) {
+
   switch (true) {
     case !!payload.start:
       return battleHandlerStart(ws, profileId, payload.start);
@@ -41,6 +42,8 @@ export async function battleHandler(ws: WebSocket, profileId: string, payload: s
     case !!payload.end:
       return battleHandlerEnd(ws, profileId);
   }
+
+  logger.warn(`⚠️ Unknown payload type:`, payload);
 }
 
 export async function battleHandlerStart(ws: WebSocket, profileId: string, payload: streamingGrpc.JoinBattleRequest) {
@@ -107,6 +110,7 @@ export async function battleHandlerMove(ws: WebSocket, profileId: string, payloa
 export async function battleHandlerPing(ws: WebSocket) {
   frontBattleStreamRegistry.writeStream(ws, emptyGrpc.Empty.create({}));
 }
+
 
 export async function battleHandlerConnectAi(ws: WebSocket, profileId: string, payload: streamingGrpc.AiJoinToBattleRequest) {
   const battleId = payload.battleId;
