@@ -50,6 +50,7 @@ async function createWebSocketStream() {
 async function startPgBoss() {
   await initBoss(pgBossConfig, async () => {
     for (const topicConfig of Object.values(pgBossConsumersConfig)) {
+      // lo
       await startWorker(topicConfig.topic, topicConfig.handler);
     }
   });

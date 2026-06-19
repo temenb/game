@@ -62,6 +62,7 @@ class EngineStream {
   }
 
   write(data: engineGrpc.BattleChannelClientEvent) {
+    logger.info(data);
     if (!this.stream) {
       throw new Error('Engine stream not initialized');
     }

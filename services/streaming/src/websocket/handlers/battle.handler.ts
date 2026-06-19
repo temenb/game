@@ -50,21 +50,21 @@ export async function battleHandlerStart(ws: WebSocket, profileId: string, paylo
   // logger.log("Battle join event");
 
   let battle: battleGrpc.BattleObject | null;
-  // if (payload.battleId) {
-  //   battle = await battleService.joinBattle(payload.battleId, profileId);
-  // } else {
+  if (payload.battleId) {
+    battle = await battleService.joinBattle(payload.battleId, profileId);
+  } else {
     battle = await battleService.upsertBattle(profileId);
-  // }
+  }
 
   if (!battle) {
-    const error = ErrorObject.create({
-      type: "error",
-      message: "Battle not found"
+    const battleStreamResponse = streamingGrpc.BattleStreamResponse.create({
+      error: ErrorObject.create({
+        type: "error",
+        message: "Battle not found"
+      })
     });
 
-    const buffer = ErrorObject.encode(error).finish();
-    ws.send(buffer);
-
+    frontBattleStreamRegistry.writeStream(ws, battleStreamResponse);
     return;
   }
 

@@ -31,39 +31,26 @@ export const readyz = (): Promise<healthGrpc.ReadyStatus | null> => {
   return battleManager.call((client, cb) => client.readyz(grpcRequest, cb));
 };
 
-// export const joinBattle = (battleId: string, profileId: string): Promise<battleGrpc.BattleObject | null> => {
-//   const grpcRequest: battleGrpc.StartBattleRequest = {battleId, profileId};
-//     return battleManager.call((client, cb) => client.joinBattle(grpcRequest, cb)
-//   ).catch((err) => {
-//     logger.error("Join battle failed:", err);
-//     return null;
-//   });
-//   ;
-// };
-
-
-// export const readyz = (): Promise<healthGrpc.ReadyStatus | null> => {
-//   const grpcRequest: emptyGrpc.Empty = {};
-//   return battleManager.call((client, cb) => client.readyz(grpcRequest, cb));
-// };
-
 export const joinBattle = (battleId: string, profileId: string): Promise<battleGrpc.BattleObject | null> => {
 
   const grpcRequest: battleGrpc.StartBattleRequest = {battleId, profileId};
 
-  return battleManager.call((client, cb) => client.joinBattle(grpcRequest, cb));
-
-
+  return battleManager.call<battleGrpc.BattleObject>((client, cb) => client.joinBattle(grpcRequest, cb)
+  ).catch((err) => {
+    logger.error("joinBattle failed:", err);
+    return null;
+  });
 };
 
 
 export const leaveBattle = (battleId: string, profileId: string): Promise<emptyGrpc.Empty | null> => {
   const grpcRequest: battleGrpc.BattleLeaveRequest = {battleId, profileId};
-  return battleManager.call<emptyGrpc.Empty>((client, cb) => client.leaveBattle(grpcRequest, cb))
-    .catch((err) => {
-      logger.error("Health check failed:", err);
-      return null;
-    });
+  return battleManager.call<emptyGrpc.Empty>(
+    (client, cb) => client.leaveBattle(grpcRequest, cb)
+  ).catch((err) => {
+    logger.error("leaveBattle failed:", err);
+    return null;
+  });
 };
 
 

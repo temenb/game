@@ -141,6 +141,7 @@ class FrontBattleStreamRegistry {
   }
 
   writeStream(ws: WebSocket, streamRequest: streamingGrpc.BattleStreamResponse) {
+    logger.log('new websocket channel message: ', streamRequest);
     const buffer = this.socketEncodingTypeIsPlain(ws)
       ? JSON.stringify(streamRequest)
       : streamingGrpc.BattleStreamResponse.encode(streamRequest).finish();

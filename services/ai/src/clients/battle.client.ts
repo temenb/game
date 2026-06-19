@@ -105,9 +105,11 @@ class BattleClient {
 
   send = async (message: streamingGrpc.BattleStreamRequest): Promise<void> => {
     const ws = await this.getWs();
-    if (!ws) {
-      throw new Error("WebSocket is not available");
+    if (!ws || ws.readyState !== WebSocket.OPEN) {
+      console.error("⚠️ WebSocket not ready:", ws?.readyState);
+      return;
     }
+
 
     try {
       ws.send(streamingGrpc.BattleStreamRequest.encode(message).finish());

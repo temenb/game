@@ -19,9 +19,12 @@ export async function connectingRequest(topic: string, partition: number, messag
 
 
 export async function sendToStream(job: any): Promise<void> {
+  logger.log('sendToStream');
   try {
     const message = job?.data?.message;
+    logger.log(message);
     await battleClient.send(message);
+    logger.log(message);
   } catch (error) {
     logger.error(`[Websocket] Failed to process message`, {
       rawValue: job?.data,

@@ -81,10 +81,10 @@ export async function startKafkaWorker(kafkaConfig: KafkaConfig, topic: string) 
 export async function startWorker(topic: string, handler: (job: Job) => Promise<void>) {
   // проверка на дубль
 
-  await boss().createQueue(pgBossKafkaEventPrefix + topic);
+  await boss().createQueue(topic);
 
-  await boss().work(pgBossKafkaEventPrefix + topic, handler);
+  await boss().work(topic, handler);
 
-  logger.log(pgBossKafkaEventPrefix + topic + ' event worker started');
+  logger.log(topic + ' event worker started');
 }
 

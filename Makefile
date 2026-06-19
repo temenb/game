@@ -1,5 +1,6 @@
-include parameters.mk
-include kafka.mk
+include make/parameters.mk
+include make/kafka.mk
+include make/logs.mk
 
 NODE_BIN=./node_modules/.bin
 SERVICE_DIR := services
@@ -250,6 +251,7 @@ reset-kafka:
 
 battles-drop:
 	dc exec postgres dropdb -U postgres battle
+
 
 
 
