@@ -50,11 +50,11 @@ export async function battleHandlerStart(ws: WebSocket, profileId: string, paylo
   // logger.log("Battle join event");
 
   let battle: battleGrpc.BattleObject | null;
-  if (payload.battleId) {
-    battle = await battleService.joinBattle(payload.battleId, profileId);
-  } else {
+  // if (payload.battleId) {
+  //   battle = await battleService.joinBattle(payload.battleId, profileId);
+  // } else {
     battle = await battleService.upsertBattle(profileId);
-  }
+  // }
 
   if (!battle) {
     const error = ErrorObject.create({

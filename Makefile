@@ -1,4 +1,5 @@
 include parameters.mk
+include kafka.mk
 
 NODE_BIN=./node_modules/.bin
 SERVICE_DIR := services
@@ -193,17 +194,6 @@ proto-generate:
 
 
 
-kafka-list-topics:
-	docker compose exec kafka /opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list
-
-kafka-user-created-list:
-	docker compose exec kafka /opt/kafka/bin/kafka-console-consumer.sh \
-	  --bootstrap-server localhost:9092 \
-	  --topic user.created \
-	  --from-beginning
-
-
-
 
 
 
@@ -264,6 +254,14 @@ battles-drop:
 
 
 
+BATTLE_ID := e9034cbf-30fb-42ee-8bed-40218b6ac9f3
+
+kafka-connect-ai:
+	echo '{"battleId":"$(BATTLE_ID)"}' | \
+    docker compose exec -T kafka \
+        /opt/kafka/bin/kafka-console-producer.sh \
+        --bootstrap-server localhost:9092 \
+        --topic ai.connecting-request
 
 
 
