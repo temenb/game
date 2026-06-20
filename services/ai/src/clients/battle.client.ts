@@ -57,7 +57,7 @@ class BattleClient {
 
   async getWs(): Promise<WebSocket | null> {
     if (this.ws) return this.ws;
-    return await this.connect();
+    this.scheduleReconnect();
   }
 
   async connect(): Promise<WebSocket | null> {
@@ -172,5 +172,6 @@ class BattleClient {
 
 const battleClient = new BattleClient();
 
-battleClient.connect();
+battleClient.getWs();
+
 export default battleClient;

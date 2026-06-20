@@ -44,7 +44,7 @@ async function createKafkaConsumers() {
 }
 
 async function createWebSocketStream() {
-  return await battleClient.connect();
+  return await battleClient.getWs();
 }
 
 async function startPgBoss() {
