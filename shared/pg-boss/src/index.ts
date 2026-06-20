@@ -86,7 +86,7 @@ export async function startKafkaWorker(kafkaConfig: KafkaConfig, topic: string) 
   logger.log('Kafka ' + topic + ' event worker started');
 }
 
-export async function startWorker(topic: string, handler: (job: Job) => Promise<void>) {
+export async function startWorker(topic: string, handler: (jobs: Job[]) => Promise<void>) {
   // проверка на дубль
   // logger.log('===========================================================================22')
 
