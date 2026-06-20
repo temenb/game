@@ -5,7 +5,7 @@ import config from "./config/config";
 import {createConsumer} from "@shared/kafka";
 import kafkaConfig, {kafkaConsumersConfig} from "./config/kafka.config";
 import battleClient from "./clients/battle.client";
-import {initBoss, startKafkaWorker, startWorker} from "@shared/pg-boss";
+import {initBoss, startWorker} from "@shared/pg-boss";
 import pgBossConfig, {pgBossConsumersConfig} from "./config/pg.boss.config";
 
 
@@ -50,16 +50,19 @@ async function createWebSocketStream() {
 async function startPgBoss() {
   await initBoss(pgBossConfig, async () => {
     for (const topicConfig of Object.values(pgBossConsumersConfig)) {
-      // lo
       await startWorker(topicConfig.topic, topicConfig.handler);
     }
   });
 }
 
-
 async function bootstrap() {
   try {
-    await Promise.all([startGrpc(), startPgBoss(), createKafkaConsumers(), createWebSocketStream()]);
+    await Promise.all([
+      startGrpc(),
+      startPgBoss(),
+      createKafkaConsumers(),
+      createWebSocketStream(),
+    ]);
     logger.info('🚀 Ai successfully started ');
   } catch (err) {
     logger.error('💥 Failed to start Ai:', err);
@@ -74,6 +77,5 @@ async function bootstrap() {
 }
 
 bootstrap();
-
 
 

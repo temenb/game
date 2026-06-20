@@ -2,10 +2,8 @@ import {boss} from './index';
 import logger from "@shared/logger";
 // import {Prisma, PrismaClient} from '@prisma/client';
 
-const pgBossKafkaEventPrefix = 'event.';
-
 export async function enqueueEvent(topic: string, data: object): Promise<number | null> {
-  const jobName = pgBossKafkaEventPrefix + topic;
+  const jobName = topic;
   // logger.log('here ' + jobName);
   // logger.log(boss.toString());
   const bossObj = boss();
@@ -26,7 +24,7 @@ export async function enqueueEventTx(
   data: object,
   tx: any
 ): Promise<number | null> {
-  const jobName = pgBossKafkaEventPrefix + topic;
+  const jobName = topic;
   // logger.log('enqueueEventTx ' + jobName);
   return await tx.$executeRawUnsafe(`
       insert into pgboss.job (name, data)

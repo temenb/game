@@ -11,18 +11,14 @@ logs:
 		sleep 0.2; \
 	done
 
-#	@guake --new-tab=$(CURDIR)
-#	@sleep 0.2
-#	@guake --rename-current-tab="health"
-#	@guake --execute-command="cd $(CURDIR) && make healthloop"
-
 	@guake --new-tab=$(CURDIR)
 	@sleep 0.2
 	@guake --rename-current-tab="front"
 
-	@guake --new-tab=$(CURDIR)
-	@sleep 0.2
-	@guake --rename-current-tab="bash"
+#	@guake --new-tab=$(CURDIR)
+#	@sleep 0.2
+#	@guake --rename-current-tab="health"
+#	@guake --execute-command="cd $(CURDIR) && make healthloop"
 
 
 #close-tabs:
