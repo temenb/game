@@ -12,7 +12,7 @@ class BattleClient {
   private profile: profileGrpc.ProfileObject | null = null;
   private ws: WebSocket | null = null;
   private reconnectAttempts = 0;
-  private reconnecting = false;
+  private reconnectFn: NodeJS.Timeout | null = null;
 
   async getAuth(): Promise<authGrpc.AuthObject> {
     if (this.auth) {
@@ -58,6 +58,7 @@ class BattleClient {
   async getWs(): Promise<WebSocket | null> {
     if (this.ws) return this.ws;
     this.scheduleReconnect();
+    return null;
   }
 
   async connect(): Promise<WebSocket | null> {
@@ -99,7 +100,7 @@ class BattleClient {
     }
     this.auth = null;
     this.profile = null;
-    this.reconnectAttempts = reconnectAttempts;
+    this.cancelReconnect(reconnectAttempts);
   }
 
 
@@ -135,8 +136,16 @@ class BattleClient {
     this.scheduleReconnect();
   }
 
+  cancelReconnect(reconnectAttempts = 0) {
+    this.reconnectAttempts = reconnectAttempts;
+    if (this.reconnectFn) {
+      clearTimeout(this.reconnectFn);
+    }
+    this.reconnectFn = null;
+  }
+
   private openHandler = () => {
-    this.reconnectAttempts = 0;
+    this.cancelReconnect();
     logger.info("✅ WebSocket connected");
   };
 
@@ -146,23 +155,20 @@ class BattleClient {
   };
 
   private scheduleReconnect() {
-    if (this.reconnecting) return; // защита от дублей
-
-    this.reconnecting = true;
+    if (this.reconnectFn) return; // защита от дублей
 
     this.disconnect();
     const delay = Math.min(1000 * 2 ** this.reconnectAttempts, 30000);
     logger.info("Schedule reconnect in " + delay / 1000);
 
     this.reconnectAttempts++;
-    setTimeout(async () => {
+    this.reconnectFn = setTimeout(async () => {
       logger.info(`🔄 Reconnecting... attempt ${this.reconnectAttempts}`);
       try {
         await this.connect();
-        this.reconnecting = false; // сброс флага после успешного подключения
       } catch (err) {
+        this.reconnectFn = null;
         logger.error("Reconnect failed:", err);
-        this.reconnecting = false; // сброс, чтобы можно было пробовать снова
         this.scheduleReconnect();  // запускаем новый цикл
       }
     }, delay);
