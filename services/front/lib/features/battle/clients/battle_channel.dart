@@ -1,14 +1,17 @@
 import 'dart:async';
 
+import 'package:fixnum/fixnum.dart';
 import 'package:front/src/clients/streaming_channel.dart';
-import 'package:front/src/grpc/generated/battle.pb.dart';
+import 'package:front/src/grpc/generated/battle.pb.dart' as battleGrpc;
 import 'package:front/src/grpc/generated/common/empty.pb.dart';
+import 'package:front/src/grpc/generated/common/ping.pb.dart';
+import 'package:front/src/grpc/generated/streaming.pb.dart' as streamingGrpc;
 import 'package:front/src/grpc/generated/streaming.pb.dart';
 import 'package:logger/logger.dart';
 
 final logger = Logger();
 
-class BattleChannel extends StreamingChannel<BattleObject> {
+class BattleChannel extends StreamingChannel<battleGrpc.BattleObject> {
   late String profileId;
   final pathname = 'battle';
 
@@ -50,8 +53,8 @@ class BattleChannel extends StreamingChannel<BattleObject> {
   /// Отправить событие "join"
   void join() {
     // logger.i('Join event');
-    final joinReq = BattleIdRequest();
-    final req = BattleStreamRequest()..join = joinReq;
+    final startReq = StartBattleRequest();
+    final req = BattleStreamRequest()..start = startReq;
     // logger.i(req);
     channel.sink.add(req.writeToBuffer());
     // logger.i('Sent join event');
@@ -69,8 +72,8 @@ class BattleChannel extends StreamingChannel<BattleObject> {
   }
 
   /// Отправить ход
-  void leave() {
-    final req = BattleStreamRequest()..leave = Empty();
+  void leave(String battleId) {
+    final req = BattleStreamRequest()..leave = (LeaveBattleRequest()..battleId = battleId);
     // logger.d(req);
     channel.sink.add(req.writeToBuffer());
     // logger.i('Sent profile: $profileId at $cellIdx');
@@ -78,7 +81,8 @@ class BattleChannel extends StreamingChannel<BattleObject> {
 
   connectAi(String battleId) {
     // logger.i('Move event');
-    final connectAiRequest = ConnectingRequest()..battleId = battleId;
+    final connectAiRequest = streamingGrpc.AiJoinToBattleRequest()
+      ..battleId = battleId;
 
     final req = BattleStreamRequest()..connectAi = connectAiRequest;
     // logger.d(req);
@@ -86,9 +90,9 @@ class BattleChannel extends StreamingChannel<BattleObject> {
     // logger.i('Sent profile: $profileId at $cellIdx');
   }
 
-  /// Закрыть канал
   Future<void> ping() async {
-    final req = BattleStreamRequest()..ping = Empty();
+    final now = DateTime.now().millisecondsSinceEpoch;
+    final req = BattleStreamRequest()..ping = (Ping()..timestamp = Int64(now));
     channel.sink.add(req.writeToBuffer());
   }
 }

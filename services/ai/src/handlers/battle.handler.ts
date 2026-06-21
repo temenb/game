@@ -15,14 +15,16 @@ export const startBattle = async (req: streamingGrpc.StartBattleRequest) => {
 }
 
 export const makeMove = async (battle: battleGrpc.BattleObject) => {
-  if (!isMyTurn(battle)) {
+  if (!await isMyTurn(battle)) {
     logger.info('Not my turn')
     return;
   }
   const cellIdx = await calculateMove(battle);
-  if (!cellIdx) {
+
+  if (cellIdx === null) {
     return;
   }
+
   const battleId = battle.id;
   const req = streamingGrpc.BattleStreamRequest.create({move: streamingGrpc.BattleMoveRequest.create({battleId, cellIdx})});
   await enqueueEvent(pgBossConsumersConfig.websocketSendEvent.topic, req);
@@ -38,14 +40,6 @@ const isMyTurn = async (battle: battleGrpc.BattleObject): Promise<boolean> => {
   // вычисляем индекс текущего игрока
   const currentPlayerIndex = filledCount % battle.players.length;
   const currentPlayerId = battle.players[currentPlayerIndex];
-
-
-  logger.log('profile.id: ', profile.id)
-  logger.log('filledCount: ', filledCount)
-  logger.log('currentPlayerId: ', currentPlayerId)
-  logger.log('currentPlayerIndex: ', currentPlayerIndex)
-
-
 
   // мой ли это ход?
   return currentPlayerId === profile.id;

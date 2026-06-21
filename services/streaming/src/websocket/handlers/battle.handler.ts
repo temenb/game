@@ -53,6 +53,7 @@ export async function battleHandlerStart(ws: WebSocket, profileId: string, paylo
   if (payload.battleId) {
     battle = await battleService.joinBattle(payload.battleId, profileId);
   } else {
+    logger.log('battle - here')
     battle = await battleService.upsertBattle(profileId);
   }
 
@@ -74,7 +75,7 @@ export async function battleHandlerStart(ws: WebSocket, profileId: string, paylo
 
   try {
     if (battle.status == battleGrpc.BattleStatus.ACTIVE) {
-      const grpcRequest = engineGrpc.BattleChannelClientEvent.create({start: battleGrpc.BattleRequest.create({battle})})
+      const grpcRequest = engineGrpc.BattleStreamRequest.create({start: battleGrpc.BattleRequest.create({battle})})
       engineStream.write(grpcRequest);
     }
 
@@ -98,7 +99,7 @@ export async function battleHandlerMove(ws: WebSocket, profileId: string, payloa
     return;
   }
 
-  const grpcRequest = engineGrpc.BattleChannelClientEvent.create({
+  const grpcRequest = engineGrpc.BattleStreamRequest.create({
     move: engineGrpc.BattleMoveRequest.create({
       profileId: profileId, ...payload
     }),
@@ -129,7 +130,7 @@ export async function battleHandlerConnectAi(ws: WebSocket, profileId: string, p
 
 export async function battleHandlerLeave(ws: WebSocket, profileId: string, payload: streamingGrpc.LeaveBattleRequest) {
   const battleId = payload.battleId;
-  const grpcRequest = engineGrpc.BattleChannelClientEvent.create({
+  const grpcRequest = engineGrpc.BattleStreamRequest.create({
     leave: battleGrpc.BattleLeaveRequest.create({battleId, profileId}),
   });
 

@@ -1,7 +1,11 @@
-LOGS_ORDER := ai streaming engine gateway battle auth profile orchestration
+LOGS_ORDER := ai streaming engine gateway #battle auth profile orchestration
 
 logs:
 	@guake --show
+
+	@guake --new-tab=$(CURDIR)
+	@sleep 0.2
+	@guake --rename-current-tab="front"
 
 	@for service in $(LOGS_ORDER); do \
 		guake --new-tab=$(CURDIR); \
@@ -13,12 +17,8 @@ logs:
 
 	@guake --new-tab=$(CURDIR)
 	@sleep 0.2
-	@guake --rename-current-tab="front"
-
-#	@guake --new-tab=$(CURDIR)
-#	@sleep 0.2
-#	@guake --rename-current-tab="health"
-#	@guake --execute-command="cd $(CURDIR) && make healthloop"
+	@guake --rename-current-tab="health"
+	@guake --execute-command="cd $(CURDIR) && make healthloop"
 
 
 #close-tabs:

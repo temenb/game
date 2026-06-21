@@ -20,9 +20,10 @@ class BattleService {
     channel.connectAi(battleId);
   }
 
-  leave() {
-    channel.leave();
+  leave({String battleId = ''}) {
+    channel.leave(battleId);
   }
+
 
   canMove(BattleObject battle) {
     if (battle.status != BattleStatus.ACTIVE) {

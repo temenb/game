@@ -28,8 +28,16 @@ export async function createConsumer(config: KafkaConfig, consumerConfig: Consum
     await admin.fetchTopicMetadata({topics: [consumerConfig.topic]});
   }
 
+  consumer.on(consumer.events.CRASH, async (event) => {
+    console.error('Consumer crashed', event.error);
+    // перезапуск
+    await consumer.connect();
+    await consumer.subscribe({ topic: 'battle-events' });
+  });
+
   await admin.disconnect();
   await consumer.connect();
+
 
   // Подписка с retry
   for (let attempt = 0; attempt < 5; attempt++) {

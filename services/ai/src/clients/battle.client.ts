@@ -56,29 +56,24 @@ class BattleClient {
   }
 
   async getWs(): Promise<WebSocket | null> {
-    if (this.ws) return this.ws;
-    this.scheduleReconnect();
+    if (
+      this.ws &&
+      this.ws.readyState === WebSocket.OPEN
+    ) {
+      return this.ws;
+    }
+
+
+    if (!this.reconnectFn) {
+      this.scheduleReconnect();
+    }
+
     return null;
   }
 
   async connect(): Promise<WebSocket | null> {
-    let auth: authGrpc.AuthObject;
-    try {
-      auth = await this.getAuth();
-    } catch (err) {
-      logger.error("❌ connection is refused.",);
-      this.scheduleReconnect();
-      return null;
-    }
-
-    let profile: profileGrpc.ProfileObject;
-    try {
-      profile = await this.getProfile();
-    } catch (err) {
-      logger.error("❌ connection is refused.",);
-      this.scheduleReconnect();
-      return null;
-    }
+    const auth = await this.getAuth();
+    const profile = await this.getProfile();
 
     // logger.log(`ws://${config.webSocketStreaming}/battle?token=${auth.accessToken}&profileId=${profile.id}`);
     this.ws = new WebSocket(`ws://${config.webSocketStreaming}/battle?token=${auth.accessToken}&profileId=${profile.id}`);
@@ -91,6 +86,7 @@ class BattleClient {
     logger.info("Battle stream was created",);
     return this.ws;
   }
+
 
   disconnect(reconnectAttempts = this.reconnectAttempts) {
     if (this.ws) {
@@ -120,7 +116,7 @@ class BattleClient {
     }
   };
 
-  private messageHandler(data: WebSocket.RawData) {
+  private messageHandler = (data: WebSocket.RawData) => {
     try {
       const buffer = new Uint8Array(data as ArrayBuffer);
       const message = streamingGrpc.BattleStreamResponse.decode(buffer);
@@ -157,21 +153,24 @@ class BattleClient {
   };
 
   private scheduleReconnect() {
-    logger.log('reconnect??');
+    // logger.log('reconnect??');
     if (this.reconnectFn) return; // защита от дублей
 
-    logger.log('reconnect!!');
+    // logger.log('reconnect!!');
 
     this.disconnect();
     const delay = Math.min(1000 * 2 ** this.reconnectAttempts, 30000);
     logger.info("Schedule reconnect in " + delay / 1000);
 
     this.reconnectAttempts++;
+
     this.reconnectFn = setTimeout(async () => {
       logger.info(`🔄 Reconnecting... attempt ${this.reconnectAttempts}`);
+
       try {
         await this.connect();
       } catch (err) {
+        this.reconnectFn = null;
         logger.error("Reconnect failed:", err);
         this.scheduleReconnect();  // запускаем новый цикл
       }

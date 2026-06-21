@@ -2,6 +2,7 @@ import * as engineGrpc from '../generated/engine';
 import config from "../../config/config";
 import * as grpc from '@grpc/grpc-js';
 import logger from "@shared/logger";
+import {updateBattle} from "../../services/battle.service";
 
 
 class EngineStream {
@@ -36,14 +37,18 @@ class EngineStream {
 
     this.stream = this.client.battleChannel();
 
-    this.stream.on('data', (update) => {
+    this.stream.on('data', (message: engineGrpc.BattleStreamResponse) => {
       this.reconnectDelay = 1000
 
-//     logger.log('battleUpdated');
-//     logger.log(message);
-//     await updateBattle(message as battleGrpc.BattleObject);
+      if (message.ping) {
+        return;
+      }
+      logger.log('battleUpdated from engin');
+      logger.log(message);
+      if (message.battle) {
+        updateBattle(message.battle);
+      }
 
-      // транслируем обновления игрокам
     });
 
     this.stream.on('error', (err) => {
@@ -61,7 +66,7 @@ class EngineStream {
     return this.stream;
   }
 
-  write(data: engineGrpc.BattleChannelClientEvent) {
+  write(data: engineGrpc.BattleStreamRequest) {
     logger.info(data);
     if (!this.stream) {
       throw new Error('Engine stream not initialized');

@@ -38,9 +38,9 @@ function getSymbolForUser(battle: battleGrpc.BattleObject, move: engineGrpc.Batt
 }
 
 function verifyTurn(battle: battleGrpc.BattleObject, move: engineGrpc.BattleMoveRequest) {
-  logger.log(move.profileId);
-  logger.log(turn(battle));
-  logger.log(battle.players[turn(battle)]);
+  // logger.log(move.profileId);
+  // logger.log(turn(battle));
+  // logger.log(battle.players[turn(battle)]);
   if (move.profileId != battle.players[turn(battle)]) {
     throw new Error(`Not your turn`);
   }
@@ -88,8 +88,13 @@ export const makeMove = async (move: engineGrpc.BattleMoveRequest) => {
     throw new Error(`Battle ${move.battleId} not found`);
   }
 
-  verifyTurn(battle, move);
-  verifyCell(battle, move);
+  try {
+    verifyTurn(battle, move);
+    verifyCell(battle, move);
+  } catch (err) {
+    logger.error(err);
+    return battle;
+  }
 
   battle.cells[move.cellIdx] = getSymbolForUser(battle, move);
 

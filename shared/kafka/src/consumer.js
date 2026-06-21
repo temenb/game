@@ -28,6 +28,12 @@ async function createConsumer(config, consumerConfig) {
         await waitForLeader(admin, consumerConfig.topic);
         await admin.fetchTopicMetadata({ topics: [consumerConfig.topic] });
     }
+    consumer.on(consumer.events.CRASH, async (event) => {
+        console.error('Consumer crashed', event.error);
+        // перезапуск
+        await consumer.connect();
+        await consumer.subscribe({ topic: 'battle-events' });
+    });
     await admin.disconnect();
     await consumer.connect();
     // Подписка с retry
