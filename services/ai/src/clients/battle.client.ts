@@ -137,6 +137,8 @@ class BattleClient {
   }
 
   cancelReconnect(reconnectAttempts = 0) {
+    logger.info("⏹️ Reconnect cancelled");
+
     this.reconnectAttempts = reconnectAttempts;
     if (this.reconnectFn) {
       clearTimeout(this.reconnectFn);
@@ -155,7 +157,10 @@ class BattleClient {
   };
 
   private scheduleReconnect() {
+    logger.log('reconnect??');
     if (this.reconnectFn) return; // защита от дублей
+
+    logger.log('reconnect!!');
 
     this.disconnect();
     const delay = Math.min(1000 * 2 ** this.reconnectAttempts, 30000);
@@ -167,10 +172,10 @@ class BattleClient {
       try {
         await this.connect();
       } catch (err) {
-        this.reconnectFn = null;
         logger.error("Reconnect failed:", err);
         this.scheduleReconnect();  // запускаем новый цикл
       }
+      this.reconnectFn = null;
     }, delay);
   }
 

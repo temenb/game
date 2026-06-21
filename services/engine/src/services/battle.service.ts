@@ -38,6 +38,9 @@ function getSymbolForUser(battle: battleGrpc.BattleObject, move: engineGrpc.Batt
 }
 
 function verifyTurn(battle: battleGrpc.BattleObject, move: engineGrpc.BattleMoveRequest) {
+  logger.log(move.profileId);
+  logger.log(turn(battle));
+  logger.log(battle.players[turn(battle)]);
   if (move.profileId != battle.players[turn(battle)]) {
     throw new Error(`Not your turn`);
   }
