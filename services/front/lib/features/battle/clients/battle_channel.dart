@@ -63,7 +63,8 @@ class BattleChannel extends StreamingChannel<battleGrpc.BattleObject> {
   /// Отправить ход
   void move(String battleId, int cellIdx) {
     // logger.i('Move event');
-    final moveReq = BattleMoveRequest()..cellIdx = cellIdx;
+    final moveReq = BattleMoveRequest()..cellIdx = cellIdx
+      ..battleId = battleId;
 
     final req = BattleStreamRequest()..move = moveReq;
     // logger.d(req);

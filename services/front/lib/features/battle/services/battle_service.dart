@@ -11,6 +11,7 @@ class BattleService {
   BattleService(this.profileId, this.channel);
 
   makeMove(BattleObject battle, int cellIdx) {
+    logger.i(battle);
     if (canMove(battle)) {
       channel.move(battle.id, cellIdx);
     }
