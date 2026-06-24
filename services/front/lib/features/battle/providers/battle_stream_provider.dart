@@ -13,16 +13,6 @@ final battleStreamProvider = StreamProvider.family<BattleObject, BattleParams>((
   final battleChannel = await ref.watch(battleChannelProvider(params).future);
   // logger.i('battleChannel created');
 
-  try {
-    // logger.i('before watch');
-
-    battleChannel.join();
-
-    // logger.i('after watch');
-  } catch (e, st) {
-    logger.e('watch failed', error: e, stackTrace: st);
-    rethrow;
-  }
 
   // logger.i('Joined to stream');
 

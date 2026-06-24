@@ -35,6 +35,7 @@ class BattleChannel extends StreamingChannel<battleGrpc.BattleObject> {
 
         // logger.i('battle added to controller');
       } else {
+        logger.e(resp);
         logger.e('Battle handling went wrong: $resp');
       }
     } catch (e) {
@@ -50,17 +51,6 @@ class BattleChannel extends StreamingChannel<battleGrpc.BattleObject> {
 
   BattleChannel(super.config, this.profileId, super.jwt);
 
-  /// Отправить событие "join"
-  void join() {
-    // logger.i('Join event');
-    final startReq = StartBattleRequest();
-    final req = BattleStreamRequest()..start = startReq;
-    // logger.i(req);
-    channel.sink.add(req.writeToBuffer());
-    // logger.i('Sent join event');
-  }
-
-  /// Отправить ход
   void move(String battleId, int cellIdx) {
     // logger.i('Move event');
     final moveReq = BattleMoveRequest()..cellIdx = cellIdx
@@ -72,7 +62,6 @@ class BattleChannel extends StreamingChannel<battleGrpc.BattleObject> {
     // logger.i('Sent profile: $profileId at $cellIdx');
   }
 
-  /// Отправить ход
   void leave(String battleId) {
     final req = BattleStreamRequest()..leave = (LeaveBattleRequest()..battleId = battleId);
     // logger.d(req);
@@ -89,6 +78,19 @@ class BattleChannel extends StreamingChannel<battleGrpc.BattleObject> {
     // logger.d(req);
     channel.sink.add(req.writeToBuffer());
     // logger.i('Sent profile: $profileId at $cellIdx');
+  }
+
+  start([String? battleId]) {
+    final request = streamingGrpc.StartBattleRequest();
+
+    if (battleId != null) {
+      request.battleId = battleId;
+    }
+
+    final req = BattleStreamRequest()..start = request;
+    channel.sink.add(req.writeToBuffer());
+
+    // logger.i('Sent start battle: $battleId');
   }
 
   Future<void> ping() async {

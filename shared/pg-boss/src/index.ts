@@ -7,6 +7,35 @@ const { PgBoss } = require('pg-boss');
 
 let _boss: typeof PgBoss | null = null;
 
+export function bossSafe(): typeof PgBoss | null {
+  return _boss;
+}
+
+export async function stopBoss() {
+  if (_boss) {
+    try {
+      await _boss.stop();
+      logger.info("🛑 PgBoss stopped gracefully");
+    } catch (err) {
+      logger.error("⚠️ Error stopping PgBoss:", err);
+    } finally {
+      _boss = null;
+    }
+  }
+}
+
+export async function safeStartWorker(topic: string, handler: (jobs: Job[]) => Promise<void>) {
+  const b = bossSafe();
+  if (!b) {
+    logger.warn(`⚠️ Boss not ready, skipping worker for ${topic}`);
+    return;
+  }
+  await b.createQueue(topic);
+  await b.work(topic, handler);
+  logger.info(`${topic} worker started`);
+}
+
+
 export async function initBoss(pbBossConfig: PgBossConfig, cb: () => void): Promise<typeof PgBoss> {
   if (_boss) return _boss;
 
@@ -26,12 +55,18 @@ export async function initBoss(pbBossConfig: PgBossConfig, cb: () => void): Prom
 
       try {
         await _boss.start();
-        logger.info("✅ PgBoss started");
+        logger.info("✅ PgBoss startebossSafed");
       } catch (e) {
         console.error(e);
       }
 
       cb();
+
+      _boss.on("stop", () => {
+        logger.warn("⚠️ PgBoss stopped unexpectedly, scheduling restart...");
+        _boss = null;
+        setTimeout(() => tryStart(attempt + 1), 5000);
+      });
 
       _boss.on("error", (err: any) => {
         logger.error("⚠️ PgBoss error:", err);
