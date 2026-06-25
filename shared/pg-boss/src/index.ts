@@ -1,134 +1,191 @@
 import logger from '@shared/logger';
-import {createProducer, KafkaConfig} from "@shared/kafka";
-import {Job} from 'pg-boss';
-import {PgBossConfig} from "@shared/pg-boss/src/types";
+import { createProducer, KafkaConfig } from '@shared/kafka';
+import { Job } from 'pg-boss';
+import { PgBossConfig } from '@shared/pg-boss/src/types';
 
 const { PgBoss } = require('pg-boss');
 
-let _boss: typeof PgBoss | null = null;
+let _boss: any = null;
+let starting = false;
+let reconnectTimer: NodeJS.Timeout | null = null;
 
-export function bossSafe(): typeof PgBoss | null {
+const workers: Array<() => Promise<void>> = [];
+
+export function bossSafe() {
   return _boss;
 }
 
-export async function stopBoss() {
-  if (_boss) {
-    try {
-      await _boss.stop();
-      logger.info("🛑 PgBoss stopped gracefully");
-    } catch (err) {
-      logger.error("⚠️ Error stopping PgBoss:", err);
-    } finally {
-      _boss = null;
-    }
-  }
-}
-
-export async function safeStartWorker(topic: string, handler: (jobs: Job[]) => Promise<void>) {
-  const b = bossSafe();
-  if (!b) {
-    logger.warn(`⚠️ Boss not ready, skipping worker for ${topic}`);
+async function scheduleReconnect(config: PgBossConfig, cb: () => void) {
+  if (starting || reconnectTimer) {
     return;
   }
-  await b.createQueue(topic);
-  await b.work(topic, handler);
-  logger.info(`${topic} worker started`);
-}
 
+  const delay = 5000;
 
-export async function initBoss(pbBossConfig: PgBossConfig, cb: () => void): Promise<typeof PgBoss> {
-  if (_boss) return _boss;
-
-  // logger.log('init');
-  async function tryStart(attempt = 1): Promise<typeof PgBoss> {
-    // logger.log('try to start pgboss');
-    // logger.log(process.env.DATABASE_URL);
+  reconnectTimer = setTimeout(async () => {
+    reconnectTimer = null;
 
     try {
-      _boss = new PgBoss({
-        connectionString: process.env.DATABASE_URL,
-        max: pbBossConfig.max || 5,
-        newConnectionTimeoutSeconds: pbBossConfig.newConnectionTimeoutSeconds || 30,
-        maintenanceIntervalSeconds: pbBossConfig.maintenanceIntervalSeconds || 60,
-        applicationName: pbBossConfig.applicationName || 'pgboss',
-      }) as typeof PgBoss;
+      await initBoss(config, cb);
+    } catch (e) {
+      logger.error('Reconnect failed', e);
+      scheduleReconnect(config, cb);
+    }
+  }, delay);
+}
+
+async function registerWorkers() {
+  for (const worker of workers) {
+    try {
+      await worker();
+    } catch (e) {
+      logger.error('Worker restore failed', e);
+    }
+  }
+}
+
+export async function stopBoss() {
+  if (!_boss) {
+    return;
+  }
+
+  try {
+    await _boss.stop();
+    logger.info('🛑 PgBoss stopped');
+  } catch (e) {
+    logger.error(e);
+  }
+
+  _boss = null;
+}
+
+export async function initBoss(
+  pgBossConfig: PgBossConfig,
+  cb: () => void
+): Promise<any> {
+
+  if (_boss) {
+    return _boss;
+  }
+
+  if (starting) {
+    while (starting) {
+      await new Promise(resolve => setTimeout(resolve, 500));
+    }
+
+    if (_boss) {
+      return _boss;
+    }
+  }
+
+  starting = true;
+
+  try {
+    const boss = new PgBoss({
+      connectionString: process.env.DATABASE_URL,
+      max: pgBossConfig.max ?? 5,
+      newConnectionTimeoutSeconds:
+        pgBossConfig.newConnectionTimeoutSeconds ?? 30,
+      maintenanceIntervalSeconds:
+        pgBossConfig.maintenanceIntervalSeconds ?? 60,
+      applicationName:
+        pgBossConfig.applicationName ?? 'pgboss',
+    });
+
+    await boss.start();
+
+    boss.on('error', async (err: any) => {
+      logger.error('PgBoss error', err);
 
       try {
-        await _boss.start();
-        logger.info("✅ PgBoss startebossSafed");
-      } catch (e) {
-        console.error(e);
+        await boss.stop();
+      } catch {}
+
+      if (_boss === boss) {
+        _boss = null;
       }
 
-      cb();
+      scheduleReconnect(pgBossConfig, cb);
+    });
 
-      _boss.on("stop", () => {
-        logger.warn("⚠️ PgBoss stopped unexpectedly, scheduling restart...");
+    boss.on('stop', () => {
+      logger.warn('PgBoss stopped');
+
+      if (_boss === boss) {
         _boss = null;
-        setTimeout(() => tryStart(attempt + 1), 5000);
-      });
+      }
 
-      _boss.on("error", (err: any) => {
-        logger.error("⚠️ PgBoss error:", err);
-        _boss = null;
-        const delay = Math.min(1000 * 2 ** attempt, 30000);
-        setTimeout(() => tryStart(attempt + 1), delay);
-      });
+      scheduleReconnect(pgBossConfig, cb);
+    });
 
-      attempt = 1;
-      return _boss!;
-    } catch (e) {
-      logger.error("❌ PgBoss start failed:", e);
-      _boss = null;
-      const delay = Math.min(1000 * 2 ** attempt, 30000);
-      logger.info(`🔄 Retry PgBoss start in ${delay / 1000}s (attempt ${attempt})`);
-      setTimeout(() => tryStart(attempt + 1), delay);
-    }
+    _boss = boss;
+
+    logger.info('✅ PgBoss connected');
+
+    cb();
+
+    await registerWorkers();
+
+    return boss;
+  } finally {
+    starting = false;
   }
-
-  return await tryStart();
 }
 
-
-export function boss(): typeof PgBoss {
+export function boss() {
   if (!_boss) {
-    throw new Error('Boss has not been initialized. Call createBoss() first.');
+    throw new Error('PgBoss not connected');
   }
-  return _boss!;
+
+  return _boss;
 }
 
+export async function startWorker(
+  topic: string,
+  handler: (jobs: Job[]) => Promise<void>
+) {
+  const register = async () => {
+    const b = boss();
 
-export async function startKafkaWorker(kafkaConfig: KafkaConfig, topic: string) {
-  // проверка на дубль
+    await b.createQueue(topic);
 
-  // logger.log('===========================================================================')
-  const producer = await createProducer(kafkaConfig);
-  await boss().createQueue(topic);
+    await b.work(topic, handler);
 
-  await boss().work(topic, async (job: Job) => {
-    try {
+    logger.info(`${topic} worker started`);
+  };
+
+  workers.push(register);
+
+  if (_boss) {
+    await register();
+  }
+}
+
+export async function startKafkaWorker(
+  kafkaConfig: KafkaConfig,
+  topic: string
+) {
+  const register = async () => {
+    const producer = await createProducer(kafkaConfig);
+
+    const b = boss();
+
+    await b.createQueue(topic);
+
+    await b.work(topic, async (job: Job) => {
       const j = Array.isArray(job) ? job[0] : job;
-      const { name, data } = j;
-      const topicName = name;
-      await producer.send(topicName, data);
+
+      await producer.send(j.name, j.data);
+
       return true;
-    } catch (err) {
-      logger.error('Kafka send failed:', err);
-      throw err;
-    }
-  });
+    });
 
-  logger.log('Kafka ' + topic + ' event worker started');
+    logger.info(`Kafka worker ${topic} started`);
+  };
+
+  workers.push(register);
+
+  if (_boss) {
+    await register();
+  }
 }
-
-export async function startWorker(topic: string, handler: (jobs: Job[]) => Promise<void>) {
-  // проверка на дубль
-  // logger.log('===========================================================================22')
-
-  await boss().createQueue(topic);
-
-  await boss().work(topic, handler);
-
-  logger.log(topic + ' event worker started');
-}
-
