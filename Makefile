@@ -36,6 +36,26 @@ install:
 	@make proto-generate bip=no
 	@make reset
 
+install-deploy:
+	@echo "🔧 Инициализация проекта"
+	@echo "🔧 Клонирование подмодулей"
+	@git submodule update --init --recursive > /dev/null 2>&1
+	@echo "📦 Проверка .env файлов для всех сервисов..."
+	@for service in $(NODE_SERVICES) $(FLUTTER_SERVICES); do \
+		ENV_PATH="$(SERVICE_DIR)/.env.$$service"; \
+		ENV_EXAMPLE_PATH="$(SERVICE_DIR)/$$service/.env.dist"; \
+		if [ ! -f "$$ENV_PATH" ] && [ -f "$$ENV_EXAMPLE_PATH" ]; then \
+			echo "[env] Копирую .env для $$service"; \
+			cp "$$ENV_EXAMPLE_PATH" "$$ENV_PATH"; \
+		fi; \
+	done
+	@if [ ! -f "docker-compose.yml" ] && [ -f "docker-compose.yml.dist" ]; then \
+        echo "[env] Создаю docker-compose.yml из docker-compose.yml.deploy.dist"; \
+        cp docker-compose.yml.deploy.dist docker-compose.yml; \
+    fi
+	@make proto-generate bip=no
+	@make reset
+
 bip:
 	@paplay /usr/share/sounds/freedesktop/stereo/complete.oga
 
