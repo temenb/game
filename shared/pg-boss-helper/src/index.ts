@@ -1,7 +1,8 @@
 import logger from '@shared/logger';
-import { createProducer, KafkaConfig } from '@shared/kafka';
+import { createProducer, KafkaConfig } from '@shared/kafka-manager';
 import { Job } from 'pg-boss';
-import { PgBossConfig } from '@shared/pg-boss/src/types';
+import { PgBossConfig } from '@shared/pg-boss-helper/src/types';
+
 
 const { PgBoss } = require('pg-boss');
 

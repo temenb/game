@@ -20,9 +20,12 @@ importers:
       '@bufbuild/protobuf':
         specifier: ^2.11.0
         version: 2.11.0
-      '@shared/kafka':
+      '@prisma/client':
+        specifier: ^6.19.3
+        version: 6.19.3(prisma@6.19.3)(typescript@5.9.3)
+      '@shared/kafka-manager':
         specifier: workspace:*
-        version: link:../../shared/kafka
+        version: link:../../shared/kafka-manager
       '@shared/logger':
         specifier: workspace:*
         version: link:../../shared/logger
@@ -75,6 +78,9 @@ importers:
       nodemon:
         specifier: ^3.1.14
         version: 3.1.14
+      prisma:
+        specifier: ^6.19.3
+        version: 6.19.3(typescript@5.9.3)
       supertest:
         specifier: ^7.2.2
         version: 7.2.2
@@ -105,12 +111,15 @@ importers:
       '@prisma/client':
         specifier: ^6.19.3
         version: 6.19.3(prisma@6.19.3)(typescript@6.0.2)
-      '@shared/kafka':
+      '@shared/kafka-manager':
         specifier: workspace:*
-        version: link:../../shared/kafka
+        version: link:../../shared/kafka-manager
       '@shared/logger':
         specifier: workspace:*
         version: link:../../shared/logger
+      '@shared/pg-boss-helper':
+        specifier: workspace:*
+        version: link:../../shared/pg-boss-helper
       bcrypt:
         specifier: ^6.0.0
         version: 6.0.0
@@ -190,9 +199,9 @@ importers:
       '@prisma/client':
         specifier: ^6.19.3
         version: 6.19.3(prisma@6.19.3)(typescript@5.9.3)
-      '@shared/kafka':
+      '@shared/kafka-manager':
         specifier: workspace:*
-        version: link:../../shared/kafka
+        version: link:../../shared/kafka-manager
       '@shared/logger':
         specifier: workspace:*
         version: link:../../shared/logger
@@ -269,9 +278,9 @@ importers:
       '@prisma/client':
         specifier: ^6.19.3
         version: 6.19.3(prisma@6.19.3)(typescript@5.9.3)
-      '@shared/kafka':
+      '@shared/kafka-manager':
         specifier: workspace:*
-        version: link:../../shared/kafka
+        version: link:../../shared/kafka-manager
       '@shared/logger':
         specifier: workspace:*
         version: link:../../shared/logger
@@ -442,9 +451,9 @@ importers:
       '@prisma/client':
         specifier: ^6.19.3
         version: 6.19.3(prisma@6.19.3)(typescript@5.9.3)
-      '@shared/kafka':
+      '@shared/kafka-manager':
         specifier: workspace:*
-        version: link:../../shared/kafka
+        version: link:../../shared/kafka-manager
       '@shared/logger':
         specifier: workspace:*
         version: link:../../shared/logger
@@ -524,9 +533,9 @@ importers:
       '@prisma/client':
         specifier: ^6.19.3
         version: 6.19.3(prisma@6.19.3)(typescript@5.9.3)
-      '@shared/kafka':
+      '@shared/kafka-manager':
         specifier: workspace:*
-        version: link:../../shared/kafka
+        version: link:../../shared/kafka-manager
       '@shared/logger':
         specifier: workspace:*
         version: link:../../shared/logger
@@ -603,9 +612,9 @@ importers:
       '@shared/grpc-client-manager':
         specifier: workspace:*
         version: link:../../shared/grpc-client-manager
-      '@shared/kafka':
+      '@shared/kafka-manager':
         specifier: workspace:*
-        version: link:../../shared/kafka
+        version: link:../../shared/kafka-manager
       '@shared/logger':
         specifier: workspace:*
         version: link:../../shared/logger
@@ -711,7 +720,7 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
-  shared/kafka:
+  shared/kafka-manager:
     dependencies:
       kafkajs:
         specifier: ^2.2.4
@@ -730,7 +739,7 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
-  shared/pg-boss:
+  shared/pg-boss-helper:
     dependencies:
       pg-boss:
         specifier: ^12.15.0
