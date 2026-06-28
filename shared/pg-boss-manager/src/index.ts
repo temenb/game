@@ -12,6 +12,11 @@ export class PgBossManager {
   private workers: Array<() => Promise<void>> = [];
   private workersStarted = false;
 
+  setBoss(boss: PgBoss) {
+    logger.log('setPgboss');
+    this._boss = boss;
+  }
+
   initBoss = (
     config: PgBossConfig,
     cb: () => void
@@ -27,7 +32,7 @@ export class PgBossManager {
 
       await boss.start();
 
-      this._boss = boss;
+      this.setBoss(boss);
 
       logger.info('✅ PgBoss connected');
 

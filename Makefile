@@ -1,6 +1,6 @@
 include make/parameters.mk
 include make/kafka.mk
-include make/logs.mk
+include make/terminal.mk
 
 NODE_BIN=./node_modules/.bin
 SERVICE_DIR := services
