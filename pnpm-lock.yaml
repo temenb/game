@@ -208,6 +208,9 @@ importers:
       '@shared/logger':
         specifier: workspace:*
         version: link:../../shared/logger
+      '@shared/pg-boss-helper':
+        specifier: workspace:*
+        version: link:../../shared/pg-boss-helper
       jsonwebtoken:
         specifier: ^9.0.3
         version: 9.0.3
@@ -287,6 +290,9 @@ importers:
       '@shared/logger':
         specifier: workspace:*
         version: link:../../shared/logger
+      '@shared/pg-boss-helper':
+        specifier: workspace:*
+        version: link:../../shared/pg-boss-helper
       ioredis:
         specifier: ^5.10.1
         version: 5.10.1
@@ -454,6 +460,9 @@ importers:
       '@prisma/client':
         specifier: ^6.19.3
         version: 6.19.3(prisma@6.19.3)(typescript@5.9.3)
+      '@shared/grpc-client-manager':
+        specifier: workspace:*
+        version: link:../../shared/grpc-client-manager
       '@shared/kafka-manager':
         specifier: workspace:*
         version: link:../../shared/kafka-manager
@@ -542,6 +551,9 @@ importers:
       '@shared/logger':
         specifier: workspace:*
         version: link:../../shared/logger
+      '@shared/pg-boss-helper':
+        specifier: workspace:*
+        version: link:../../shared/pg-boss-helper
       jsonwebtoken:
         specifier: ^9.0.3
         version: 9.0.3
@@ -621,6 +633,9 @@ importers:
       '@shared/logger':
         specifier: workspace:*
         version: link:../../shared/logger
+      '@shared/pg-boss-helper':
+        specifier: workspace:*
+        version: link:../../shared/pg-boss-helper
       cookie-parser:
         specifier: ^1.4.7
         version: 1.4.7
