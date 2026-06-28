@@ -1,4 +1,4 @@
-import {boss} from './index';
+import pgBossManager from './index';
 import logger from "@shared/logger";
 // import {Prisma, PrismaClient} from '@prisma/client';
 
@@ -6,16 +6,15 @@ export async function enqueueEvent(topic: string, data: object): Promise<number 
   const jobName = topic;
   // logger.log('here ' + jobName);
   // logger.log(boss.toString());
-  const bossObj = boss();
+  const bossObj = await pgBossManager.boss();
   // logger.log(bossObj);
   const jobId = await bossObj.send(jobName, data);
 
-  return jobId;
   if (!jobId) {
     throw new Error(`Failed to enqueue event: topic`);
   }
 
-  return jobId;
+  return Number(jobId);
 
 }
 

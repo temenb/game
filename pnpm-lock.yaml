@@ -29,9 +29,9 @@ importers:
       '@shared/logger':
         specifier: workspace:*
         version: link:../../shared/logger
-      '@shared/pg-boss-helper':
+      '@shared/pg-boss-manager':
         specifier: workspace:*
-        version: link:../../shared/pg-boss-helper
+        version: link:../../shared/pg-boss-manager
       cookie-parser:
         specifier: ^1.4.7
         version: 1.4.7
@@ -120,9 +120,9 @@ importers:
       '@shared/logger':
         specifier: workspace:*
         version: link:../../shared/logger
-      '@shared/pg-boss-helper':
+      '@shared/pg-boss-manager':
         specifier: workspace:*
-        version: link:../../shared/pg-boss-helper
+        version: link:../../shared/pg-boss-manager
       bcrypt:
         specifier: ^6.0.0
         version: 6.0.0
@@ -208,9 +208,9 @@ importers:
       '@shared/logger':
         specifier: workspace:*
         version: link:../../shared/logger
-      '@shared/pg-boss-helper':
+      '@shared/pg-boss-manager':
         specifier: workspace:*
-        version: link:../../shared/pg-boss-helper
+        version: link:../../shared/pg-boss-manager
       jsonwebtoken:
         specifier: ^9.0.3
         version: 9.0.3
@@ -290,9 +290,9 @@ importers:
       '@shared/logger':
         specifier: workspace:*
         version: link:../../shared/logger
-      '@shared/pg-boss-helper':
+      '@shared/pg-boss-manager':
         specifier: workspace:*
-        version: link:../../shared/pg-boss-helper
+        version: link:../../shared/pg-boss-manager
       ioredis:
         specifier: ^5.10.1
         version: 5.10.1
@@ -551,9 +551,9 @@ importers:
       '@shared/logger':
         specifier: workspace:*
         version: link:../../shared/logger
-      '@shared/pg-boss-helper':
+      '@shared/pg-boss-manager':
         specifier: workspace:*
-        version: link:../../shared/pg-boss-helper
+        version: link:../../shared/pg-boss-manager
       jsonwebtoken:
         specifier: ^9.0.3
         version: 9.0.3
@@ -633,9 +633,9 @@ importers:
       '@shared/logger':
         specifier: workspace:*
         version: link:../../shared/logger
-      '@shared/pg-boss-helper':
+      '@shared/pg-boss-manager':
         specifier: workspace:*
-        version: link:../../shared/pg-boss-helper
+        version: link:../../shared/pg-boss-manager
       cookie-parser:
         specifier: ^1.4.7
         version: 1.4.7
@@ -763,7 +763,7 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
-  shared/pg-boss-helper:
+  shared/pg-boss-manager:
     dependencies:
       '@shared/kafka-manager':
         specifier: workspace:*

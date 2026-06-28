@@ -5,12 +5,13 @@
     "rootDir": "src",
     "emitDeclarationOnly": false,
     "declaration": true,
+    "declarationMap": true,
     "strict": true,
     "baseUrl": "./src"
   },
   "include": ["src"],
   "references": [
-    { "path": "../pg-boss-helper" },
+    { "path": "../pg-boss-manager" },
     { "path": "../logger" }
   ]
 }
