@@ -2,7 +2,8 @@ name: Deploy Node App
 
 on:
   repository_dispatch:
-    types: [service-updated]
+    types:
+      - service-updated
 
 concurrency:
   group: deploy-${{ github.ref_name }}
