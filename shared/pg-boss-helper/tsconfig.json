@@ -5,7 +5,7 @@
     "rootDir": "src",
     "declaration": true,
     "composite": true,
-    "baseUrl": "../.."
+    "baseUrl": "./src"
   },
   "references": [
     { "path": "../logger" }

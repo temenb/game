@@ -12,6 +12,8 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "pg-boss": "^12.15.0"
+    "pg-boss": "^12.15.0",
+    "@shared/logger": "workspace:*",
+    "@shared/kafka-manager": "workspace:*"
   }
 }

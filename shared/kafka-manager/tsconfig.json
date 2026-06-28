@@ -6,7 +6,7 @@
     "emitDeclarationOnly": false,
     "declaration": true,
     "strict": true,
-    "baseUrl": "../.."
+    "baseUrl": "./src"
   },
   "include": ["src"],
   "references": [

@@ -23,7 +23,8 @@
   "author": "Oleksii",
   "license": "MIT",
   "dependencies": {
-    "@grpc/grpc-js": "^1.14.3"
+    "@grpc/grpc-js": "^1.14.3",
+    "@shared/logger": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^24.12.0",

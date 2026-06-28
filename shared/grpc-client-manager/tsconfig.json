@@ -5,8 +5,8 @@
     "rootDir": "src",
     "emitDeclarationOnly": false,
     "declaration": true,
+    "composite": true,
     "strict": true,
-    "baseUrl": "../.."
   },
   "include": ["src"]
 }

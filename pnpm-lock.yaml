@@ -29,6 +29,9 @@ importers:
       '@shared/logger':
         specifier: workspace:*
         version: link:../../shared/logger
+      '@shared/pg-boss-helper':
+        specifier: workspace:*
+        version: link:../../shared/pg-boss-helper
       cookie-parser:
         specifier: ^1.4.7
         version: 1.4.7
@@ -706,6 +709,9 @@ importers:
       '@grpc/grpc-js':
         specifier: ^1.14.3
         version: 1.14.3
+      '@shared/logger':
+        specifier: workspace:*
+        version: link:../logger
     devDependencies:
       '@types/node':
         specifier: ^24.12.0
@@ -722,6 +728,9 @@ importers:
 
   shared/kafka-manager:
     dependencies:
+      '@shared/logger':
+        specifier: workspace:*
+        version: link:../logger
       kafkajs:
         specifier: ^2.2.4
         version: 2.2.4
@@ -741,6 +750,12 @@ importers:
 
   shared/pg-boss-helper:
     dependencies:
+      '@shared/kafka-manager':
+        specifier: workspace:*
+        version: link:../kafka-manager
+      '@shared/logger':
+        specifier: workspace:*
+        version: link:../logger
       pg-boss:
         specifier: ^12.15.0
         version: 12.15.0
