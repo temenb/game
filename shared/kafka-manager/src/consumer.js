@@ -29,7 +29,7 @@ async function createConsumer(config, consumerConfig) {
         await admin.fetchTopicMetadata({ topics: [consumerConfig.topic] });
     }
     consumer.on(consumer.events.CRASH, async (event) => {
-        console.error('Consumer crashed', event.error);
+        console.error('Consumer crashed', event.payload.error);
         // перезапуск
         await consumer.connect();
         await consumer.subscribe({ topic: 'battle-events' });
@@ -57,8 +57,7 @@ async function createConsumer(config, consumerConfig) {
             if (value) {
                 await consumerConfig.handler(topic, partition, JSON.parse(value));
             }
-        },
-        retry: { retries: 10, initialRetryTime: 1000 },
+        }
     });
     return consumer;
 }

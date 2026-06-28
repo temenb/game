@@ -10,7 +10,19 @@ export class PgBossManager {
   private _boss: PgBoss | null = null;
 
   private workers: Array<() => Promise<void>> = [];
-  private workersStarted = false;
+
+  constructor() {
+    logger.log(__filename);
+
+    // Таймер проверки состояния PgBoss
+    setInterval(() => {
+      if (this._boss) {
+        console.log("✅ PgBoss instance exists");
+      } else {
+        console.log("❌ PgBoss is null");
+      }
+    }, 1000);
+  }
 
   setBoss(boss: PgBoss) {
     logger.log('setPgboss');
@@ -52,6 +64,7 @@ export class PgBossManager {
 
 
   stopBoss = async() => {
+    logger.info('Stop Boss !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
     if (!this._boss) return;
 
     try {
@@ -121,6 +134,35 @@ export class PgBossManager {
     if (this._boss) {
       await register();
     }
+  }
+
+  enqueueEvent = async (topic: string, data: object): Promise<number | null> => {
+    const jobName = topic;
+    // logger.log('here ' + jobName);
+    // logger.log(boss.toString());
+    const bossObj = await pgBossManager.boss();
+    // logger.log(bossObj);
+    const jobId = await bossObj.send(jobName, data);
+
+    if (!jobId) {
+      throw new Error(`Failed to enqueue event: topic`);
+    }
+
+    return Number(jobId);
+
+  }
+
+  enqueueEventTx = async (
+    topic: string,
+    data: object,
+    tx: any
+  ): Promise<number | null> => {
+    const jobName = topic;
+    // logger.log('enqueueEventTx ' + jobName);
+    return await tx.$executeRawUnsafe(`
+      insert into pgboss.job (name, data)
+      values ($1, $2::jsonb) returning id
+  `, jobName, JSON.stringify(data));
   }
 }
 

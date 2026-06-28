@@ -7,8 +7,9 @@
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
+    "baseUrl": ".",
     "paths": {
-      "@shared/*": ["../../shared/*"]
+      "@shared/*": ["shared/*/src"]
     }
   },
   "include": ["src"]
