@@ -20,9 +20,6 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout monorepo
-        uses: actions/checkout@v4
-
       - name: Print payload
         run: |
           echo "Repo: ${{ github.event.client_payload.repo }}"
@@ -30,6 +27,18 @@ jobs:
           echo "Branch: ${{ github.event.client_payload.branch }}"
           echo "Version: ${{ github.event.client_payload.version }}"
 
+      - name: Checkout monorepo
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          fetch-depth: 0
+
+      - name: Checkout service submodule branch
+        run: |
+          cd services/${{ github.event.client_payload.service }}
+          git fetch origin ${{ github.event.client_payload.branch }}
+          git checkout ${{ github.event.client_payload.branch }}
+          git pull origin ${{ github.event.client_payload.branch }}
 
   build-and-push:
     runs-on: ubuntu-latest
