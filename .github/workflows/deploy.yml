@@ -42,6 +42,8 @@ jobs:
 
       - name: Build Docker image
         run: |
+          echo $REGISTRY/${{ github.event.client_payload.repo }}/${{ github.event.client_payload.service }}:${{ github.event.client_payload.version }}
+          echo services/${{ github.event.client_payload.service }}/Dockerfile
           docker build \
             --target prod \
             -t $REGISTRY/${{ github.event.client_payload.repo }}/${{ github.event.client_payload.service }}:${{ github.event.client_payload.version }} \
