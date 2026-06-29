@@ -1,9 +1,9 @@
-LOGS_ORDER := ai streaming engine gateway #battle auth profile orchestration
+LOGS_ORDER := ai streaming engine gateway battle auth profile orchestration
 
 logs:
 	@guake --show
 
-	@guake --new-tab=$(CURDIR)
+	@guake --new-tab=$(CURDIR)\service\front
 	@sleep 0.2
 	@guake --rename-current-tab="front"
 

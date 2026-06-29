@@ -1,0 +1,302 @@
+name: Deploy Node App
+
+on:
+  repository_dispatch:
+    types:
+      - service-updated
+
+concurrency:
+  group: deploy-${{ github.ref_name }}
+#  cancel-in-progress: true
+
+permissions:
+  contents: write
+  packages: write
+
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout monorepo
+        uses: actions/checkout@v4
+
+      - name: Print payload
+        run: |
+          echo "Service: ${{ github.event.client_payload.service }}"
+          echo "Branch: ${{ github.event.client_payload.branch }}"
+#jobs:
+#  determine-version:
+#    runs-on: ubuntu-latest
+#    environment: ${{ github.ref_name }}
+#    outputs:
+#      version: ${{ steps.bump_version.outputs.version }}
+#
+#    steps:
+#      - name: Checkout repository
+#        uses: actions/checkout@v4
+#        with:
+#          fetch-depth: 0
+#
+#      - name: Get latest tag from service repo
+#        run: |
+#          SERVICE=${{ github.event.client_payload.service }}
+#          echo "Service: $SERVICE"
+#          TAG=$(curl -s \
+#            -H "Authorization: Bearer ${{ secrets.MONOREPO_TOKEN }}" \
+#            https://api.github.com/repos/temenb/$SERVICE/tags \
+#            | jq -r '.[0].name')
+#          echo "TAG=$TAG"
+#          if [ -z "$TAG" ] || [ "$TAG" = "null" ]; then
+#            TAG="0.0.0"
+#          fi
+#          echo "TAG=$TAG" >> $GITHUB_ENV
+
+#      - name: Get current version from the latest git tag
+#        run: |
+#          git config --global user.name "GitHub Actions"
+#          git config --global user.email "actions@github.com"
+#          git fetch origin 'refs/tags/*:refs/tags/*'
+#          TAG=$(git tag --list '[0-9]*.[0-9]*.[0-9]*' --sort=-v:refname | head -n 1)
+#          echo "TAG=$TAG"
+#          if [ -z "$TAG" ]; then
+#            TAG="0.0.0"
+#          fi
+#          echo "TAG=$TAG" >> $GITHUB_ENV
+#
+#      - name: Bump patch version
+#        id: bump_version
+#        run: |
+#          # Split the version into its components
+#          IFS='.' read -r -a VERSION_PARTS <<< "$TAG"
+#          MAJOR="${VERSION_PARTS[0]}"
+#          MINOR="${VERSION_PARTS[1]}"
+#          PATCH="${VERSION_PARTS[2]}"
+#
+#          # Set default values if components are missing
+#          if [[ -z "$MAJOR" ]]; then
+#            MAJOR=0
+#          fi
+#          if [[ -z "$MINOR" ]]; then
+#            MINOR=0
+#          fi
+#          if [[ -z "$PATCH" ]]; then
+#            PATCH=0
+#          fi
+#
+#          # Increment the version until a unique tag is found
+#          while git tag -l "$MAJOR.$MINOR.$PATCH" | grep -q .; do
+#            if [ "$GITHUB_REF_NAME" = "dev" ]; then
+#              PATCH=$((PATCH + 1))
+#            fi
+#
+#            if [ "$GITHUB_REF_NAME" = "uat" ]; then
+#              MINOR=$((MINOR + 1))
+#              PATCH=0
+#            fi
+#
+#            if [ "$GITHUB_REF_NAME" = "prod" ]; then
+#              MAJOR=$((MAJOR + 1))
+#              PATCH=0
+#              MINOR=0
+#            fi
+#          done
+#
+#
+#          VERSION="$MAJOR.$MINOR.$PATCH"
+#          echo "VERSION=$VERSION" >> $GITHUB_ENV
+#          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+#          echo "Generated new version: $VERSION"
+#
+##      - name: Create prod release tag
+##        #        if: github.ref_name == 'prod'
+##        run: |
+##          git tag -a $VERSION -m "Release $VERSION"
+##          git push origin $VERSION
+#
+#  build-and-push:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout monorepo
+#        uses: actions/checkout@v4
+#
+#      - name: Setup Node.js
+#        uses: actions/setup-node@v4
+#        with:
+#          node-version: 20
+#
+#      - name: Install dependencies
+#        run: pnpm install --filter ${{ github.event.client_payload.service }}...
+#
+#      - name: Build service
+#        run: pnpm build --filter ${{ github.event.client_payload.service }}...
+#
+#      - name: Build Docker image
+#        run: |
+#          docker build \
+#            -t $REGISTRY/temenb/${{ github.event.client_payload.service }}:latest \
+#            ./services/${{ github.event.client_payload.service }}
+#
+#      - name: Push Docker image
+#        run: |
+#          echo "${{ secrets.GITHUB_TOKEN }}" | docker login $REGISTRY -u $GITHUB_ACTOR --password-stdin
+#          docker push $REGISTRY/temenb/${{ github.event.client_payload.service }}:latest
+#
+##jobs:
+##  determine-version:
+##    runs-on: ubuntu-latest
+##    environment: ${{ github.ref_name }}
+##    outputs:
+##      version: ${{ steps.bump_version.outputs.version }}
+##
+##    steps:
+##      - name: Checkout repository
+##        uses: actions/checkout@v4
+##        with:
+##          fetch-depth: 0
+##
+##      - name: Get current version from the latest git tag
+##        run: |
+##          git config --global user.name "GitHub Actions"
+##          git config --global user.email "actions@github.com"
+##          git fetch origin 'refs/tags/*:refs/tags/*'
+##          TAG=$(git tag --list '[0-9]*.[0-9]*.[0-9]*' --sort=-v:refname | head -n 1)
+##          echo "TAG=$TAG"
+##          if [ -z "$TAG" ]; then
+##            TAG="0.0.0"
+##          fi
+##          echo "TAG=$TAG" >> $GITHUB_ENV
+##
+##      - name: Bump patch version
+##        id: bump_version
+##        run: |
+##          # Split the version into its components
+##          IFS='.' read -r -a VERSION_PARTS <<< "$TAG"
+##          MAJOR="${VERSION_PARTS[0]}"
+##          MINOR="${VERSION_PARTS[1]}"
+##          PATCH="${VERSION_PARTS[2]}"
+##
+##          # Set default values if components are missing
+##          if [[ -z "$MAJOR" ]]; then
+##            MAJOR=0
+##          fi
+##          if [[ -z "$MINOR" ]]; then
+##            MINOR=0
+##          fi
+##          if [[ -z "$PATCH" ]]; then
+##            PATCH=0
+##          fi
+##
+##          # Increment the version until a unique tag is found
+##          while git tag -l "$MAJOR.$MINOR.$PATCH" | grep -q .; do
+##            if [ "$GITHUB_REF_NAME" = "dev" ]; then
+##              PATCH=$((PATCH + 1))
+##            fi
+##
+##            if [ "$GITHUB_REF_NAME" = "uat" ]; then
+##              MINOR=$((MINOR + 1))
+##              PATCH=0
+##            fi
+##
+##            if [ "$GITHUB_REF_NAME" = "prod" ]; then
+##              MAJOR=$((MAJOR + 1))
+##              PATCH=0
+##              MINOR=0
+##            fi
+##          done
+##
+##
+##          VERSION="$MAJOR.$MINOR.$PATCH"
+##          echo "VERSION=$VERSION" >> $GITHUB_ENV
+##          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+##          echo "Generated new version: $VERSION"
+##
+##      - name: Create prod release tag
+##        #        if: github.ref_name == 'prod'
+##        run: |
+##          git tag -a $VERSION -m "Release $VERSION"
+##          git push origin $VERSION
+##
+##
+##  build-and-push:
+##    runs-on: ubuntu-latest
+##    needs: determine-version
+##    environment: ${{ github.ref_name }}
+##
+##    steps:
+##      - name: Checkout code
+##        uses: actions/checkout@v4
+##        with:
+##          fetch-depth: 1
+##
+##      - name: Set lowercase repo name
+##        run: echo "REPO_LC=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
+##
+##      - name: Set up Docker Buildx
+##        uses: docker/setup-buildx-action@v3
+##
+##      #      @todo in purpose of build speeding up - implement caching of npm artifacts
+##      #      - name: Cache Composer dependencies
+##      #        uses: actions/cache@v4
+##      #        with:
+##      #          path: |
+##      #            .nuxt
+##      #            node_modules
+##      #          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+##      #          restore-keys: |
+##      #            ${{ runner.os }}-composer-
+##
+##      - name: Login to GHCR
+##        uses: docker/login-action@v3
+##        with:
+##          registry: ${{ env.REGISTRY }}
+##          username: temenb
+##          password: ${{ secrets.GHCR_PAT }}
+##
+##      - name: Show Docker image version
+##        run: |
+##          echo "----------------------------------------"
+##          echo "Building ai with version:"
+##          echo "VERSION = ${{ needs.determine-version.outputs.version }}"
+##          echo "GITHUB_REF_NAME = ${{ github.ref_name }}"
+##          echo "GITHUB_SHA = ${{ github.sha }}"
+##          echo "----------------------------------------"
+##
+##      - name: Build and push frontend image
+##        uses: docker/build-push-action@v5
+##        with:
+##          context: .
+##          target: production
+##          push: true
+##          tags: |
+##            ${{ env.REGISTRY }}/${{ env.REPO_LC }}/front:${{ github.ref_name == 'prod' && 'latest' || github.ref_name }}
+##            ${{ env.REGISTRY }}/${{ env.REPO_LC }}/front:${{ needs.determine-version.outputs.version }}
+##            ${{ env.REGISTRY }}/${{ env.REPO_LC }}/front:${{ github.ref_name }}
+##            ${{ env.REGISTRY }}/${{ env.REPO_LC }}/front:${{ github.sha }}
+##          cache-from: type=registry,ref=ghcr.io/${{ env.REPO_LC }}/front:cache
+##          cache-to: type=registry,ref=ghcr.io/${{ env.REPO_LC }}/front:cache,mode=max
+##          build-args: |
+##            APP_VERSION=${{ needs.determine-version.outputs.version }}
+##            ENV_NAME=${{ github.ref_name }}
+##
+##  deploy:
+##    runs-on: ubuntu-latest
+##    needs: build-and-push
+##    environment: ${{ github.ref_name }}
+##
+##    steps:
+##      - name: Deploy over SSH
+##        uses: appleboy/ssh-action@v0.1.10
+##        with:
+##          host: ${{ secrets.DEPLOY_HOST }}
+##          username: ${{ secrets.DEPLOY_USER }}
+##          key: ${{ secrets.DEPLOY_KEY }}
+##          script_stop: true
+##          script: |
+##            set -e
+##            cd ${{ secrets.DEPLOY_PATH }}
+##            docker compose pull
+##            docker compose up -d --remove-orphans
+##            docker image prune -f

@@ -29,7 +29,7 @@ export async function createConsumer(config: KafkaConfig, consumerConfig: Consum
   }
 
   consumer.on(consumer.events.CRASH, async (event) => {
-    console.error('Consumer crashed', event.error);
+    console.error('Consumer crashed', event.payload.error);
     // перезапуск
     await consumer.connect();
     await consumer.subscribe({ topic: 'battle-events' });
@@ -60,8 +60,7 @@ export async function createConsumer(config: KafkaConfig, consumerConfig: Consum
       if (value) {
         await consumerConfig.handler(topic, partition, JSON.parse(value));
       }
-    },
-    retry: {retries: 10, initialRetryTime: 1000},
+    }
   });
 
   return consumer;

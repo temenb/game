@@ -2,10 +2,13 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "dist",
-    "rootDir": "src"
+    "rootDir": "src",
+    "declaration": true,
+    "declarationMap": true,
+    "composite": true,
+    "baseUrl": "./src"
   },
   "references": [
-    { "path": "../pg-boss" },
     { "path": "../logger" }
   ],
   "include": ["src"]

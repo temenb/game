@@ -3,11 +3,15 @@
   "compilerOptions": {
     "outDir": "dist",
     "rootDir": "src",
+    "emitDeclarationOnly": false,
     "declaration": true,
-    "composite": true
+    "declarationMap": true,
+    "strict": true,
+    "baseUrl": "./src"
   },
+  "include": ["src"],
   "references": [
+    { "path": "../pg-boss-manager" },
     { "path": "../logger" }
-  ],
-  "include": ["src"]
+  ]
 }

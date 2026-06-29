@@ -1,16 +1,23 @@
 services:
   gateway:
     container_name: game-gateway
+<<<<<<< HEAD
     image: ghcr.io/temenb/game-gateway/front:${GATEWAY_VERSION}
     restart: always
     env_file:
       - ./services/.env.gateway
+=======
+    image: ghcr.io/temenb/gateway/gateway:${GATEWAY_VERSION}
+    env_file:
+      - services/.env.gateway
+>>>>>>> prod
     ports:
       - "9090:9090"
     networks:
       - backend
 
   auth:
+<<<<<<< HEAD
     container_name: game-auth
     image: ghcr.io/temenb/game-gateway/front:${AUTH_VERSION}
     restart: always
@@ -18,34 +25,88 @@ services:
       - ./services/.env.auth
     environment:
       KAFKAJS_NO_PARTITIONER_WARNING: 1
+=======
+    build:
+      context: .
+      dockerfile: services/auth/Dockerfile
+    container_name: game-auth
+    env_file:
+      - services/auth/.env
+    environment:
+      KAFKAJS_NO_PARTITIONER_WARNING: 1
+    volumes:
+      - ./shared:/usr/src/app/shared
+      - ./services/auth/prisma:/usr/src/app/services/auth/prisma
+      - ./services/auth/src:/usr/src/app/services/auth/src/
+      - ./services/auth/__tests__:/usr/src/app/services/auth/__tests__/
+      - ./services/auth/package.json:/usr/src/app/services/auth/package.json
+>>>>>>> prod
     depends_on:
       kafka:
         condition: service_healthy
       pgbouncer:
         condition: service_healthy
+<<<<<<< HEAD
+=======
+    command: pnpm dlx turbo run dev --parallel
+>>>>>>> prod
     networks:
       - backend
 
   orchestration:
+<<<<<<< HEAD
     container_name: game-orchestration
     image: ghcr.io/temenb/game-orchestration/front:${ORCHESTRATION_VERSION}
     restart: always
     env_file:
       - ./services/.env.orchestration
+=======
+    build:
+      context: .
+      dockerfile: services/orchestration/Dockerfile
+    container_name: game-orchestration
+    env_file:
+      - services/orchestration/.env
+    volumes:
+      - ./shared:/usr/src/app/shared
+      - ./services/orchestration/prisma:/usr/src/app/services/orchestration/prisma
+      - ./services/orchestration/src:/usr/src/app/services/orchestration/src/
+      - ./services/orchestration/__tests__:/usr/src/app/services/orchestration/__tests__/
+      - ./services/orchestration/package.json:/usr/src/app/services/orchestration/package.json
+>>>>>>> prod
     depends_on:
       kafka:
         condition: service_healthy
       pgbouncer:
         condition: service_healthy
+<<<<<<< HEAD
+=======
+    command: pnpm dlx turbo run dev --parallel
+>>>>>>> prod
     networks:
       - backend
 
   ai:
+<<<<<<< HEAD
     container_name: game-ai
     image: ghcr.io/temenb/game-ai/front:${AUTH_VERSION}
     restart: always
     env_file:
       - ./services/.env.auth
+=======
+    build:
+      context: .
+      dockerfile: services/ai/Dockerfile
+    container_name: game-ai
+    env_file:
+      - services/ai/.env
+    volumes:
+      - ./shared:/usr/src/app/shared
+      - ./services/ai/prisma:/usr/src/app/services/ai/prisma
+      - ./services/ai/src:/usr/src/app/services/ai/src/
+      - ./services/ai/__tests__:/usr/src/app/services/ai/__tests__/
+      - ./services/ai/package.json:/usr/src/app/services/ai/package.json
+>>>>>>> prod
     depends_on:
       pgbouncer:
         condition: service_healthy

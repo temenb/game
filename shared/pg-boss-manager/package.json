@@ -1,5 +1,5 @@
 {
-  "name": "@shared/logger",
+  "name": "@shared/pg-boss-manager",
   "version": "1.0.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -10,5 +10,10 @@
   "private": true,
   "devDependencies": {
     "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "pg-boss": "^12.15.0",
+    "@shared/logger": "workspace:*",
+    "@shared/kafka-manager": "workspace:*"
   }
 }
