@@ -17,42 +17,31 @@ env:
   REGISTRY: ghcr.io
 
 jobs:
-  build-and-deploy:
+  determine-version:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout monorepo
-        uses: actions/checkout@v4
+    environment: ${{ github.ref_name }}
+    outputs:
+      version: ${{ steps.bump_version.outputs.version }}
 
-      - name: Print payload
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get latest tag from service repo
         run: |
-          echo "Service: ${{ github.event.client_payload.service }}"
-          echo "Branch: ${{ github.event.client_payload.branch }}"
-#jobs:
-#  determine-version:
-#    runs-on: ubuntu-latest
-#    environment: ${{ github.ref_name }}
-#    outputs:
-#      version: ${{ steps.bump_version.outputs.version }}
-#
-#    steps:
-#      - name: Checkout repository
-#        uses: actions/checkout@v4
-#        with:
-#          fetch-depth: 0
-#
-#      - name: Get latest tag from service repo
-#        run: |
-#          SERVICE=${{ github.event.client_payload.service }}
-#          echo "Service: $SERVICE"
-#          TAG=$(curl -s \
-#            -H "Authorization: Bearer ${{ secrets.MONOREPO_TOKEN }}" \
-#            https://api.github.com/repos/temenb/$SERVICE/tags \
-#            | jq -r '.[0].name')
-#          echo "TAG=$TAG"
-#          if [ -z "$TAG" ] || [ "$TAG" = "null" ]; then
-#            TAG="0.0.0"
-#          fi
-#          echo "TAG=$TAG" >> $GITHUB_ENV
+          SERVICE=${{ github.event.client_payload.service }}
+          echo "Service: $SERVICE"
+          TAG=$(curl -s \
+            -H "Authorization: Bearer ${{ secrets.MONOREPO_TOKEN }}" \
+            https://api.github.com/repos/temenb/$SERVICE/tags \
+            | jq -r '.[0].name')
+          echo "TAG=$TAG"
+          if [ -z "$TAG" ] || [ "$TAG" = "null" ]; then
+            TAG="0.0.0"
+          fi
+          echo "TAG=$TAG" >> $GITHUB_ENV
 
 #      - name: Get current version from the latest git tag
 #        run: |
@@ -116,6 +105,21 @@ jobs:
 ##          git tag -a $VERSION -m "Release $VERSION"
 ##          git push origin $VERSION
 #
+
+
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout monorepo
+        uses: actions/checkout@v4
+
+      - name: Print payload
+        run: |
+          echo "Service: ${{ github.event.client_payload.service }}"
+          echo "Branch: ${{ github.event.client_payload.branch }}"
+          echo "Version: ${{ github.event.client_payload.version }}"
+
+
 #  build-and-push:
 #    runs-on: ubuntu-latest
 #    steps:
