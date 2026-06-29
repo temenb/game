@@ -6,7 +6,7 @@ on:
       - service-updated
 
 concurrency:
-  group: deploy-${{ github.ref_name }}
+  group: deploy-${{ github.event.client_payload.branch }}
 #  cancel-in-progress: true
 
 permissions:
