@@ -47,8 +47,8 @@ jobs:
             -t $REGISTRY/${{ github.event.client_payload.repo }}/${{ github.event.client_payload.service }}:${{ github.event.client_payload.version }} \
             -f services/${{ github.event.client_payload.service }}/Dockerfile .
 
-      - name: Push image
-        run: docker push ghcr.io/${{ github.event.client_payload.repo }}/${{ github.event.client_payload.service }}:${{ github.event.client_payload.version }}
+#      - name: Push image
+#        run: docker push ghcr.io/${{ github.event.client_payload.repo }}/${{ github.event.client_payload.service }}:${{ github.event.client_payload.version }}
 
 
 
