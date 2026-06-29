@@ -8,8 +8,8 @@
     "composite": true,
     "baseUrl": "./src"
   },
+  "include": ["src"],
   "references": [
     { "path": "../logger" }
-  ],
-  "include": ["src"]
+  ]
 }

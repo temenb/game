@@ -31,27 +31,27 @@ jobs:
           echo "Version: ${{ github.event.client_payload.version }}"
 
 
-#  build-and-push:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Checkout monorepo
-#        uses: actions/checkout@v4
-#
-#      - name: Setup Node.js
-#        uses: actions/setup-node@v4
-#        with:
-#          node-version: 20
-#
-#      - name: Install dependencies
-#        run: pnpm install --filter ${{ github.event.client_payload.service }}...
-#
-#      - name: Build service
-#        run: pnpm build --filter ${{ github.event.client_payload.service }}...
-#
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout monorepo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: pnpm install --filter ${{ github.event.client_payload.service }}...
+
+      - name: Build service
+        run: pnpm build --filter ${{ github.event.client_payload.service }}...
+
 #      - name: Build Docker image
 #        run: |
 #          docker build \
-#            -t $REGISTRY/temenb/${{ github.event.client_payload.service }}:latest \
+#            -t $REGISTRY/${{ github.event.client_payload.repo }}:latest \
 #            ./services/${{ github.event.client_payload.service }}
 #
 #      - name: Push Docker image
