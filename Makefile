@@ -190,12 +190,7 @@ proto-generate:
 
 	@for dir in $(NODE_SERVICES); do \
 		echo "\033[1;34m[>] Generating proto for $$dir...\033[0m"; \
-		npx protoc \
-			--plugin=./node_modules/.bin/protoc-gen-ts_proto \
-			--ts_proto_out=$(SERVICE_DIR)/$$dir/${NODE_PROTO_PATH} \
-			--ts_proto_opt=outputServices=grpc-js,useExactTypes=false,esModuleInterop=true \
-			--proto_path=./proto \
-			$(PROTO_FILES); \
+		pnpm --filter $$dir proto:generate; \
 		echo "\033[1;32m[✓] $$dir done\033[0m"; \
 	done
 
