@@ -17,7 +17,7 @@ env:
   REGISTRY: ghcr.io
 
 jobs:
-  build-and-deploy:
+  build-and-push:
     runs-on: ubuntu-latest
     steps:
       - name: Print payload
@@ -39,12 +39,6 @@ jobs:
           git fetch origin ${{ github.event.client_payload.branch }}
           git checkout ${{ github.event.client_payload.branch }}
           git pull origin ${{ github.event.client_payload.branch }}
-
-  build-and-push:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout monorepo
-        uses: actions/checkout@v4
 
 #      - name: Log in to GHCR
 #        run: echo "${{ secrets.GH_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
