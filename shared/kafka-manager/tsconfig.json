@@ -1,17 +1,22 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "dist",
-    "rootDir": "src",
     "emitDeclarationOnly": false,
     "declaration": true,
     "declarationMap": true,
     "strict": true,
     "baseUrl": "./src"
   },
-  "include": ["src"],
+  "include": [
+    "src",
+    "__tests__"
+  ],
   "references": [
-    { "path": "../pg-boss-manager" },
-    { "path": "../logger" }
+    {
+      "path": "../pg-boss-manager"
+    },
+    {
+      "path": "../logger"
+    }
   ]
 }
