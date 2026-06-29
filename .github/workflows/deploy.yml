@@ -25,6 +25,7 @@ jobs:
 
       - name: Print payload
         run: |
+          echo "Repo: ${{ github.event.client_payload.repo }}"
           echo "Service: ${{ github.event.client_payload.service }}"
           echo "Branch: ${{ github.event.client_payload.branch }}"
           echo "Version: ${{ github.event.client_payload.version }}"
