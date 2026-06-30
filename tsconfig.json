@@ -1,17 +1,4 @@
 {
-  "compilerOptions": {
-    "target": "ES2022",
-    "module": "commonjs",
-    "moduleResolution": "bundler",
-
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true
-  },
-  "references": [
-    { "path": "./shared/logger" },
-    { "path": "./shared/grpc-client-manager" },
-    { "path": "./shared/pg-boss-manager" },
-    { "path": "./shared/kafka-manager" }
-  ]
+  "extends": "./tsconfig.base.json",
+  "files": []
 }
