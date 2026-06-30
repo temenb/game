@@ -13,9 +13,6 @@
   ],
   "references": [
     {
-      "path": "../pg-boss-manager"
-    },
-    {
       "path": "../logger"
     }
   ]

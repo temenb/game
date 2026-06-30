@@ -13,7 +13,6 @@
   },
   "dependencies": {
     "kafkajs": "^2.2.4",
-    "pg-boss": "^12.15.0",
     "@shared/logger": "workspace:*"
   }
 }
