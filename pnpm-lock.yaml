@@ -278,6 +278,9 @@ importers:
       '@prisma/client':
         specifier: ^6.19.3
         version: 6.19.3(prisma@6.19.3)(typescript@6.0.2)
+      '@shared/grpc-client-manager':
+        specifier: workspace:*
+        version: link:../../shared/grpc-client-manager
       '@shared/kafka-manager':
         specifier: workspace:*
         version: link:../../shared/kafka-manager
