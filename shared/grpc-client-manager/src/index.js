@@ -46,6 +46,23 @@ class GrpcClientManager {
         this.createClient = createClient;
         this.client = this.createClient();
     }
+    async call(fn) {
+        try {
+            return await this.execute(fn);
+        }
+        catch (err) {
+            if (err instanceof Error &&
+                'code' in err &&
+                this.isRecoverableError(err)) {
+                logger_1.default.warn({
+                    err,
+                }, '🔁 gRPC recoverable error — retrying');
+                this.reconnect();
+                return this.execute(fn);
+            }
+            throw err;
+        }
+    }
     reconnect() {
         logger_1.default.warn('🔄 Reconnecting gRPC client...');
         this.client = this.createClient();
@@ -64,23 +81,6 @@ class GrpcClientManager {
             (err.code === grpc.status.INTERNAL &&
                 err.details?.includes('connection') ||
                 err.details?.includes('timeout')));
-    }
-    async call(fn) {
-        try {
-            return await this.execute(fn);
-        }
-        catch (err) {
-            if (err instanceof Error &&
-                'code' in err &&
-                this.isRecoverableError(err)) {
-                logger_1.default.warn({
-                    err,
-                }, '🔁 gRPC recoverable error — retrying');
-                this.reconnect();
-                return this.execute(fn);
-            }
-            throw err;
-        }
     }
     execute(fn) {
         return new Promise((resolve, reject) => {

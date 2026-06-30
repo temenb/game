@@ -1,28 +1,12 @@
 {
   "name": "@shared/grpc-client-manager",
   "version": "1.0.0",
-  "description": "Reusable gRPC client manager with automatic reconnection and error handling",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc -b tsconfig.json",
-    "lint": "eslint . --ext .ts",
-    "format": "prettier --write .",
-    "test": "echo \"No tests yet\""
+    "build": "tsc -p tsconfig.json"
   },
-  "keywords": [
-    "grpc",
-    "client",
-    "manager",
-    "reconnect",
-    "typescript",
-    "shared",
-    "automation",
-    "systemic"
-  ],
-  "author": "Oleksii",
-  "license": "MIT",
-  "dependencies": {
+ "dependencies": {
     "@grpc/grpc-js": "^1.14.3",
     "@shared/logger": "workspace:*"
   },

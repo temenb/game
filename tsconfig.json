@@ -2,19 +2,10 @@
   "compilerOptions": {
     "target": "ES2022",
     "module": "commonjs",
-    "outDir": "dist",
-    "rootDir": ".",
+    "moduleResolution": "bundler",
+
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true
-  },
-  "include": [
-    "src"
-  ],
-  "references": [
-    { "path": "./shared/logger" },
-    { "path": "./shared/grpc-client-manager" },
-    { "path": "./shared/pg-boss-manager" },
-    { "path": "./shared/kafka-manager" }
-  ]
+  }
 }

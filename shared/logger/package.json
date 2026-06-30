@@ -4,10 +4,9 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc -b tsconfig.json",
+    "build": "tsc -p tsconfig.json",
     "dev": "tsc --watch"
   },
-  "private": true,
   "devDependencies": {
     "typescript": "^5.9.3"
   }
