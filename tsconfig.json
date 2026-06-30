@@ -7,5 +7,11 @@
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true
-  }
+  },
+  "references": [
+    { "path": "./shared/logger" },
+    { "path": "./shared/grpc-client-manager" },
+    { "path": "./shared/pg-boss-manager" },
+    { "path": "./shared/kafka-manager" }
+  ]
 }

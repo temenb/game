@@ -1,6 +1,6 @@
 import {Kafka} from "kafkajs";
 import {KafkaConfig} from "./types";
-import logger from "@shared/logger";
+import logger from "../../logger";
 
 const kafkaMap = new Map<string, Kafka>();
 const reconnectAttempts = new Map<string, number>();

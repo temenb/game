@@ -1,7 +1,7 @@
 import {getKafkaInstance} from './register';
 import {ConsumerConfig, KafkaConfig} from './types';
 import {Kafka, KafkaJSProtocolError} from 'kafkajs';
-import logger from "@shared/logger";
+import logger from "../../logger";
 
 export async function createConsumer(config: KafkaConfig, consumerConfig: ConsumerConfig) {
   const kafka = await getKafkaInstance(config);

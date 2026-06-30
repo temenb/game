@@ -1,5 +1,5 @@
-import logger from '@shared/logger';
-import {createProducer, KafkaConfig} from '@shared/kafka-manager';
+import logger from '../../logger';
+import {createProducer, KafkaConfig} from '../../kafka-manager';
 import {Job, PgBoss} from 'pg-boss';
 import {PgBossConfig} from './types';
 

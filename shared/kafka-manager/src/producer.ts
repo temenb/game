@@ -1,7 +1,7 @@
 import {getKafkaInstance} from './register';
 import {KafkaConfig} from './types';
 import {Partitioners} from "kafkajs";
-import logger from "@shared/logger";
+import logger from "../../logger";
 
 export async function createProducer(config: KafkaConfig) {
   const kafka = await getKafkaInstance(config);
