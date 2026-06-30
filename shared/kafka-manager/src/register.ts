@@ -1,5 +1,5 @@
-import { Kafka, KafkaJSProtocolError } from "kafkajs";
-import { KafkaConfig } from "./types";
+import {Kafka} from "kafkajs";
+import {KafkaConfig} from "./types";
 import logger from "@shared/logger";
 
 const kafkaMap = new Map<string, Kafka>();
@@ -8,7 +8,7 @@ const reconnectAttempts = new Map<string, number>();
 export async function getKafkaInstance(
   config: KafkaConfig
 ): Promise<Kafka> {
-  const { clientId, brokers } = config;
+  const {clientId, brokers} = config;
 
   if (!kafkaMap.has(clientId)) {
     const kafka = new Kafka({
@@ -55,7 +55,8 @@ async function ensureTopics(
 
     reconnectAttempts.set(clientId, 0);
   } finally {
-    await admin.disconnect().catch(() => {});
+    await admin.disconnect().catch(() => {
+    });
   }
 }
 

@@ -5,11 +5,15 @@
     "declaration": true,
     "declarationMap": true,
     "composite": true,
-    "strict": true,
+    "strict": true
   },
-  "include": ["src",
-    "__tests__"],
+  "include": [
+    "src",
+    "__tests__"
+  ],
   "references": [
-    { "path": "../logger" }
+    {
+      "path": "../logger"
+    }
   ]
 }

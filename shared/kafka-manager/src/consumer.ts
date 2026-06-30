@@ -32,7 +32,7 @@ export async function createConsumer(config: KafkaConfig, consumerConfig: Consum
     console.error('Consumer crashed', event.payload.error);
     // перезапуск
     await consumer.connect();
-    await consumer.subscribe({ topic: 'battle-events' });
+    await consumer.subscribe({topic: 'battle-events'});
   });
 
   await admin.disconnect();
@@ -68,7 +68,7 @@ export async function createConsumer(config: KafkaConfig, consumerConfig: Consum
 
 async function waitForLeader(admin: ReturnType<Kafka["admin"]>, topic: string, maxAttempts = 5) {
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-    const metadata = await admin.fetchTopicMetadata({ topics: [topic] });
+    const metadata = await admin.fetchTopicMetadata({topics: [topic]});
     const partitions = metadata.topics[0]?.partitions ?? [];
     const leaderReady = partitions.every(p => p.leader !== -1);
 

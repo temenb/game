@@ -21,32 +21,6 @@ export class GrpcClientManager<TClient> {
     this.client = this.createClient();
   }
 
-  private reconnect() {
-    logger.warn('🔄 Reconnecting gRPC client...');
-    this.client = this.createClient();
-  }
-
-  private isRecoverableError(
-    err: grpc.ServiceError | null
-  ): boolean {
-
-    if (!err) {
-      return false;
-    }
-
-    const recoverableCodes = [
-      grpc.status.UNAVAILABLE,
-      grpc.status.DEADLINE_EXCEEDED,
-      grpc.status.RESOURCE_EXHAUSTED,   // иногда
-      grpc.status.ABORTED,              // можно добавить с осторожностью
-    ];
-
-    return Boolean(recoverableCodes.includes(err.code) ||
-      (err.code === grpc.status.INTERNAL &&
-        err.details?.includes('connection') ||
-        err.details?.includes('timeout')));
-  }
-
   public async call<TResult>(
     fn: GrpcCall<TClient, TResult>
   ): Promise<TResult> {
@@ -73,6 +47,32 @@ export class GrpcClientManager<TClient> {
 
       throw err;
     }
+  }
+
+  private reconnect() {
+    logger.warn('🔄 Reconnecting gRPC client...');
+    this.client = this.createClient();
+  }
+
+  private isRecoverableError(
+    err: grpc.ServiceError | null
+  ): boolean {
+
+    if (!err) {
+      return false;
+    }
+
+    const recoverableCodes = [
+      grpc.status.UNAVAILABLE,
+      grpc.status.DEADLINE_EXCEEDED,
+      grpc.status.RESOURCE_EXHAUSTED,   // иногда
+      grpc.status.ABORTED,              // можно добавить с осторожностью
+    ];
+
+    return Boolean(recoverableCodes.includes(err.code) ||
+      (err.code === grpc.status.INTERNAL &&
+        err.details?.includes('connection') ||
+        err.details?.includes('timeout')));
   }
 
   private execute<TResult>(

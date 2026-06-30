@@ -1,8 +1,7 @@
 import logger from '@shared/logger';
-import { createProducer, KafkaConfig } from '@shared/kafka-manager';
-import { Job, PgBoss } from 'pg-boss';
-import { PgBossConfig } from './types';
-
+import {createProducer, KafkaConfig} from '@shared/kafka-manager';
+import {Job, PgBoss} from 'pg-boss';
+import {PgBossConfig} from './types';
 
 
 export class PgBossManager {
@@ -63,7 +62,7 @@ export class PgBossManager {
   };
 
 
-  stopBoss = async() => {
+  stopBoss = async () => {
     logger.info('Stop Boss !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
     if (!this._boss) return;
 
@@ -117,7 +116,7 @@ export class PgBossManager {
 
       await b.work(
         topic,
-        { batchSize: 10 },
+        {batchSize: 10},
         async (jobs: Job<unknown>[]) => {
           for (const j of jobs) {
             await producer.send(j.name, j.data);
@@ -160,9 +159,9 @@ export class PgBossManager {
     const jobName = topic;
     // logger.log('enqueueEventTx ' + jobName);
     return await tx.$executeRawUnsafe(`
-      insert into pgboss.job (name, data)
-      values ($1, $2::jsonb) returning id
-  `, jobName, JSON.stringify(data));
+        insert into pgboss.job (name, data)
+        values ($1, $2::jsonb) returning id
+    `, jobName, JSON.stringify(data));
   }
 }
 

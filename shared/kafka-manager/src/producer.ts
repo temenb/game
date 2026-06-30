@@ -1,6 +1,6 @@
-import { getKafkaInstance } from './register';
-import { KafkaConfig } from './types';
-import { Partitioners } from "kafkajs";
+import {getKafkaInstance} from './register';
+import {KafkaConfig} from './types';
+import {Partitioners} from "kafkajs";
 import logger from "@shared/logger";
 
 export async function createProducer(config: KafkaConfig) {
@@ -19,7 +19,7 @@ export async function createProducer(config: KafkaConfig) {
 
     if (!topics.includes("battle-stream")) {
       await admin.createTopics({
-        topics: [{ topic: "battle-stream", numPartitions: 1, replicationFactor: 1 }],
+        topics: [{topic: "battle-stream", numPartitions: 1, replicationFactor: 1}],
         waitForLeaders: true,
       });
       logger.info("✅ Topic created: battle-stream");
@@ -35,7 +35,7 @@ export async function createProducer(config: KafkaConfig) {
       try {
         await producer.send({
           topic,
-          messages: [{ value: JSON.stringify(message) }],
+          messages: [{value: JSON.stringify(message)}],
         });
       } catch (err) {
         logger.error(`❌ Failed to send to ${topic}:`, err);

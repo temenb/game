@@ -6,10 +6,15 @@
     "rootDir": ".",
     "strict": true,
     "esModuleInterop": true,
-    "skipLibCheck": true,
-    "paths": {
-      "@shared/*": ["../../shared/*/src"]
-    }
+    "skipLibCheck": true
   },
-  "include": ["src"]
+  "include": [
+    "src"
+  ],
+  "references": [
+    { "path": "./shared/logger" },
+    { "path": "./shared/grpc-client-manager" },
+    { "path": "./shared/pg-boss-manager" },
+    { "path": "./shared/kafka-manager" }
+  ]
 }

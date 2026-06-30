@@ -40,8 +40,8 @@ jobs:
           git checkout ${{ github.event.client_payload.branch }}
           git pull origin ${{ github.event.client_payload.branch }}
 
-#      - name: Log in to GHCR
-#        run: echo "${{ secrets.GH_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      #      - name: Log in to GHCR
+      #        run: echo "${{ secrets.GH_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Build Docker image
         run: |
