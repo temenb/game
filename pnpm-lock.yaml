@@ -722,9 +722,6 @@ importers:
       kafkajs:
         specifier: ^2.2.4
         version: 2.2.4
-      pg-boss:
-        specifier: ^12.15.0
-        version: 12.15.0
     devDependencies:
       typescript:
         specifier: ^5.9.3
