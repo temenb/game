@@ -8,8 +8,8 @@ on:
 run-name: Deploy ${{ github.event.client_payload.service }}
 
 concurrency:
-  group: deploy-${{ github.ref_name }}
-#  cancel-in-progress: true
+  group: deploy-${{ github.event.client_payload.service }}
+  cancel-in-progress: true
 
 permissions:
   contents: write
