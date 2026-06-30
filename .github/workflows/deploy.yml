@@ -5,6 +5,8 @@ on:
     types:
       - service-updated
 
+run-name: Deploy ${{ github.event.client_payload.service }}
+
 concurrency:
   group: deploy-${{ github.ref_name }}
 #  cancel-in-progress: true
