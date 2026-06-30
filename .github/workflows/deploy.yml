@@ -20,6 +20,7 @@ env:
 
 jobs:
   build-and-push:
+    environment: ${{ github.event.client_payload.branch }}
     runs-on: ubuntu-latest
     steps:
       - name: Print payload
@@ -51,6 +52,7 @@ jobs:
 
       - name: Push image
         run: |
+          echo "${{ secrets.GH_PAT }}"
           echo "${{ secrets.GH_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
           
           docker push ghcr.io/${{ github.event.client_payload.repo }}/${{ github.event.client_payload.service }}:${{ github.event.client_payload.version }}
