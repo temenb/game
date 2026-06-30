@@ -7,7 +7,12 @@
     "build": "tsc -p tsconfig.json",
     "dev": "tsc --watch"
   },
-  "private": true,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
   "devDependencies": {
     "typescript": "^5.9.3"
   },
