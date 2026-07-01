@@ -82,18 +82,30 @@ jobs:
           key: ${{ secrets.DEPLOY_KEY }}
           script_stop: true
           script: |
-            docker compose pull
-
-            SERVICE=${{ github.event.client_payload.service }}
-          
-            if [ "$SERVICE" != "gateway" ]; then
-              echo "ℹ️ Миграции для $SERVICE выполняются"
             
-            else
-              echo "ℹ️ Миграции для $SERVICE не выполняются"
-            fi
-
+            set -e
+            cd ${{ secrets.DEPLOY_PATH }}
+            docker compose pull
             docker compose up -d --remove-orphans
             docker image prune -f
+            
+            
+            
+            
+            
+
+#            docker compose pull
+#
+#            SERVICE=${{ github.event.client_payload.service }}
+#
+#            if [ "$SERVICE" != "gateway" ]; then
+#              echo "ℹ️ Миграции для $SERVICE выполняются"
+#
+#            else
+#              echo "ℹ️ Миграции для $SERVICE не выполняются"
+#            fi
+#
+#            docker compose up -d --remove-orphans
+#            docker image prune -f
           
 
