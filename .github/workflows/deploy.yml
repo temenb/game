@@ -86,7 +86,13 @@ jobs:
             cd ${{ secrets.DEPLOY_PATH }}
             docker compose pull
             docker compose up -d --remove-orphans
-            docker compose exec -T -w /usr/src/app/services/${{ github.event.client_payload.service }} \
-              ${{ github.event.client_payload.service }} \
-              prisma migrate deploy
+
+            if docker compose exec -T ${{ github.event.client_payload.service }} \
+                command -v prisma >/dev/null 2>&1; then
+              docker compose exec -T -w /usr/src/app/services/${{ github.event.client_payload.service }} \
+                ${{ github.event.client_payload.service }} \
+                prisma migrate deploy
+            else
+              echo "⚠️ Prisma не найден в сервисе ${{ github.event.client_payload.service }}, миграция пропущена"
+            fi
             docker image prune -f
