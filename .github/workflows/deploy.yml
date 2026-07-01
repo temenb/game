@@ -65,13 +65,13 @@ jobs:
             -f services/${{ github.event.client_payload.service }}/Dockerfile .
 
           docker tag ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }} \
-            ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.branch }}
+            ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.branch }}
 
           docker tag ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }} \
-            ghcr.io/${{ github.event.client_payload.repo }}/service:latest
+            ghcr.io/${{ github.event.client_payload.repo }}/predeploy:latest
 
           docker tag ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }} \
-            ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.sha }}
+            ghcr.io/${{ github.event.client_payload.repo }}/predeploy:d${{ github.sha }}
 
 
       - name: Push image
