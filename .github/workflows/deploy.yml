@@ -106,7 +106,10 @@ jobs:
             set -e
             cd ${{ secrets.DEPLOY_PATH }}
             
-            docker run --rm ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }}
+            docker run \
+              --rm --env-file ./services/.env.${{ github.event.client_payload.repo }} \
+              --network game_backend \
+              ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }}
             
             docker compose pull
             docker compose up -d --remove-orphans
