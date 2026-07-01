@@ -90,10 +90,8 @@ jobs:
             SERVICE=${{ github.event.client_payload.service }}
 
             if [ "$SERVICE" != "gateway" ]; then
-              echo "ℹ️ Миграции для $SERVICE выполняются"
 
             else
-              echo "ℹ️ Миграции для $SERVICE не выполняются"
             fi
 
             docker compose up -d --remove-orphans
