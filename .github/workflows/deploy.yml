@@ -89,6 +89,8 @@ jobs:
 
             SERVICE=${{ github.event.client_payload.service }}
 
+            echo "SERVICE='$SERVICE'"
+            
             if [ "$SERVICE" != "gateway" ]; then
              echo "⚠️ gateway"
             else
