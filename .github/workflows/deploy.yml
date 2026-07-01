@@ -82,8 +82,6 @@ jobs:
           key: ${{ secrets.DEPLOY_KEY }}
           script_stop: true
           script: |
-            set -e
-
             cd ${{ secrets.DEPLOY_PATH }}
 
             docker compose pull
