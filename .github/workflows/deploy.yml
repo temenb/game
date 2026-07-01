@@ -68,28 +68,27 @@ jobs:
           docker push ghcr.io/${{ github.event.client_payload.repo }}/service:latest
 
 
-steps:
-  - name: Deploy over SSH
-    uses: appleboy/ssh-action@v0.1.10
-    with:
-      host: ${{ secrets.DEPLOY_HOST }}
-      username: ${{ secrets.DEPLOY_USER }}
-      key: ${{ secrets.DEPLOY_KEY }}
-      script_stop: true
-      script: |
-        set -e
-        cd ${{ secrets.DEPLOY_PATH }}
-        docker compose pull
-        docker compose up -d --remove-orphans
-
-        PRISMA_EXISTS=$(docker compose exec -T gateway sh -c 'command -v prisma >/dev/null 2>&1 && echo yes || echo no')
-
-        if [ "$PRISMA_EXISTS" = "yes" ]; then
-          docker compose exec -T -w /usr/src/app/services/gateway \
-            gateway prisma migrate deploy
-        else
-          echo "⚠️ Prisma не найден в сервисе gateway, миграция пропущена"
-        fi
-
-        docker image prune -f
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_KEY }}
+          script_stop: true
+          script: |
+            set -e
+            cd ${{ secrets.DEPLOY_PATH }}
+            docker compose pull
+            docker compose up -d --remove-orphans
+    
+            PRISMA_EXISTS=$(docker compose exec -T gateway sh -c 'command -v prisma >/dev/null 2>&1 && echo yes || echo no')
+    
+            if [ "$PRISMA_EXISTS" = "yes" ]; then
+              docker compose exec -T -w /usr/src/app/services/gateway \
+                gateway prisma migrate deploy
+            else
+              echo "⚠️ Prisma не найден в сервисе gateway, миграция пропущена"
+            fi
+    
+            docker image prune -f
 
