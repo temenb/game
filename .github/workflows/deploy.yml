@@ -106,9 +106,7 @@ jobs:
             set -e
             cd ${{ secrets.DEPLOY_PATH }}
             
-            docker run --rm \
-              -w /usr/src/app/services/${{ github.event.client_payload.service }} \
-              ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }}
+            docker run --rm ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }}
             
             docker compose pull
             docker compose up -d --remove-orphans
