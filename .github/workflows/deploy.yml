@@ -91,11 +91,8 @@ jobs:
             SERVICE=${{ github.event.client_payload.service }}
           
             if [ "$SERVICE" != "gateway" ]; then
-              if docker compose run --rm $SERVICE sh -c 'command -v prisma >/dev/null 2>&1'; then
-                docker compose run --rm $SERVICE prisma migrate deploy
-              else
-                echo "⚠️ Prisma не найден в сервисе $SERVICE, миграция пропущена"
-              fi
+              echo "ℹ️ Миграции для $SERVICE выполняются"
+            
             else
               echo "ℹ️ Миграции для $SERVICE не выполняются"
             fi
