@@ -107,7 +107,7 @@ jobs:
             cd ${{ secrets.DEPLOY_PATH }}
             
             docker run \
-              --rm --env-file ./services/.env.${{ github.event.client_payload.repo }} \
+              --rm --env-file ./services/.env.${{ github.event.client_payload.service }} \
               --network game_backend \
               ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }}
             
