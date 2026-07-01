@@ -92,7 +92,7 @@ jobs:
             if [ "$SERVICE" = "gateway" ]; then
               echo "⚠️ Prisma не найден в сервисе gateway, миграция пропущена"
             else
-              docker compose run --rm $SERVICE prisma migrate deploy
+              docker compose run --rm -w /usr/src/app/services/$SERVICE $SERVICE prisma migrate deploy
             fi
           
             docker compose up -d --remove-orphans
