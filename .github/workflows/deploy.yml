@@ -58,6 +58,21 @@ jobs:
 
           docker tag ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.version }} \
             ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.sha }}
+                    
+          docker build \
+            --target predeploy \
+            -t $REGISTRY/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }} \
+            -f services/${{ github.event.client_payload.service }}/Dockerfile .
+
+          docker tag ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }} \
+            ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.branch }}
+
+          docker tag ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }} \
+            ghcr.io/${{ github.event.client_payload.repo }}/service:latest
+
+          docker tag ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }} \
+            ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.sha }}
+
 
       - name: Push image
         run: |
@@ -66,6 +81,11 @@ jobs:
           docker push ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.branch }}
           docker push ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.sha }}
           docker push ghcr.io/${{ github.event.client_payload.repo }}/service:latest
+
+          docker push ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }}
+          docker push ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.branch }}
+          docker push ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.sha }}
+          docker push ghcr.io/${{ github.event.client_payload.repo }}/predeploy:latest
 
 
   deploy:
@@ -85,20 +105,16 @@ jobs:
             bash -eo pipefail <<'EOF'
             set -e
             cd ${{ secrets.DEPLOY_PATH }}
+            
+            docker run --rm \
+              -w /usr/src/app/services/${{ github.event.client_payload.service }} \
+              ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }}
+            
             docker compose pull
-          
-            SERVICE=${{ github.event.client_payload.service }}
-          
-            if [ "$SERVICE" = "gateway" ]; then
-              echo "⚠️ Prisma не найден в сервисе gateway, миграция пропущена"
-            else
-              docker compose run --rm -w /usr/src/app/services/$SERVICE $SERVICE prisma migrate deploy
-            fi
-          
             docker compose up -d --remove-orphans
             docker image prune -f
             EOF
 
 
-          
-
+            
+            
