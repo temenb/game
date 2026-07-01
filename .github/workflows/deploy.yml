@@ -82,11 +82,17 @@ jobs:
           key: ${{ secrets.DEPLOY_KEY }}
           script_stop: true
           script: |
+            set -e
+
+            cd ${{ secrets.DEPLOY_PATH }}
+
             docker compose pull
-            if docker compose run --rm ${{ github.event.client_payload.service }} sh -c 'command -v prisma >/dev/null'; then
+
+            if docker compose run --rm ${{ github.event.client_payload.service }} sh -c 'command -v prisma >/dev/null 2>&1'; then
               docker compose run --rm ${{ github.event.client_payload.service }} prisma migrate deploy
             fi
-            docker compose run --rm ${{ github.event.client_payload.service }} prisma migrate deploy
+
             docker compose up -d --remove-orphans
             docker image prune -f
+          
 
