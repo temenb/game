@@ -71,7 +71,7 @@ jobs:
             ghcr.io/${{ github.event.client_payload.repo }}/predeploy:latest
 
           docker tag ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }} \
-            ghcr.io/${{ github.event.client_payload.repo }}/predeploy:d${{ github.sha }}
+            ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.sha }}
 
 
       - name: Push image
