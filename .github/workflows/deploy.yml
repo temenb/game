@@ -30,42 +30,42 @@ jobs:
           echo "Branch: ${{ github.event.client_payload.branch }}"
           echo "Version: ${{ github.event.client_payload.version }}"
 
-      - name: Checkout monorepo
-        uses: actions/checkout@v4
-        with:
-          submodules: true
-          fetch-depth: 0
-
-      - name: Checkout service submodule branch
-        run: |
-          cd services/${{ github.event.client_payload.service }}
-          git fetch origin ${{ github.event.client_payload.branch }}
-          git checkout ${{ github.event.client_payload.branch }}
-          git pull origin ${{ github.event.client_payload.branch }}
-
-      - name: Build Docker image
-        run: |
-          docker build \
-            --target prod \
-            -t $REGISTRY/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.version }} \
-            -f services/${{ github.event.client_payload.service }}/Dockerfile .
-          
-          docker tag ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.version }} \
-            ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.branch }}
-     
-          docker tag ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.version }} \
-            ghcr.io/${{ github.event.client_payload.repo }}/service:latest
-       
-          docker tag ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.version }} \
-            ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.sha }}
-
-      - name: Push image
-        run: |
-          echo "${{ secrets.GH_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-          docker push ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.version }}
-          docker push ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.branch }}
-          docker push ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.sha }}
-          docker push ghcr.io/${{ github.event.client_payload.repo }}/service:latest
+#      - name: Checkout monorepo
+#        uses: actions/checkout@v4
+#        with:
+#          submodules: true
+#          fetch-depth: 0
+#
+#      - name: Checkout service submodule branch
+#        run: |
+#          cd services/${{ github.event.client_payload.service }}
+#          git fetch origin ${{ github.event.client_payload.branch }}
+#          git checkout ${{ github.event.client_payload.branch }}
+#          git pull origin ${{ github.event.client_payload.branch }}
+#
+#      - name: Build Docker image
+#        run: |
+#          docker build \
+#            --target prod \
+#            -t $REGISTRY/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.version }} \
+#            -f services/${{ github.event.client_payload.service }}/Dockerfile .
+#
+#          docker tag ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.version }} \
+#            ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.branch }}
+#
+#          docker tag ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.version }} \
+#            ghcr.io/${{ github.event.client_payload.repo }}/service:latest
+#
+#          docker tag ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.version }} \
+#            ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.sha }}
+#
+#      - name: Push image
+#        run: |
+#          echo "${{ secrets.GH_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+#          docker push ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.version }}
+#          docker push ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.branch }}
+#          docker push ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.sha }}
+#          docker push ghcr.io/${{ github.event.client_payload.repo }}/service:latest
 
 
   deploy:
@@ -90,7 +90,9 @@ jobs:
             SERVICE=${{ github.event.client_payload.service }}
 
             if [ $SERVICE != "gateway" ]; then
+             echo "⚠️ gateway"
             else
+             echo "⚠️ Не gateway"
             fi
 
             docker compose up -d --remove-orphans
