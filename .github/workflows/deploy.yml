@@ -82,8 +82,6 @@ jobs:
           key: ${{ secrets.DEPLOY_KEY }}
           script_stop: true
           script: |
-            cd ${{ secrets.DEPLOY_PATH }}
-
             docker compose pull
 
             SERVICE=${{ github.event.client_payload.service }}
