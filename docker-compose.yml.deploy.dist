@@ -67,10 +67,10 @@ services:
       - backend
 
   streaming:
-      container_name: game-streaming
-      image: ghcr.io/temenb/streaming/service:${STREAMING_VERSION}
-      restart: always
-      env_file:
+    container_name: game-streaming
+    image: ghcr.io/temenb/streaming/service:${STREAMING_VERSION}
+    restart: always
+    env_file:
         - ./services/.env.streaming
     ports:
       - "8080:8080"
