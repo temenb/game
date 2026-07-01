@@ -89,6 +89,9 @@ jobs:
 
             SERVICE=${{ github.event.client_payload.service }}
 
+            if [ $SERVICE != "gateway" ]; then
+            else
+            fi
 
             docker compose up -d --remove-orphans
             docker image prune -f
