@@ -82,21 +82,11 @@ jobs:
           key: ${{ secrets.DEPLOY_KEY }}
           script_stop: true
           script: |
-            set -e
-            cd ${{ secrets.DEPLOY_PATH }}
-            
-            set +e
-            PRISMA_EXISTS=$(docker compose exec -T gateway sh -c 'command -v prisma >/dev/null 2>&1 && echo yes || echo no')
-            set -e
-            
-            if [ "$PRISMA_EXISTS" = "yes" ]; then
-              docker compose exec -T -w /usr/src/app/services/gateway \
-                gateway prisma migrate deploy
-            else
-              echo "⚠️ Prisma не найден в сервисе gateway, миграция пропущена"
-            fi
-            
             docker compose pull
+            if docker compose run --rm ${{ github.event.client_payload.service }} sh -c 'command -v prisma >/dev/null'; then
+              docker compose run --rm ${{ github.event.client_payload.service }} prisma migrate deploy
+            fi
+            docker compose run --rm ${{ github.event.client_payload.service }} prisma migrate deploy
             docker compose up -d --remove-orphans
             docker image prune -f
 
