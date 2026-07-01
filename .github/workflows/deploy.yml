@@ -89,7 +89,11 @@ jobs:
 
             SERVICE=${{ github.event.client_payload.service }}
 
-         
+            if [ "$SERVICE" != "gateway" ]; then
+             echo "⚠️ gateway"
+            else
+             echo "⚠️ Не gateway"
+            fi
 
             docker compose up -d --remove-orphans
             docker image prune -f
