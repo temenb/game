@@ -82,28 +82,26 @@ jobs:
           key: ${{ secrets.DEPLOY_KEY }}
           script_stop: true
           script: |
-            bash -c '
-              set -e
-              cd ${{ secrets.DEPLOY_PATH }}
-              docker compose pull
-            
-              SERVICE=${{ github.event.client_payload.service }}
-            
-              echo "SERVICE=$SERVICE"
-              case "$SERVICE" in
-                gateway)
-                  echo "Gateway"
-                  ;;
-              *)
-                echo "Not gateway"
-                ;;
-              esac
+            bash -eo pipefail <<'EOF'
+            set -e
+            cd ${{ secrets.DEPLOY_PATH }}
+            docker compose pull
           
-              echo "after case"
+            SERVICE=${{ github.event.client_payload.service }}
           
-              docker compose up -d --remove-orphans
-              docker image prune -f
-            '
+            echo "SERVICE=$SERVICE"
+            if [ "$SERVICE" = "gateway" ]; then
+              echo "Gateway"
+            else
+              echo "Not gateway"
+            fi
+          
+            echo "after if"
+          
+            docker compose up -d --remove-orphans
+            docker image prune -f
+            EOF
+
 
 #            docker compose pull
 #
