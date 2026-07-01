@@ -90,7 +90,16 @@ jobs:
             SERVICE=${{ github.event.client_payload.service }}
 
             echo "SERVICE='$SERVICE'"
-            
+            case "$SERVICE" in
+              gateway)
+                echo "Gateway"
+                ;;
+              *)
+                echo "Not gateway"
+                ;;
+            esac
+              
+            echo "after case"
  
 
             docker compose up -d --remove-orphans
