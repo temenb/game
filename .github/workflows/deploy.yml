@@ -91,9 +91,9 @@ jobs:
           
             echo "SERVICE=$SERVICE"
             if [ "$SERVICE" = "gateway" ]; then
-              echo "Gateway"
+              echo "⚠️ Prisma не найден в сервисе gateway, миграция пропущена"
             else
-              echo "Not gateway"
+              gateway prisma migrate deploy
             fi
           
             echo "after if"
