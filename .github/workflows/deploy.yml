@@ -49,6 +49,15 @@ jobs:
             --target prod \
             -t $REGISTRY/${{ github.event.client_payload.repo }}/${{ github.event.client_payload.service }}:${{ github.event.client_payload.version }} \
             -f services/${{ github.event.client_payload.service }}/Dockerfile .
+          
+          docker tag ghcr.io/${{ github.event.client_payload.repo }}/${{ github.event.client_payload.service }}:${{ github.event.client_payload.version }} \
+            ghcr.io/${{ github.event.client_payload.repo }}/${{ github.event.client_payload.service }}:${{ github.event.client_payload.branch }}
+     
+          docker tag ghcr.io/${{ github.event.client_payload.repo }}/${{ github.event.client_payload.service }}:${{ github.event.client_payload.version }} \
+            ghcr.io/${{ github.event.client_payload.repo }}/${{ github.event.client_payload.service }}:latest
+       
+          docker tag ghcr.io/${{ github.event.client_payload.repo }}/${{ github.event.client_payload.service }}:${{ github.event.client_payload.version }} \
+            ghcr.io/${{ github.event.client_payload.repo }}/${{ github.event.client_payload.service }}:${{ github.sha }}
 
       - name: Push image
         run: |
