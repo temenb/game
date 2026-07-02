@@ -2,6 +2,7 @@ packages:
   - 'services/*'
   - 'shared/*'
 
+injectWorkspacePackages: true
 
 allowBuilds:
   '@prisma/client': true
