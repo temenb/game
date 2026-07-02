@@ -19,5 +19,8 @@
   "dependencies": {
     "kafkajs": "^2.2.4",
     "@shared/logger": "workspace:*"
-  }
+  },
+  "files": [
+    "dist"
+  ]
 }

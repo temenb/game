@@ -2,6 +2,13 @@ packages:
   - 'services/*'
   - 'shared/*'
 
+allowBuilds:
+  '@prisma/client': true
+  '@prisma/engines': true
+  bcrypt: true
+  prisma: true
+  protobufjs: true
+  unrs-resolver: true
 
 onlyBuiltDependencies:
   - '@prisma/client'

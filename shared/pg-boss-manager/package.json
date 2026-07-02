@@ -20,5 +20,8 @@
     "pg-boss": "^12.15.0",
     "@shared/logger": "workspace:*",
     "@shared/kafka-manager": "workspace:*"
-  }
+  },
+  "files": [
+    "dist"
+  ]
 }
