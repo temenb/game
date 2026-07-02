@@ -113,7 +113,7 @@ jobs:
               ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }}
             
             docker compose pull
-            docker compose up -d --remove-orphans
+            docker compose up -d ${{ github.event.client_payload.service }} --remove-orphans
             docker image prune -f
             EOF
 
