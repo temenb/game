@@ -2,6 +2,9 @@ packages:
   - 'services/*'
   - 'shared/*'
 
+inject-workspace-packages: true
+force-legacy-deploy: true
+
 allowBuilds:
   '@prisma/client': true
   '@prisma/engines': true
