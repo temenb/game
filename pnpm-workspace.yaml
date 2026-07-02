@@ -2,8 +2,6 @@ packages:
   - 'services/*'
   - 'shared/*'
 
-injectWorkspacePackages: true
-#forceLegacyDeploy: true
 
 allowBuilds:
   '@prisma/client': true
