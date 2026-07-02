@@ -29,6 +29,7 @@ jobs:
           echo "Service: ${{ github.event.client_payload.service }}"
           echo "Branch: ${{ github.event.client_payload.branch }}"
           echo "Version: ${{ github.event.client_payload.version }}"
+          echo "Sha: ${{ github.event.client_payload.sha }}"
 
       - name: Checkout monorepo
         uses: actions/checkout@v4
@@ -79,12 +80,12 @@ jobs:
           echo "${{ secrets.GH_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
           docker push ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.version }}
           docker push ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.branch }}
-          docker push ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.sha }}
+          docker push ghcr.io/${{ github.event.client_payload.repo }}/service:${{ github.event.client_payload.sha }}
           docker push ghcr.io/${{ github.event.client_payload.repo }}/service:latest
 
           docker push ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.version }}
           docker push ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.branch }}
-          docker push ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.sha }}
+          docker push ghcr.io/${{ github.event.client_payload.repo }}/predeploy:${{ github.event.client_payload.sha }}
           docker push ghcr.io/${{ github.event.client_payload.repo }}/predeploy:latest
 
 
